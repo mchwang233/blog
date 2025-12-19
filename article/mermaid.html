@@ -3,8 +3,9 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Home</title>
+  <title>Mermaid 流程图示例</title>
 
+    <meta name="description" content="一个简单的 Mermaid 流程图演示" />
   
   <link rel="stylesheet" href="./assets/style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" />
@@ -38,10 +39,11 @@
         const doc = parser.parseFromString('<!doctype html><body>' + block.innerHTML, 'text/html');
         let mermaidCode = doc.body.textContent || '';
 
-        // 第一步：把 "<br>" 后面紧跟的换行折叠掉
+        // 第一步：把 "<br>" 后面紧跟的换行折叠掉，避免 label 内被硬拆成多行
         mermaidCode = mermaidCode.replace(/<br>\s*\n\s*/g, '<br>');
 
-        // 第二步：针对 S16 的长 label 做特例简化，避免复杂多行文本导致解析失败
+        // 第二步：针对已知有问题的 S16 长 label 做特例简化，避免复杂换行 / 符号触发解析问题
+        // 注意：这里只改渲染时的文本，不会动原始 Markdown 内容
         mermaidCode = mermaidCode.replace(/S16\[[\s\S]*?\]/, 'S16["Step 16: Update training-dependent registers"]');
 
         // 调试：输出修正后的代码到控制台
@@ -92,19 +94,12 @@
 
   <main class="container">
     <article class="post">
-      <h1 class="post-title">Home</h1>
+      <h1 class="post-title">Mermaid 流程图示例</h1>
 
+            <p class="post-meta">2025-12-19</p>
+      
       <div class="post-body">
-        <ul>
-        <li><a href="./mermaid.html">Mermaid 流程图示例</a> <span
-        class="post-meta">2025-12-19</span> 一个简单的 Mermaid
-        流程图演示</li>
-        <li><a href="./uvm_temp.html">uvm template</a> <span
-        class="post-meta">2022-01-18</span> 一个uvm典型模板</li>
-        <li><a href="./lpddr_software.html">lpddr 软件流程</a> <span
-        class="post-meta">2022-01-18</span> lppdr
-        典型软件流程包含ctrl和phy</li>
-        </ul>
+        <p>```mermaid flowchart TD A[“Step 1”] –&gt; B[“Step 2”]</p>
       </div>
     </article>
   </main>
