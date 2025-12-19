@@ -21,7 +21,10 @@
         const pre = block.parentElement;
         const mermaidDiv = document.createElement('div');
         mermaidDiv.className = 'mermaid';
-        mermaidDiv.textContent = block.textContent;
+        // 解码 HTML 实体（如 &amp; -> & ）
+        const textarea = document.createElement('textarea');
+        textarea.innerHTML = block.innerHTML;
+        mermaidDiv.textContent = textarea.value;
         pre.replaceWith(mermaidDiv);
       });
       

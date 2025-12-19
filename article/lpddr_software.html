@@ -22,7 +22,10 @@
         const pre = block.parentElement;
         const mermaidDiv = document.createElement('div');
         mermaidDiv.className = 'mermaid';
-        mermaidDiv.textContent = block.textContent;
+        // 解码 HTML 实体（如 &amp; -> & ）
+        const textarea = document.createElement('textarea');
+        textarea.innerHTML = block.innerHTML;
+        mermaidDiv.textContent = textarea.value;
         pre.replaceWith(mermaidDiv);
       });
       
@@ -58,6 +61,7 @@
             <p class="post-meta">2022-01-18</p>
       
       <div class="post-body">
+        <h2 id="使用说明">使用说明</h2>
         <ul>
         <li>synopsys lpddr45 controller</li>
         <li>synopsys lpddr45 phy</li>
