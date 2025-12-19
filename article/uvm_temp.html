@@ -29,14 +29,19 @@
       });
       
       // 处理 Mermaid 代码块：将 <pre><code class="language-mermaid"> 转换为 <div class="mermaid">
-      document.querySelectorAll('pre code.language-mermaid').forEach((block) => {
+      document.querySelectorAll('pre code.language-mermaid, pre.mermaid code').forEach((block) => {
         const pre = block.parentElement;
         const mermaidDiv = document.createElement('div');
         mermaidDiv.className = 'mermaid';
-        // 解码 HTML 实体（如 &amp; -> & ）
+        // 解码 HTML 实体（如 &amp; -> &, &lt; -> <, &gt; -> >, &quot; -> " ）
         const textarea = document.createElement('textarea');
         textarea.innerHTML = block.innerHTML;
-        mermaidDiv.textContent = textarea.value;
+        let mermaidCode = textarea.value;
+        
+        // 调试：输出原始代码到控制台
+        console.log('Original Mermaid code:', mermaidCode);
+        
+        mermaidDiv.textContent = mermaidCode;
         pre.replaceWith(mermaidDiv);
       });
       

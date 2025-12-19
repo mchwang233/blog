@@ -30,14 +30,19 @@
       });
       
       // 处理 Mermaid 代码块：将 <pre><code class="language-mermaid"> 转换为 <div class="mermaid">
-      document.querySelectorAll('pre code.language-mermaid').forEach((block) => {
+      document.querySelectorAll('pre code.language-mermaid, pre.mermaid code').forEach((block) => {
         const pre = block.parentElement;
         const mermaidDiv = document.createElement('div');
         mermaidDiv.className = 'mermaid';
-        // 解码 HTML 实体（如 &amp; -> & ）
+        // 解码 HTML 实体（如 &amp; -> &, &lt; -> <, &gt; -> >, &quot; -> " ）
         const textarea = document.createElement('textarea');
         textarea.innerHTML = block.innerHTML;
-        mermaidDiv.textContent = textarea.value;
+        let mermaidCode = textarea.value;
+        
+        // 调试：输出原始代码到控制台
+        console.log('Original Mermaid code:', mermaidCode);
+        
+        mermaidDiv.textContent = mermaidCode;
         pre.replaceWith(mermaidDiv);
       });
       
@@ -240,10 +245,10 @@
 
     S1[&quot;Step 1: Follow PHYs power-up procedure&quot;]
     S2[&quot;Step 2: Program DWC_ddrctl registers&quot;]
-    S3[&quot;Step 3: Disable auto-refresh, self-refresh, powerdown &lt;br&gt;and dfi_dram_clk_disable&quot;]
+    S3[&quot;Step 3: Disable auto-refresh, self-refresh, powerdown and dfi_dram_clk_disable&quot;]
     S4[&quot;Step 4: De-assert core_ddrc_rstn&quot;]
     S5[&quot;Step 5: Set dfi_init_complete_en=0 and dfi_reset_n=1&quot;]
-    S6[&quot;Step 6: Start PHY init &amp; training (access PUB registers)&quot;]
+    S6[&quot;Step 6: Start PHY init and training (access PUB registers)&quot;]
     S7[&quot;Step 7: Poll PUB APBONLY.UctShadowRegs[0] = 0&quot;]
     S8[&quot;Step 8: Read PUB UctWriteOnlyShadow (training status)&quot;]
     S9[&quot;Step 9: Write PUB DctWriteProt = 0&quot;]
@@ -255,13 +260,7 @@
     S14[&quot;Step 14: Poll dfi_init_complete = 1&quot;]
     S15[&quot;Step 15: Set dfi_init_start = 0&quot;]
 
-    S16[&quot;Step 16: Update training-dependent registers:&lt;br&gt;
-           • diff_rank_wr_gap&lt;br&gt;
-           • diff_rank_rd_gap&lt;br&gt;
-           • rd2wr / wr2rd / rd2wr_s / wr2rd_s&lt;br&gt;
-           • dfi_t_ctrl_delay&lt;br&gt;
-           • dfi_t_wrdata_delay&lt;br&gt;
-           • dfi_twck_delay (LPDDR5)&quot;]
+    S16[&quot;Step 16: Update training-dependent registers&quot;]
 
     S17[&quot;Step 17: Set dfi_init_complete_en = 1&quot;]
     S18[&quot;Step 18: Set selfref_sw = 0&quot;]
