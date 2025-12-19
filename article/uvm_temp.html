@@ -10,13 +10,11 @@
   <link rel="stylesheet" href="./assets/style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-  <script type="module">
-    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@latest/dist/mermaid.esm.min.mjs';
-    window.mermaid = mermaid;
-  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // 处理 Mermaid 代码块：将 <pre><code class="language-mermaid"> 转换为 <pre class="mermaid">
+    // 等待所有资源加载完成
+    window.addEventListener('load', function() {
+      // 处理 Mermaid 代码块：将 <pre><code class="language-mermaid"> 转换为 <div class="mermaid">
       document.querySelectorAll('pre code.language-mermaid').forEach((block) => {
         const pre = block.parentElement;
         const mermaidDiv = document.createElement('div');
@@ -30,9 +28,14 @@
       
       // 初始化 Mermaid
       mermaid.initialize({ 
-        startOnLoad: true, 
+        startOnLoad: false,
         theme: 'default',
         securityLevel: 'loose'
+      });
+      
+      // 手动渲染所有 mermaid 元素
+      mermaid.run({
+        querySelector: '.mermaid'
       });
       
       // 对非 mermaid 的代码块使用 highlight.js
