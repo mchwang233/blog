@@ -9,17 +9,23 @@
   
   <link rel="stylesheet" href="./assets/style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" data-manual></script>
+  <script>
+    // 强制禁用 Prism 自动高亮，防止与 Mermaid 冲突
+    window.Prism = window.Prism || {};
+    window.Prism.manual = true;
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
   <script>
-    // 等待所有资源加载完成
-    window.addEventListener('load', function() {
-      // 转换 Pandoc 的类名格式：<pre class="xxx"><code> -> <pre><code class="language-xxx">
+    // 使用 DOMContentLoaded 尽早执行，优于 window.load
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('Initializing blog scripts...');
+
+      // 1. 转换 Pandoc 的类名格式
       document.querySelectorAll('pre[class]').forEach((pre) => {
         const code = pre.querySelector('code');
         if (code && pre.className && !pre.className.includes('mermaid')) {
-          // 将 pre 的 class 移动到 code 并添加 language- 前缀
           const lang = pre.className.trim();
           if (lang !== 'mermaid' && lang !== 'language-mermaid') {
             code.className = 'language-' + lang;
@@ -28,37 +34,46 @@
         }
       });
       
-      // 处理 Mermaid 代码块：将 <pre><code class="language-mermaid"> / <pre class="mermaid"><code> 转换为 <div class="mermaid">
-      document.querySelectorAll('pre code.language-mermaid, pre.mermaid code').forEach((block) => {
+      // 2. 处理 Mermaid 代码块
+      const mermaidBlocks = document.querySelectorAll('pre code.language-mermaid, pre.mermaid code');
+      console.log(`Found  mermaid blocks.`);
+
+      mermaidBlocks.forEach((block, index) => {
         const pre = block.parentElement;
         const mermaidDiv = document.createElement('div');
         mermaidDiv.className = 'mermaid';
-
-        // 使用 DOMParser 解码 HTML 实体（&lt;br&gt;、&amp; 等）
+        
+        // 获取原始 HTML
+        let html = block.innerHTML;
+        
+        // 预处理：将 HTML 换行标签转为文本换行，以便后续处理
+        // 注意：Pandoc 输出的代码块中，真正的换行通常是 \n，而 <br> 可能是用户写的
+        // 我们不应该盲目替换 <br>，除非确定它是格式化产生的垃圾
+        // 这里暂时移除 <br> 替换逻辑，因为用户可能在 label 中使用了 <br>
+        
+        // 解码 HTML 实体
         const parser = new DOMParser();
-        const doc = parser.parseFromString('<!doctype html><body>' + block.innerHTML, 'text/html');
+        const doc = parser.parseFromString('<!doctype html><body>' + html, 'text/html');
         let mermaidCode = doc.body.textContent || '';
 
-        // 第一步：把 "<br>" 后面紧跟的换行折叠掉，避免 label 内被硬拆成多行
-        mermaidCode = mermaidCode.replace(/<br>\s*\n\s*/g, '<br>');
+        // 替换智能引号
+        mermaidCode = mermaidCode.replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"');
 
-        // 移除引号内的换行符，防止 Pandoc 自动换行导致 Mermaid 语法错误
+        // 移除引号内的换行符 (Pandoc wrapping fix)
         mermaidCode = mermaidCode.replace(/"(?:[^"\\]|\\.)*"/g, function(match) {
              return match.replace(/\r?\n/g, ' ');
         });
 
-        // 第二步：针对已知有问题的 S16 长 label 做特例简化，避免复杂换行 / 符号触发解析问题
-        // 注意：这里只改渲染时的文本，不会动原始 Markdown 内容
+        // S16 特例
         mermaidCode = mermaidCode.replace(/S16\[[\s\S]*?\]/, 'S16["Step 16: Update training-dependent registers"]');
 
-        // 调试：输出修正后的代码到控制台
-        console.log('Mermaid code normalized:', mermaidCode);
+        console.log(`Mermaid block  code:`, mermaidCode);
 
         mermaidDiv.textContent = mermaidCode;
         pre.replaceWith(mermaidDiv);
       });
       
-      // 初始化 Mermaid
+      // 3. 初始化 Mermaid
       mermaid.initialize({ 
         startOnLoad: false,
         theme: 'default',
@@ -66,22 +81,23 @@
         logLevel: 'debug'
       });
       
-      // 手动渲染所有 mermaid 元素，添加错误处理
+      // 4. 运行 Mermaid
       mermaid.run({
         querySelector: '.mermaid'
-      }).catch(function(error) {
+      }).then(() => {
+        console.log('Mermaid rendering finished.');
+      }).catch(error => {
         console.error('Mermaid rendering error:', error);
-        // 将错误信息显示在页面上
-        document.querySelectorAll('.mermaid').forEach(function(el) {
-          if (!el.querySelector('svg')) {
-            el.style.color = 'red';
-            el.style.whiteSpace = 'pre-wrap';
-            el.textContent = 'Mermaid Error: ' + error.message + '\n\n' + el.textContent;
-          }
+        document.querySelectorAll('.mermaid').forEach(el => {
+           if (!el.querySelector('svg')) {
+             el.style.color = 'red';
+             el.textContent = 'Mermaid Error: ' + error.message;
+           }
         });
       });
       
-      // 对非 mermaid 的代码块使用 Prism.js
+      // 5. 最后手动运行 Prism 高亮非 Mermaid 代码
+      console.log('Running Prism highlight...');
       Prism.highlightAll();
     });
   </script>
