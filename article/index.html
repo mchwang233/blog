@@ -9,7 +9,10 @@
   <link rel="stylesheet" href="./assets/style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@latest/dist/mermaid.esm.min.mjs';
+    window.mermaid = mermaid;
+  </script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       // 处理 Mermaid 代码块：将 <pre><code class="language-mermaid"> 转换为 <pre class="mermaid">
@@ -55,7 +58,8 @@
         <li><a href="./uvm_temp.html">uvm template</a> <span
         class="post-meta">2022-01-18</span> 一个uvm典型模板</li>
         <li><a href="./lpddr_software.html">lpddr 软件流程</a> <span
-        class="post-meta">2022-01-18</span> 一个uvm典型模板</li>
+        class="post-meta">2022-01-18</span> lppdr
+        典型软件流程包含ctrl和phy</li>
         </ul>
       </div>
     </article>

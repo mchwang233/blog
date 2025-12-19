@@ -5,12 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>lpddr 软件流程</title>
 
-    <meta name="description" content="一个uvm典型模板" />
+    <meta name="description" content="lppdr
+典型软件流程包含ctrl和phy" />
   
   <link rel="stylesheet" href="./assets/style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@latest/dist/mermaid.esm.min.mjs';
+    window.mermaid = mermaid;
+  </script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       // 处理 Mermaid 代码块：将 <pre><code class="language-mermaid"> 转换为 <pre class="mermaid">
