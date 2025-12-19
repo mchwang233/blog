@@ -27,20 +27,23 @@
         }
       });
       
-      // 处理 Mermaid 代码块：将 <pre><code class="language-mermaid"> 转换为 <div class="mermaid">
+      // 处理 Mermaid 代码块：将 <pre><code class="language-mermaid"> / <pre class="mermaid"><code> 转换为 <div class="mermaid">
       document.querySelectorAll('pre code.language-mermaid, pre.mermaid code').forEach((block) => {
         const pre = block.parentElement;
         const mermaidDiv = document.createElement('div');
         mermaidDiv.className = 'mermaid';
-        
-        // 使用 DOMParser 解码 HTML 实体
+
+        // 使用 DOMParser 解码 HTML 实体（&lt;br&gt;、&amp; 等）
         const parser = new DOMParser();
         const doc = parser.parseFromString('<!doctype html><body>' + block.innerHTML, 'text/html');
         let mermaidCode = doc.body.textContent || '';
-        
-        // 调试：输出原始代码到控制台
-        console.log('Mermaid code after decoding:', mermaidCode);
-        
+
+        // 关键修正：把标签内部形如 "<br>\n   ..." 的换行折叠掉，避免多行 label 造成语法错误
+        mermaidCode = mermaidCode.replace(/<br>\s*\n\s*/g, '<br>');
+
+        // 调试：输出修正后的代码到控制台
+        console.log('Mermaid code normalized:', mermaidCode);
+
         mermaidDiv.textContent = mermaidCode;
         pre.replaceWith(mermaidDiv);
       });
