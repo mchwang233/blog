@@ -9,8 +9,13 @@
 典型软件流程包含ctrl和phy" />
   
   <link rel="stylesheet" href="./assets/style.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-verilog.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
   <script>
     // 等待所有资源加载完成
@@ -39,10 +44,8 @@
         querySelector: '.mermaid'
       });
       
-      // 对非 mermaid 的代码块使用 highlight.js
-      document.querySelectorAll('pre code:not(.language-mermaid)').forEach((block) => {
-        hljs.highlightElement(block);
-      });
+      // 对非 mermaid 的代码块使用 Prism.js
+      Prism.highlightAll();
     });
   </script>
 </head>
@@ -64,7 +67,7 @@
             <p class="post-meta">2022-01-18</p>
       
       <div class="post-body">
-        <h2 id="使用说明采用">使用说明(采用)</h2>
+        <h2 id="使用说明采用123">使用说明(采用123)</h2>
         <ul>
         <li>synopsys lpddr45 controller</li>
         <li>synopsys lpddr45 phy</li>
