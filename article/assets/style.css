@@ -16,4 +16,44 @@ a { color: inherit; }
 .post-body code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
 .post-body blockquote { margin: 0; padding: 0 0 0 14px; border-left: 4px solid #eee; opacity: .9; }
 
+/* Table Styles */
+.post-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 0.95em;
+  overflow-x: auto;
+  display: block; /* Allows horizontal scroll on small screens if needed, though might affect width:100% behavior on large screens. Better to wrap in a div, but for simple markdown output this is a common hack or just use width:100% */
+}
+/* Reset display for larger screens if needed, but let's stick to standard table styling first */
+.post-body table {
+  display: table;
+  width: 100%;
+  border-spacing: 0;
+  border: 1px solid #e0e0e0;
+}
+
+.post-body th,
+.post-body td {
+  padding: 10px 14px;
+  border: 1px solid #e0e0e0;
+  text-align: left;
+  vertical-align: top;
+}
+
+.post-body th {
+  background-color: #f5f7f9;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2px solid #d0d0d0;
+}
+
+.post-body tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+.post-body tr:hover {
+  background-color: #f0f4f8;
+}
+
 .site-footer { border-top: 1px solid #eee; margin-top: 40px; padding: 20px 0; opacity: .8; }
