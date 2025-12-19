@@ -42,12 +42,9 @@
         // 第一步：把 "<br>" 后面紧跟的换行折叠掉，避免 label 内被硬拆成多行
         mermaidCode = mermaidCode.replace(/<br>\s*\n\s*/g, '<br>');
 
-        // 第二步：去掉 label 中残余的换行（[ ... ] 里的 "\n+缩进" 全部变空格）
-        // 这样可以保证所有节点标签在 Mermaid 看来都是单行，不会因为换行触发 Syntax error in text
-        mermaidCode = mermaidCode.replace(/\[([\s\S]*?)\]/g, (m, inner) => {
-          const normalized = inner.replace(/\n\s+/g, ' ');
-          return '[' + normalized + ']';
-        });
+        // 第二步：针对已知有问题的 S16 长 label 做特例简化，避免复杂换行 / 符号触发解析问题
+        // 注意：这里只改渲染时的文本，不会动原始 Markdown 内容
+        mermaidCode = mermaidCode.replace(/S16\[[\s\S]*?\]/, 'S16["Step 16: Update training-dependent registers"]');
 
         // 调试：输出修正后的代码到控制台
         console.log('Mermaid code normalized:', mermaidCode);

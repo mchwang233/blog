@@ -41,11 +41,8 @@
         // 第一步：把 "<br>" 后面紧跟的换行折叠掉
         mermaidCode = mermaidCode.replace(/<br>\s*\n\s*/g, '<br>');
 
-        // 第二步：把每个 [...] 里的 "\n+缩进" 全部替换成空格，避免多行 label
-        mermaidCode = mermaidCode.replace(/\[([\s\S]*?)\]/g, (m, inner) => {
-          const normalized = inner.replace(/\n\s+/g, ' ');
-          return '[' + normalized + ']';
-        });
+        // 第二步：针对 S16 的长 label 做特例简化，避免复杂多行文本导致解析失败
+        mermaidCode = mermaidCode.replace(/S16\[[\s\S]*?\]/, 'S16["Step 16: Update training-dependent registers"]');
 
         // 调试：输出修正后的代码到控制台
         console.log('Mermaid code normalized:', mermaidCode);
