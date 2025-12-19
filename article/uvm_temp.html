@@ -15,6 +15,19 @@
   <script>
     // 等待所有资源加载完成
     window.addEventListener('load', function() {
+      // 转换 Pandoc 的类名格式：<pre class="xxx"><code> -> <pre><code class="language-xxx">
+      document.querySelectorAll('pre[class]').forEach((pre) => {
+        const code = pre.querySelector('code');
+        if (code && pre.className && !pre.className.includes('mermaid')) {
+          // 将 pre 的 class 移动到 code 并添加 language- 前缀
+          const lang = pre.className.trim();
+          if (lang !== 'mermaid' && lang !== 'language-mermaid') {
+            code.className = 'language-' + lang;
+            pre.removeAttribute('class');
+          }
+        }
+      });
+      
       // 处理 Mermaid 代码块：将 <pre><code class="language-mermaid"> 转换为 <div class="mermaid">
       document.querySelectorAll('pre code.language-mermaid').forEach((block) => {
         const pre = block.parentElement;

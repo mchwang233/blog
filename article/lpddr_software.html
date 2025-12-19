@@ -16,6 +16,19 @@
   <script>
     // 等待所有资源加载完成
     window.addEventListener('load', function() {
+      // 转换 Pandoc 的类名格式：<pre class="xxx"><code> -> <pre><code class="language-xxx">
+      document.querySelectorAll('pre[class]').forEach((pre) => {
+        const code = pre.querySelector('code');
+        if (code && pre.className && !pre.className.includes('mermaid')) {
+          // 将 pre 的 class 移动到 code 并添加 language- 前缀
+          const lang = pre.className.trim();
+          if (lang !== 'mermaid' && lang !== 'language-mermaid') {
+            code.className = 'language-' + lang;
+            pre.removeAttribute('class');
+          }
+        }
+      });
+      
       // 处理 Mermaid 代码块：将 <pre><code class="language-mermaid"> 转换为 <div class="mermaid">
       document.querySelectorAll('pre code.language-mermaid').forEach((block) => {
         const pre = block.parentElement;
@@ -63,7 +76,7 @@
             <p class="post-meta">2022-01-18</p>
       
       <div class="post-body">
-        <h2 id="使用说明采用2">使用说明(采用2)</h2>
+        <h2 id="使用说明采用3">使用说明(采用3)</h2>
         <ul>
         <li>synopsys lpddr45 controller</li>
         <li>synopsys lpddr45 phy</li>
