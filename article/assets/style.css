@@ -12,7 +12,7 @@ a { color: inherit; }
 .post-title { margin: 18px 0 8px; font-size: 32px; line-height: 1.2; }
 .post-meta { margin: 0 0 18px; opacity: .7; }
 .post-body img { max-width: 100%; height: auto; }
-.post-body pre { overflow: auto; padding: 12px; background: # prove8f8; border: 1px solid #eee; border-radius: 10px; }
+.post-body pre { overflow: auto; padding: 12px; background: #f8f8f8; border: 1px solid #eee; border-radius: 10px; }
 .post-body code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
 .post-body blockquote { margin: 0; padding: 0 0 0 14px; border-left: 4px solid #eee; opacity: .9; }
 
