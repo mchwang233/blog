@@ -38,8 +38,14 @@
         const doc = parser.parseFromString('<!doctype html><body>' + block.innerHTML, 'text/html');
         let mermaidCode = doc.body.textContent || '';
 
-        // 关键修正：把标签内部形如 "<br>\n   ..." 的换行折叠掉，避免多行 label 造成语法错误
+        // 第一步：把 "<br>" 后面紧跟的换行折叠掉
         mermaidCode = mermaidCode.replace(/<br>\s*\n\s*/g, '<br>');
+
+        // 第二步：把每个 [...] 里的 "\n+缩进" 全部替换成空格，避免多行 label
+        mermaidCode = mermaidCode.replace(/\[([\s\S]*?)\]/g, (m, inner) => {
+          const normalized = inner.replace(/\n\s+/g, ' ');
+          return '[' + normalized + ']';
+        });
 
         // 调试：输出修正后的代码到控制台
         console.log('Mermaid code normalized:', mermaidCode);

@@ -39,12 +39,15 @@
         const doc = parser.parseFromString('<!doctype html><body>' + block.innerHTML, 'text/html');
         let mermaidCode = doc.body.textContent || '';
 
-        // 关键修正：把标签内部形如 "<br>\n   ..." 的换行折叠掉，避免多行 label 造成语法错误
-        // 例如：
-        //   S16["...:<br>\n   • diff_rank_wr_gap<br>\n   • diff_rank_rd_gap..."]
-        // 变成：
-        //   S16["...:<br>• diff_rank_wr_gap<br>• diff_rank_rd_gap..."]
+        // 第一步：把 "<br>" 后面紧跟的换行折叠掉，避免 label 内被硬拆成多行
         mermaidCode = mermaidCode.replace(/<br>\s*\n\s*/g, '<br>');
+
+        // 第二步：去掉 label 中残余的换行（[ ... ] 里的 "\n+缩进" 全部变空格）
+        // 这样可以保证所有节点标签在 Mermaid 看来都是单行，不会因为换行触发 Syntax error in text
+        mermaidCode = mermaidCode.replace(/\[([\s\S]*?)\]/g, (m, inner) => {
+          const normalized = inner.replace(/\n\s+/g, ' ');
+          return '[' + normalized + ']';
+        });
 
         // 调试：输出修正后的代码到控制台
         console.log('Mermaid code normalized:', mermaidCode);
