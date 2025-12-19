@@ -34,13 +34,14 @@
         const pre = block.parentElement;
         const mermaidDiv = document.createElement('div');
         mermaidDiv.className = 'mermaid';
-        // 解码 HTML 实体（如 &amp; -> &, &lt; -> <, &gt; -> >, &quot; -> " ）
-        const textarea = document.createElement('textarea');
-        textarea.innerHTML = block.innerHTML;
-        let mermaidCode = textarea.value;
+        
+        // 使用 DOMParser 解码 HTML 实体
+        const parser = new DOMParser();
+        const doc = parser.parseFromString('<!doctype html><body>' + block.innerHTML, 'text/html');
+        let mermaidCode = doc.body.textContent || '';
         
         // 调试：输出原始代码到控制台
-        console.log('Original Mermaid code:', mermaidCode);
+        console.log('Mermaid code after decoding:', mermaidCode);
         
         mermaidDiv.textContent = mermaidCode;
         pre.replaceWith(mermaidDiv);
@@ -50,12 +51,23 @@
       mermaid.initialize({ 
         startOnLoad: false,
         theme: 'default',
-        securityLevel: 'loose'
+        securityLevel: 'loose',
+        logLevel: 'debug'
       });
       
-      // 手动渲染所有 mermaid 元素
+      // 手动渲染所有 mermaid 元素，添加错误处理
       mermaid.run({
         querySelector: '.mermaid'
+      }).catch(function(error) {
+        console.error('Mermaid rendering error:', error);
+        // 将错误信息显示在页面上
+        document.querySelectorAll('.mermaid').forEach(function(el) {
+          if (!el.querySelector('svg')) {
+            el.style.color = 'red';
+            el.style.whiteSpace = 'pre-wrap';
+            el.textContent = 'Mermaid Error: ' + error.message + '\n\n' + el.textContent;
+          }
+        });
       });
       
       // 对非 mermaid 的代码块使用 Prism.js
@@ -81,7 +93,7 @@
             <p class="post-meta">2022-01-18</p>
       
       <div class="post-body">
-        <h2 id="使用说明采用3">使用说明(采用3)</h2>
+        <h2 id="使用说明采用4">使用说明(采用4)</h2>
         <ul>
         <li>synopsys lpddr45 controller</li>
         <li>synopsys lpddr45 phy</li>
