@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Mermaid 流程图示例</title>
 
-    <meta name="description" content="一个简单的 Mermaid 流程图演示" />
+    <meta name="description" content="一个简单的 Mermaid 流程图演示
+0" />
   
   <link rel="stylesheet" href="./assets/style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" />
@@ -41,6 +42,11 @@
 
         // 第一步：把 "<br>" 后面紧跟的换行折叠掉，避免 label 内被硬拆成多行
         mermaidCode = mermaidCode.replace(/<br>\s*\n\s*/g, '<br>');
+
+        // 移除引号内的换行符，防止 Pandoc 自动换行导致 Mermaid 语法错误
+        mermaidCode = mermaidCode.replace(/"(?:[^"\\]|\\.)*"/g, function(match) {
+             return match.replace(/\r?\n/g, ' ');
+        });
 
         // 第二步：针对已知有问题的 S16 长 label 做特例简化，避免复杂换行 / 符号触发解析问题
         // 注意：这里只改渲染时的文本，不会动原始 Markdown 内容
