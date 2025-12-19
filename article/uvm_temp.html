@@ -9,6 +9,7 @@
   
   <link rel="stylesheet" href="./assets/style.css?v=2" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
   <script>
     // 强制禁用 Prism 自动高亮，防止与 Mermaid 冲突
     window.Prism = window.Prism || {};
@@ -615,6 +616,8 @@ task scoreboard::main_phase(uvm_phase phase);
 endtask</code></pre>
       </div>
     </article>
+
+    <div id="gitalk-container"></div>
   </main>
 
   <footer class="site-footer">
@@ -622,5 +625,19 @@ endtask</code></pre>
       <span>© 2025 My Blog</span>
     </div>
   </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+  <script>
+    const gitalk = new Gitalk({
+      clientID: 'Ov23liyDwhGOW78ZXqnU',
+      clientSecret: '98b2663bf7cdf042505b5f2c24f731ddc86a1e82',
+      repo: 'blog_backend',
+      owner: 'mchwang233',
+      admin: ['mchwang233'],
+      id: location.pathname, 
+      distractionFreeMode: false
+    });
+    gitalk.render('gitalk-container');
+  </script>
 </body>
 </html>
