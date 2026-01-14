@@ -3,17 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>mch的blog</title>
+  <title>有趣</title>
   <style>
     :root {
-      color-scheme: light dark;
-      --bg: #f8fafc;
-      --panel: #ffffff;
-      --text: #0f172a;
-      --muted: #475569;
-      --accent: #2563eb;
-      --border: #e2e8f0;
-      --shadow: 0 14px 36px rgba(0, 0, 0, 0.08);
+      color-scheme: dark;
+      --bg: #0b0f14;
+      --panel: #111827;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #22c55e;
+      --border: #1f2937;
+      --shadow: 0 18px 40px rgba(15, 23, 42, 0.6);
+      --grid: rgba(148, 163, 184, 0.08);
     }
 
     * {
@@ -22,11 +23,22 @@
 
     body {
       margin: 0;
-      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: "JetBrains Mono", "Fira Code", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
       background: var(--bg);
       color: var(--text);
       line-height: 1.6;
       padding: 0 1rem 3rem;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: linear-gradient(var(--grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+      background-size: 32px 32px;
+      pointer-events: none;
+      opacity: 0.6;
     }
 
     header {
@@ -44,6 +56,7 @@
       font-weight: 800;
       letter-spacing: -0.5px;
       font-size: 1.25rem;
+      text-transform: uppercase;
     }
 
     nav a {
@@ -71,7 +84,7 @@
       display: inline-flex;
       align-items: center;
       padding: 0.35rem 0.75rem;
-      background: rgba(37, 99, 235, 0.12);
+      background: rgba(34, 197, 94, 0.16);
       color: var(--accent);
       border-radius: 999px;
       font-weight: 700;
@@ -103,7 +116,7 @@
       gap: 0.5rem;
       padding: 0.85rem 1.25rem;
       background: var(--accent);
-      color: #fff;
+      color: #0b0f14;
       border-radius: 12px;
       text-decoration: none;
       font-weight: 700;
@@ -155,7 +168,7 @@
 </head>
 <body>
   <header>
-    <div class="logo">mch的blog</div>
+    <div class="logo">有趣</div>
     <nav>
       <a href="/">Home</a>
       <a href="article/">Articles</a>
@@ -165,37 +178,37 @@
 
   <section class="hero">
     <div>
-      <div class="badge">New content, shipped regularly</div>
-      <h1>Stories, insights, and tutorials crafted for curious builders.</h1>
-      <p class="lead">Explore practical guides, product updates, and behind-the-scenes notes designed to help you launch, grow, and iterate.</p>
+      <div class="badge">每日提交 / Daily commits</div>
+      <h1>为程序员而写的灵感、复盘与代码片段。</h1>
+      <p class="lead">记录调试日志、架构笔记与工具箱清单，让每一次迭代都更有趣、更高效。</p>
       <div class="actions">
-        <a class="button" href="article/">Browse articles</a>
-        <a class="button secondary" href="#newsletter">Join the newsletter</a>
+        <a class="button" href="article/">查看文章</a>
+        <a class="button secondary" href="#newsletter">订阅更新</a>
       </div>
     </div>
     <div class="panel">
-      <h3>Latest spotlight</h3>
-      <p>Designing a clean landing experience with just HTML and CSS—no frameworks required.</p>
+      <h3>今日高亮</h3>
+      <p>用纯 HTML &amp; CSS 搭建极简终端风首页，练习快速迭代与重构。</p>
     </div>
   </section>
 
   <section class="features">
     <article class="panel">
-      <h3>Guides & Tutorials</h3>
-      <p>Step-by-step walkthroughs that keep things clear, actionable, and beginner-friendly.</p>
+      <h3>调试手册</h3>
+      <p>从报错到修复的路线图，搭配命令行速查和最佳实践。</p>
     </article>
     <article class="panel">
-      <h3>Product Updates</h3>
-      <p>Stay in the loop with the latest releases, improvements, and roadmap highlights.</p>
+      <h3>版本更新</h3>
+      <p>发布日志、性能对比与踩坑总结，保持项目稳定前进。</p>
     </article>
     <article class="panel">
-      <h3>Community Highlights</h3>
-      <p>Spotlighting reader projects, collaborations, and the people who make this blog possible.</p>
+      <h3>开源灵感</h3>
+      <p>精选优秀项目与协作故事，发现值得 fork 的点子。</p>
     </article>
   </section>
 
   <section id="about" class="footnote">
-    Crafted with care. Follow along for more updates and behind-the-scenes notes.
+    Crafted with care. 一起记录开发中的灵光一现与代码日常。
   </section>
 </body>
 </html>
