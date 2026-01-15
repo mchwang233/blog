@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>test</title>
+
+  
+  <link rel="stylesheet" href="./assets/style.css?v=2" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+  <script>
+    // 强制禁用 Prism 自动高亮，防止与 Mermaid 冲突
+    window.Prism = window.Prism || {};
+    window.Prism.manual = true;
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+  <script>
+    // 使用 DOMContentLoaded 尽早执行，优于 window.load
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('Initializing blog scripts...');
+
+      // 1. 转换 Pandoc 的类名格式
+      document.querySelectorAll('pre[class]').forEach((pre) => {
+        const code = pre.querySelector('code');
+        if (code && pre.className && !pre.className.includes('mermaid')) {
+          const lang = pre.className.trim();
+          if (lang !== 'mermaid' && lang !== 'language-mermaid') {
+            code.className = 'language-' + lang;
+            pre.removeAttribute('class');
+          }
+        }
+      });
+      
+      // 2. 处理 Mermaid 代码块
+      const mermaidBlocks = document.querySelectorAll('pre code.language-mermaid, pre.mermaid code');
+      console.log(`Found  mermaid blocks.`);
+
+      mermaidBlocks.forEach((block, index) => {
+        const pre = block.parentElement;
+        const mermaidDiv = document.createElement('div');
+        mermaidDiv.className = 'mermaid';
+        
+        // 获取原始 HTML
+        let html = block.innerHTML;
+        
+        // 预处理：将 HTML 换行标签转为文本换行，以便后续处理
+        // 注意：Pandoc 输出的代码块中，真正的换行通常是 \n，而 <br> 可能是用户写的
+        // 我们不应该盲目替换 <br>，除非确定它是格式化产生的垃圾
+        // 这里暂时移除 <br> 替换逻辑，因为用户可能在 label 中使用了 <br>
+        
+        // 解码 HTML 实体
+        const parser = new DOMParser();
+        const doc = parser.parseFromString('<!doctype html><body>' + html, 'text/html');
+        let mermaidCode = doc.body.textContent || '';
+
+        // 替换智能引号
+        mermaidCode = mermaidCode.replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"');
+
+        // 移除引号内的换行符 (Pandoc wrapping fix)
+        mermaidCode = mermaidCode.replace(/"(?:[^"\\]|\\.)*"/g, function(match) {
+             return match.replace(/\r?\n/g, ' ');
+        });
+
+        // S16 特例
+        mermaidCode = mermaidCode.replace(/S16\[[\s\S]*?\]/, 'S16["Step 16: Update training-dependent registers"]');
+
+        console.log(`Mermaid block  code:`, mermaidCode);
+
+        mermaidDiv.textContent = mermaidCode;
+        pre.replaceWith(mermaidDiv);
+      });
+      
+      // 3. 初始化 Mermaid
+      mermaid.initialize({ 
+        startOnLoad: false,
+        theme: 'default',
+        securityLevel: 'loose',
+        logLevel: 'debug'
+      });
+      
+      // 4. 运行 Mermaid
+      mermaid.run({
+        querySelector: '.mermaid'
+      }).then(() => {
+        console.log('Mermaid rendering finished.');
+      }).catch(error => {
+        console.error('Mermaid rendering error:', error);
+        document.querySelectorAll('.mermaid').forEach(el => {
+           if (!el.querySelector('svg')) {
+             el.style.color = 'red';
+             el.textContent = 'Mermaid Error: ' + error.message;
+           }
+        });
+      });
+      
+      // 5. 最后手动运行 Prism 高亮非 Mermaid 代码
+      console.log('Running Prism highlight...');
+      Prism.highlightAll();
+    });
+  </script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="./index.html">My Blog</a>
+      <nav class="nav">
+        <a href="./index.html">Home</a>
+        <a href="./about.html">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <article class="post">
+      <h1 class="post-title">test</h1>
+
+      
+      <div class="post-body">
+        <h2 id="aaaa">aaaa</h2>
+      </div>
+    </article>
+
+    <div id="gitalk-container"></div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <span>© 2026 My Blog</span>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+  <script>
+    const gitalk = new Gitalk({
+      clientID: 'Ov23lig7OZ6L8ual62n1',
+      clientSecret: 'ea3366714a0eb02aa2b00f051a159eeb7228024d',
+      repo: 'blog',
+      owner: 'mchwang233',
+      admin: ['mchwang233'],
+      id: location.pathname, 
+      distractionFreeMode: false
+    });
+    gitalk.render('gitalk-container');
+  </script>
+</body>
+</html>
