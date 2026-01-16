@@ -10,12 +10,13 @@
   --grid: rgba(148, 163, 184, 0.08);
   
    /* Colorful Train Palette */
-   --t-red: #ef4444;       /* Boiler */
-   --t-blue: #3b82f6;      /* Cabin */
-   --t-green: #10b981;     /* Carriage */
-   --t-yellow: #f59e0b;    /* Details/Wheels */
-   --t-dark: #334155;      /* Chassis/Dark parts */
-   --t-light: #f1f5f9;     /* Windows/Contrast */
+   /* Converted to Monochrome/Greyscale */
+   --t-red: #475569;       /* Boiler (Dark Grey) */
+   --t-blue: #334155;      /* Cabin (Slate Grey) */
+   --t-green: #64748b;     /* Carriage (Medium Grey) */
+   --t-yellow: #cbd5e1;    /* Details/Wheels (Light Grey) */
+   --t-dark: #1e293b;      /* Chassis/Dark parts (Very Dark Grey) */
+   --t-light: #f8fafc;     /* Windows/Contrast (Near White) */
    
    --pixel-black: var(--text);
    --pixel-white: var(--bg);
