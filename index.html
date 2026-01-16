@@ -15,6 +15,14 @@
       --border: #1f2937;
       --shadow: 0 18px 40px rgba(15, 23, 42, 0.6);
       --grid: rgba(148, 163, 184, 0.08);
+      
+       /* Colorful Train Palette */
+       --t-red: #ef4444;       /* Boiler */
+       --t-blue: #3b82f6;      /* Cabin */
+       --t-green: #10b981;     /* Carriage */
+       --t-yellow: #f59e0b;    /* Details/Wheels */
+       --t-dark: #334155;      /* Chassis/Dark parts */
+       --t-light: #f1f5f9;     /* Windows/Contrast */
     }
 
     * {
@@ -227,7 +235,7 @@
         display: flex;
         flex-direction: column;
         
-        /* Scale up by 1.5 (150% size) */
+        /* Scale up to 1.5 (150% size) */
         transform: scale(1.5);
         transform-origin: center center;
     }
@@ -316,8 +324,8 @@
     .train-link {
         position: absolute;
         bottom: 45px;
-        left: 280px;
-        width: 30px; 
+        left: 270px;
+        width: 45px; /* Widened for larger gap (30 -> 45) */
         height: 8px;
         background: var(--pixel-black);
         z-index: 3;
@@ -327,7 +335,7 @@
     .train-carriage {
         position: absolute;
         bottom: 0px;
-        left: 300px; /* Behind the locomotive */
+        left: 305px; /* Shifted right to increase gap (290 -> 305) */
         width: 250px;
         height: 160px;
         animation: shake 0.6s ease-in-out infinite alternate-reverse;
@@ -340,7 +348,7 @@
         left: 0;
         width: 220px;
         height: 90px;
-        background: var(--pixel-white);
+        background: var(--t-green); /* Colorful */
         border: 5px solid var(--pixel-black);
         z-index: 5;
     }
@@ -360,7 +368,7 @@
         bottom: 65px; /* inside the body */
         width: 45px;
         height: 40px;
-        background: var(--pixel-white);
+        background: var(--t-light); /* Light windows */
         border: 4px solid var(--pixel-black);
         z-index: 6;
     }
@@ -374,18 +382,19 @@
         bottom: 0px;
         width: 45px;
         height: 45px;
-        background: var(--pixel-black);
+        background: var(--t-yellow); /* Yellow wheels */
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         animation: spin 0.8s linear infinite;
         z-index: 10;
+        border: 2px solid var(--pixel-black); /* Added border definition for clarity */
     }
     .carriage-wheel::after {
         content: "";
         width: 16px; height: 16px;
-        background: var(--pixel-white);
+        background: var(--pixel-black); /* Dark center */
         border-radius: 50%;
     }
     .carriage-wheel.w1 { left: 30px; }
@@ -398,7 +407,7 @@
       left: 175px; /* Shifted right */
       width: 100px;
       height: 110px;
-      background: var(--pixel-white);
+      background: var(--t-blue); /* Colorful */
       border: 5px solid var(--pixel-black);
       z-index: 5;
     }
@@ -414,34 +423,22 @@
       background: var(--pixel-black);
     }
 
-    /* Cabin Window (Large Square with "Reflection") */
+    /* Cabin Window (Large Square) */
     .train-window {
       position: absolute;
       top: 15px;
       left: 15px;
       width: 60px;
       height: 55px;
-      background: var(--pixel-white);
+      background: var(--t-light); /* Light window */
       border: 4px solid var(--pixel-black);
     }
-    /* Diagonal line in window */
-    .train-window::after {
-        content: "";
-        position: absolute;
-        bottom: 10px; left: -2px;
-        width: 40px; height: 4px;
-        background: var(--pixel-black);
-        transform: rotate(-45deg);
-        transform-origin: left bottom;
-    }
-    .train-window::before {
-        content: "";
-        position: absolute;
-        bottom: -2px; left: -2px;
-        width: 4px; height: 35px;
-        background: var(--pixel-black);
-        transform: rotate(-45deg);
-        transform-origin: left bottom;
+    /* Diagonal lines removed
+    .train-window::after { ... }
+    .train-window::before { ... }
+    */
+    .train-window::after, .train-window::before {
+        display: none;
     }
 
     /* Boiler / Water Tank (Elongated) */
@@ -451,8 +448,10 @@
       left: 40px;
       width: 140px; /* Elongated */
       height: 75px;
-      background: var(--pixel-black);
+      background: var(--t-red); /* Colorful */
       z-index: 6;
+      border: 4px solid var(--pixel-black); /* Added border to match style */
+      border-right: none;
     }
 
     /* Tank Detail - Top Handrail/Line */
@@ -462,7 +461,7 @@
         top: 10px; left: 0;
         width: 100%;
         height: 4px;
-        background: var(--pixel-white);
+        background: var(--t-yellow); /* Accent line */
     }
 
     /* Boiler Front Plate */
@@ -472,7 +471,7 @@
        left: 30px; 
        width: 15px;
        height: 75px;
-       background: var(--pixel-white);
+       background: var(--t-yellow); /* Accent */
        border: 5px solid var(--pixel-black);
        border-right: none;
        z-index: 7;
@@ -493,8 +492,9 @@
       left: 60px;
       width: 32px;
       height: 55px; /* Taller */
-      background: var(--pixel-black);
+      background: var(--t-dark); /* Dark Chimney */
       z-index: 8;
+      border: 3px solid var(--pixel-black); /* Added border */
     }
     .train-chimney::before { /* Rim Cap */
         content: "";
@@ -520,7 +520,7 @@
         left: 0;
         width: 40px;
         height: 40px;
-        background: var(--pixel-white);
+        background: var(--t-dark); /* Dark cowcatcher */
         border: 4px solid var(--pixel-black);
         clip-path: polygon(0 100%, 100% 0, 100% 100%);
         z-index: 9;
@@ -533,7 +533,7 @@
       left: 30px;
       width: 250px; /* Elongated */
       height: 15px;
-      background: var(--pixel-white);
+      background: var(--t-dark); /* Dark Chassis */
       border: 4px solid var(--pixel-black);
       z-index: 4;
     }
@@ -544,19 +544,20 @@
       bottom: 0px;
       width: 55px;
       height: 55px;
-      background: var(--pixel-black);
+      background: var(--t-yellow); /* Yellow Wheels */
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       animation: spin 0.8s linear infinite;
       z-index: 10;
+      border: 3px solid var(--pixel-black); /* Added border */
     }
     /* Inner white rim for contrast */
     .train-wheel::after {
         content: "";
         width: 20px; height: 20px;
-        background: var(--pixel-white);
+        background: var(--pixel-black);
         border-radius: 50%;
     }
     
@@ -573,59 +574,34 @@
     /* Smoke */
     .smoke {
       position: absolute;
-      width: 30px;
-      height: 30px;
-      background: var(--pixel-white);
-      border: 3px solid var(--pixel-black); /* Outline smoke */
+      width: 20px; /* Reduced specific size in previous edit, let's keep consistency or just target anim */
+      height: 20px;
+      /* previously set to black in train-style, but let's check current state */
+      /* It was var(--pixel-white) originally then var(--pixel-black) then removed specifity relative to style */
+      /* Let's just fix the animation */
+      background: var(--pixel-white); /* White smoke looks better usually */
+      border: 3px solid var(--pixel-black); 
       border-radius: 50%;
       opacity: 0;
       z-index: 20;
     }
-    .smoke.s1 { left: 60px; bottom: 180px; animation: puff 2s ease-out infinite; }
-    .smoke.s2 { left: 80px; bottom: 190px; animation: puff 2s ease-out infinite 0.8s; }
-  
-
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(-360deg); }
-    }
-
-    /* Connecting Rod */
-    .train-rod {
-      position: absolute;
-      bottom: 25px; /* Axis center */
-      left: 40px;
-      width: 150px; /* From w1 center to w3 center */
-      height: 8px;
-      background: var(--pixel-white);
-      border: 4px solid var(--pixel-black);
-      z-index: 15;
-      transform-origin: 0 0; /* Not needed for translate anim */
-      animation: rod-move 1s linear infinite;
-    }
-    
-    @keyframes rod-move {
-      0%   { transform: translate(0, -9px); }
-      25%  { transform: translate(-9px, 0); }
-      50%  { transform: translate(0, 9px); }
-      75%  { transform: translate(9px, 0); }
-      100% { transform: translate(0, -9px); }
-    }
-
-    /* Smoke */
-    .smoke {
-      position: absolute;
-      width: 20px;
-      height: 20px;
-      background: var(--pixel-black);
-      z-index: 20;
-    }
-    .smoke.s1 { right: 62px; bottom: 180px; animation: puff 1.4s ease-out infinite; }
-    .smoke.s2 { right: 62px; bottom: 180px; animation: puff 1.4s ease-out infinite 0.5s; }
+    .smoke.s1 { left: 60px; bottom: 180px; animation: puff 1.4s ease-out infinite; }
+    .smoke.s2 { left: 80px; bottom: 190px; animation: puff 1.4s ease-out infinite 0.5s; }
     
     @keyframes puff {
-      0% { transform: translateY(0) scale(0.5); opacity: 0.8; }
-      100% { transform: translateY(-60px) scale(2); opacity: 0; }
+      0% { 
+          transform: translate(0, 0) scale(0.5); 
+          opacity: 0.8; 
+      }
+      100% { 
+          /* 
+             Inside scaleX(-1) wrapper:
+             translateY(-80px) -> Up (unchanged)
+             translateX(100px) -> visually moves Left (Behind the right-facing train)
+          */
+          transform: translate(100px, -80px) scale(2.5); 
+          opacity: 0; 
+      }
     }
 
     /* Track / Rails */
@@ -748,15 +724,20 @@
       const wrapper = document.querySelector('.train-wrapper');
       
       // Initial offset for the first added carriage
-      // Loco ~0-280px
-      // Carriage 1: left 300px -> ends at 550px.
+      // Static Car 1 starts at 305px.
+      // Gap logic (25px gap): 
+      // Step = Body(220) + Gap(25) = 245.
+      // Next Car Pos = 305 + 245 = 550.
       let lastRightPos = 550; 
 
       function addCarriage() {
          // Create Link
          const link = document.createElement('div');
          link.className = 'train-link';
-         link.style.left = (lastRightPos - 20) + 'px'; 
+         // Link needs to overlap previous body by 10px.
+         // Link Width 45. Gap 25. Overlap Next 10.
+         // Relative to Next Car (lastRightPos): -35px.
+         link.style.left = (lastRightPos - 35) + 'px'; 
          wrapper.appendChild(link);
 
          // Create Carriage
@@ -774,7 +755,9 @@
          `;
          wrapper.appendChild(carriage);
 
-         lastRightPos += 260; 
+         // Update position for next one
+         // Body(220) + Gap(25) = 245
+         lastRightPos += 245; 
          
          // Limiter to prevent infinite DOM growth invisible off-screen
          if (wrapper.children.length > 20) {
