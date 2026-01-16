@@ -216,18 +216,22 @@
     .train-stage {
         min-height: 320px;
     }
+    /* Train Container Adjustment */
+    .train-stage {
+        min-height: 320px;
+    }
     .train-wrapper {
-      width: 300px;
-      height: 200px;
-      margin-top: 60px;
-      transform: scaleX(-1); /* Flip the entire train direction */
+        width: 360px; /* Elongated 1.2x from 300px */
+        height: 200px;
+        margin-top: 60px;
+        transform: scaleX(-1);
     }
 
     /* Cabin */
     .train-cabin {
       position: absolute;
       bottom: 50px;
-      left: 140px; /* Shifted right */
+      left: 175px; /* Shifted right */
       width: 100px;
       height: 110px;
       background: var(--pixel-white);
@@ -276,22 +280,32 @@
         transform-origin: left bottom;
     }
 
-    /* Boiler (The main cylinder body) */
+    /* Boiler / Water Tank (Elongated) */
     .train-body {
       position: absolute;
       bottom: 50px;
       left: 40px;
-      width: 105px;
+      width: 140px; /* Elongated */
       height: 75px;
       background: var(--pixel-black);
       z-index: 6;
     }
 
-    /* Boiler Front Plate (Red part in image, now black/white pixel) */
+    /* Tank Detail - Top Handrail/Line */
+    .train-body::before {
+        content: "";
+        position: absolute;
+        top: 10px; left: 0;
+        width: 100%;
+        height: 4px;
+        background: var(--pixel-white);
+    }
+
+    /* Boiler Front Plate */
     .train-plate {
        position: absolute;
        bottom: 50px;
-       left: 30px; /* Slight overhang front */
+       left: 30px; 
        width: 15px;
        height: 75px;
        background: var(--pixel-white);
@@ -308,25 +322,34 @@
         background: var(--pixel-black);
     }
 
-    /* Chimney (Tall with rim) */
+    /* Chimney (Detailed) */
     .train-chimney {
       position: absolute;
       bottom: 125px;
       left: 60px;
-      width: 30px;
-      height: 45px;
+      width: 32px;
+      height: 55px; /* Taller */
       background: var(--pixel-black);
       z-index: 8;
     }
-    .train-chimney::before { /* Rim */
+    .train-chimney::before { /* Rim Cap */
         content: "";
         position: absolute;
-        top: -8px; left: -8px;
-        width: 46px; height: 8px;
+        top: -10px; left: -9px;
+        width: 50px; height: 10px;
+        background: var(--pixel-black);
+        border-radius: 2px;
+    }
+    /* Chimney Base Detail */
+    .train-chimney::after {
+        content: "";
+        position: absolute;
+        bottom: -6px; left: -6px;
+        width: 44px; height: 6px;
         background: var(--pixel-black);
     }
 
-    /* Cowcatcher (Triangular Front) */
+    /* Cowcatcher */
     .train-cowcatcher {
         position: absolute;
         bottom: 20px;
@@ -339,19 +362,19 @@
         z-index: 9;
     }
 
-    /* Chassis (Running Board) */
+    /* Chassis (Elongated) */
     .train-chassis {
       position: absolute;
       bottom: 40px;
       left: 30px;
-      width: 210px;
+      width: 250px; /* Elongated */
       height: 15px;
       background: var(--pixel-white);
       border: 4px solid var(--pixel-black);
       z-index: 4;
     }
 
-    /* Wheels (3 Big ones) */
+    /* Wheels (Re-spaced) */
     .train-wheel {
       position: absolute;
       bottom: 0px;
@@ -374,8 +397,8 @@
     }
     
     .train-wheel.w1 { left: 45px; }
-    .train-wheel.w2 { left: 105px; }
-    .train-wheel.w3 { left: 185px; }
+    .train-wheel.w2 { left: 125px; } /* Shifted right */
+    .train-wheel.w3 { left: 215px; } /* Shifted right */
 
     /* Remove specific dome/face classes not needed for this style */
     .train-dome, .train-face, .train-body::after { display: none; }
