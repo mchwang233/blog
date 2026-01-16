@@ -216,15 +216,97 @@
     .train-stage {
         min-height: 320px;
     }
-    /* Train Container Adjustment */
+    /* TV Set Container */
+    .tv-set {
+        position: relative;
+        width: 320px;
+        height: 240px;
+        background: var(--text);
+        border-radius: 20px;
+        padding: 20px;
+        box-shadow: 10px 10px 0 rgba(0,0,0,0.1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .tv-set::before { /* Antenna Left */
+        content: "";
+        position: absolute;
+        top: -40px; left: 60px;
+        width: 4px; height: 50px;
+        background: var(--text);
+        transform: rotate(-20deg);
+    }
+    .tv-set::after { /* Antenna Right */
+        content: "";
+        position: absolute;
+        top: -40px; right: 60px;
+        width: 4px; height: 50px;
+        background: var(--text);
+        transform: rotate(20deg);
+    }
+
+    /* TV Screen */
+    .tv-screen {
+        width: 100%;
+        height: 80%;
+        background: var(--bg);
+        border-radius: 40% 40% 40% 40% / 10% 10% 10% 10%; /* Curved CRT look */
+        border: 4px solid #333;
+        overflow: hidden;
+        position: relative;
+        box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
+    }
+    
+    /* Scanlines Overlay */
+    .tv-screen::after {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+        background-size: 100% 4px, 6px 100%;
+        pointer-events: none;
+        z-index: 100;
+    }
+
+    /* Controls */
+    .tv-controls {
+        display: flex;
+        gap: 15px;
+        margin-top: 15px;
+        width: 100%;
+        justify-content: flex-end;
+        padding-right: 10px;
+    }
+    .tv-knob {
+        width: 20px; height: 20px;
+        background: var(--bg);
+        border-radius: 50%;
+        position: relative;
+    }
+    .tv-knob::after {
+        content: "";
+        position: absolute;
+        top: 2px; left: 9px;
+        width: 2px; height: 8px;
+        background: var(--text);
+    }
+    
+    /* Train Container Adjustment - Scaled Down */
     .train-stage {
-        min-height: 320px;
+        min-height: 400px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     .train-wrapper {
-        width: 600px; /* Widened for carriage */
-        height: 200px;
-        margin-top: 60px;
-        transform: scaleX(-1);
+        width: 600px;
+        height: 300%; /* Fill mainly height */
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -30%) scaleX(-1) scale(0.35); /* FLip & Scale Down */
     }
     
     /* Coupling Link */
@@ -582,34 +664,42 @@
   </header>
 
   <section class="train-stage">
-    <div class="train-wrapper">
-      <div class="train">
-        <div class="train-cabin">
-            <div class="train-window"></div>
-        </div>
-        <div class="train-body"></div>
-        <div class="train-plate"></div> <!-- Added Front Plate -->
-        <div class="train-chimney"></div>
-        <div class="train-cowcatcher"></div> <!-- Added Cowcatcher -->
-        <div class="train-chassis"></div>
-        
-        <div class="train-wheel w1"></div>
-        <div class="train-wheel w2"></div>
-        <div class="train-wheel w3"></div>
+    <div class="tv-set">
+      <div class="tv-screen">
+        <div class="train-wrapper">
+          <div class="train">
+            <div class="train-cabin">
+                <div class="train-window"></div>
+            </div>
+            <div class="train-body"></div>
+            <div class="train-plate"></div>
+            <div class="train-chimney"></div>
+            <div class="train-cowcatcher"></div>
+            <div class="train-chassis"></div>
+            
+            <div class="train-wheel w1"></div>
+            <div class="train-wheel w2"></div>
+            <div class="train-wheel w3"></div>
 
-        <div class="smoke s1"></div>
-        <div class="smoke s2"></div>
+            <div class="smoke s1"></div>
+            <div class="smoke s2"></div>
+          </div>
+          
+          <div class="train-link"></div>
+          
+          <div class="train-carriage">
+              <div class="carriage-body"></div>
+              <div class="carriage-window cw1"></div>
+              <div class="carriage-window cw2"></div>
+              <div class="carriage-window cw3"></div>
+              <div class="carriage-wheel w1"></div>
+              <div class="carriage-wheel w2"></div>
+          </div>
+        </div>
       </div>
-      
-      <div class="train-link"></div>
-      
-      <div class="train-carriage">
-          <div class="carriage-body"></div>
-          <div class="carriage-window cw1"></div>
-          <div class="carriage-window cw2"></div>
-          <div class="carriage-window cw3"></div>
-          <div class="carriage-wheel w1"></div>
-          <div class="carriage-wheel w2"></div>
+      <div class="tv-controls">
+          <div class="tv-knob" style="transform: rotate(45deg);"></div>
+          <div class="tv-knob" style="transform: rotate(120deg);"></div>
       </div>
     </div>
   </section>
