@@ -183,15 +183,14 @@
       overflow: hidden;
       display: flex;
       align-items: center;
+      justify-content: center;
       min-height: 260px;
     }
 
     .train-wrapper {
-      position: absolute;
-      left: -250px;
+      position: relative;
       width: 250px;
       height: 160px;
-      animation: move-train 8s linear infinite;
     }
 
     .train {
@@ -199,11 +198,6 @@
       height: 100%;
       position: relative;
       animation: shake 0.5s ease-in-out infinite alternate;
-    }
-
-    @keyframes move-train {
-      from { transform: translateX(-300px); }
-      to { transform: translateX(100vw); }
     }
 
     @keyframes shake {
@@ -406,21 +400,28 @@
   <section class="train-stage">
     <div class="train-wrapper">
       <div class="train">
-        <div class="train-cabin"></div>
-        <div class="train-body"></div>
-        <div class="train-chassis"></div>
-        <div class="train-cowcatcher"></div>
-        <div class="train-window"></div>
-        <div class="train-chimney">
-          <div class="train-chimney-rim"></div>
+        <div class="train-cabin">
+            <div class="train-window"></div>
         </div>
+        <div class="train-body"></div>
+        <div class="train-dome"></div>
+        <div class="train-chimney"></div>
+        <div class="train-face">
+            <div class="eye left"></div>
+            <div class="eye right"></div>
+            <div class="nose"></div>
+            <div class="mouth"></div>
+        </div>
+        <div class="train-chassis"></div>
+        
         <div class="train-wheel w1"></div>
         <div class="train-wheel w2"></div>
-        <div class="train-wheel w3 big"></div>
+        <div class="train-wheel w3"></div>
+        
         <div class="train-rod"></div>
+        
         <div class="smoke s1"></div>
         <div class="smoke s2"></div>
-        <div class="smoke s3"></div>
       </div>
     </div>
   </section>
