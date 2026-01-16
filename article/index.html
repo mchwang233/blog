@@ -70,46 +70,6 @@
     </nav>
   </header>
 
-  <!-- Train Animation Section -->
-  <section class="train-stage">
-    <div class="film-strip">
-      <div class="film-screen">
-        <div class="scenery-container"></div>
-        <div class="train-wrapper">
-          <div class="train">
-            <div class="train-cabin">
-                <div class="train-window"></div>
-            </div>
-            <div class="train-body"></div>
-            <div class="train-plate"></div>
-            <div class="train-chimney"></div>
-            <div class="train-cowcatcher"></div>
-            <div class="train-chassis"></div>
-            
-            <div class="train-wheel w1"></div>
-            <div class="train-wheel w2"></div>
-            <div class="train-wheel w3"></div>
-
-            <div class="smoke s1"></div>
-            <div class="smoke s2"></div>
-          </div>
-          
-          <div class="train-link"></div>
-          
-          <div class="train-carriage">
-              <div class="carriage-body"></div>
-              <div class="carriage-window cw1"></div>
-              <div class="carriage-window cw2"></div>
-              <div class="carriage-window cw3"></div>
-              <div class="carriage-wheel w1"></div>
-              <div class="carriage-wheel w2"></div>
-          </div>
-        </div>
-        <div class="track"></div>
-      </div>
-    </div>
-  </section>
-
   <!-- Main Content (Post List) -->
   <main class="container">
     <div class="post-body">
@@ -133,90 +93,6 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // --- Train Logic ---
-      const wrapper = document.querySelector('.train-wrapper');
-      let lastRightPos = 550; 
-
-      function addCarriage() {
-         const link = document.createElement('div');
-         link.className = 'train-link';
-         link.style.left = (lastRightPos - 35) + 'px'; 
-         wrapper.appendChild(link);
-
-         const carriage = document.createElement('div');
-         carriage.className = 'train-carriage';
-         carriage.style.left = lastRightPos + 'px';
-         
-         carriage.innerHTML = `
-              <div class="carriage-body"></div>
-              <div class="carriage-window cw1"></div>
-              <div class="carriage-window cw2"></div>
-              <div class="carriage-window cw3"></div>
-              <div class="carriage-wheel w1"></div>
-              <div class="carriage-wheel w2"></div>
-         `;
-         wrapper.appendChild(carriage);
-         lastRightPos += 245; 
-      }
-
-      for (let i = 0; i < 3; i++) {
-          addCarriage();
-      }
-      setInterval(addCarriage, 2000);
-
-      // --- Scenery Logic ---
-      const sceneryContainer = document.querySelector('.scenery-container');
-      const allImages = [];
-      for(let i=1; i<=35; i++) {
-        allImages.push(`./img/shanhai_.jpg`);
-      }
-
-      let recentImages = []; 
-      
-      function getNextImage() {
-          let randomIndex;
-          let attempts = 0;
-          do {
-             randomIndex = Math.floor(Math.random() * allImages.length);
-             attempts++;
-          } while (recentImages.includes(randomIndex) && attempts < 100);
-          
-          recentImages.push(randomIndex);
-          if (recentImages.length > 10) {
-              recentImages.shift(); 
-          }
-          return allImages[randomIndex];
-      }
-      
-      function addScenery(isInitial = false) {
-          const item = document.createElement('div');
-          item.className = 'scenery-item';
-          
-          const imgSrc = getNextImage();
-          // Handling missing images gracefully by just logging error or using alt
-          const img = document.createElement('img');
-          img.src = imgSrc;
-          img.alt = "";
-          img.onerror = function() { this.style.display='none'; }; // Hide if missing
-          item.appendChild(img);
-          
-          if (isInitial) {
-              item.style.animation = 'scenery-scroll-initial 5s linear forwards';
-          } else {
-              item.style.animation = 'scenery-scroll 10s linear forwards';
-          }
-          
-          sceneryContainer.appendChild(item);
-          setTimeout(() => {
-              if (item.parentNode) item.parentNode.removeChild(item);
-          }, 11000); 
-      }
-
-      addScenery(true); 
-      addScenery(false); 
-      setInterval(() => {
-          addScenery(false);
-      }, 5000); 
     });
   </script>
 </body>
