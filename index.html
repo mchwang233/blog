@@ -174,6 +174,113 @@
     .footnote a:hover {
       color: var(--text);
     }
+
+    /* Train Animation */
+    .train-stage {
+      flex: 1;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      min-height: 200px;
+    }
+
+    .train {
+      position: absolute;
+      left: -100px;
+      width: 100px;
+      height: 60px;
+      animation: move-train 12s linear infinite;
+    }
+
+    @keyframes move-train {
+      from { transform: translateX(-150px); }
+      to { transform: translateX(100vw); }
+    }
+
+    /* Body */
+    .train-body {
+      position: absolute;
+      bottom: 15px;
+      left: 0;
+      width: 100px;
+      height: 35px;
+      background: var(--text);
+    }
+    
+    /* Cabin */
+    .train-cabin {
+      position: absolute;
+      bottom: 50px;
+      left: 10px;
+      width: 40px;
+      height: 30px;
+      background: var(--text);
+    }
+
+    /* Window */
+    .train-window {
+      position: absolute;
+      bottom: 60px;
+      left: 20px;
+      width: 20px;
+      height: 15px;
+      background: var(--bg);
+    }
+
+    /* Chimney */
+    .train-chimney {
+      position: absolute;
+      bottom: 50px;
+      right: 15px;
+      width: 15px;
+      height: 25px;
+      background: var(--text);
+    }
+    
+    /* Chimney Top */
+    .train-chimney::after {
+      content: "";
+      position: absolute;
+      top: -5px;
+      left: -5px;
+      width: 25px;
+      height: 5px;
+      background: var(--text);
+    }
+
+    /* Wheels */
+    .train-wheel {
+      position: absolute;
+      bottom: 0;
+      width: 20px;
+      height: 20px;
+      background: var(--bg);
+      border: 6px solid var(--text);
+    }
+
+    .train-wheel.w1 { left: 10px; }
+    .train-wheel.w2 { left: 40px; }
+    .train-wheel.w3 { left: 70px; }
+
+    /* Smoke */
+    .smoke {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: var(--text);
+      opacity: 0;
+    }
+
+    .smoke.s1 { right: 18px; bottom: 85px; animation: puff 2s infinite 0s; }
+    .smoke.s2 { right: 8px; bottom: 95px; animation: puff 2s infinite 0.6s; }
+    .smoke.s3 { right: 28px; bottom: 105px; animation: puff 2s infinite 1.2s; }
+
+    @keyframes puff {
+      0% { transform: translateY(0) scale(1); opacity: 0.8; }
+      100% { transform: translateY(-40px) scale(2); opacity: 0; }
+    }
   </style>
 </head>
 <body>
@@ -185,6 +292,21 @@
       <a href="#about">About</a>
     </nav>
   </header>
+
+  <section class="train-stage">
+    <div class="train">
+      <div class="train-cabin"></div>
+      <div class="train-body"></div>
+      <div class="train-window"></div>
+      <div class="train-chimney"></div>
+      <div class="train-wheel w1"></div>
+      <div class="train-wheel w2"></div>
+      <div class="train-wheel w3"></div>
+      <div class="smoke s1"></div>
+      <div class="smoke s2"></div>
+      <div class="smoke s3"></div>
+    </div>
+  </section>
 
 
 
