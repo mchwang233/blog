@@ -183,59 +183,93 @@
       overflow: hidden;
       display: flex;
       align-items: center;
-      min-height: 260px;
+      min-height: 200px;
     }
 
     .train {
       position: absolute;
-      left: -300px;
-      width: 250px;
-      height: 150px;
+      left: -200px;
+      width: 180px;
+      height: 120px;
       animation: move-train 10s linear infinite;
     }
 
     @keyframes move-train {
-      from { transform: translateX(-300px); }
+      from { transform: translateX(-250px); }
       to { transform: translateX(100vw); }
     }
 
-    /* Body */
+    /* Chassis (Base) */
+    .train-chassis {
+      position: absolute;
+      bottom: 30px;
+      left: 0;
+      width: 180px;
+      height: 15px;
+      background: var(--text);
+    }
+
+    /* Cowcatcher (Front) */
+    .train-cowcatcher {
+      position: absolute;
+      bottom: 20px;
+      right: 0;
+      width: 25px;
+      height: 25px;
+      background: var(--text);
+      clip-path: polygon(0 0, 100% 100%, 0 100%);
+    }
+
+    /* Body (Boiler) */
     .train-body {
       position: absolute;
-      bottom: 35px;
-      left: 0;
-      width: 250px;
-      height: 90px;
+      bottom: 45px;
+      right: 20px;
+      width: 90px;
+      height: 50px;
       background: var(--text);
     }
     
     /* Cabin */
     .train-cabin {
       position: absolute;
-      bottom: 125px;
-      left: 25px;
-      width: 100px;
+      bottom: 45px;
+      left: 10px;
+      width: 60px;
       height: 75px;
       background: var(--text);
+      border-radius: 4px 0 0 0;
+    }
+
+    /* Roof */
+    .train-roof {
+      position: absolute;
+      bottom: 120px;
+      left: 5px;
+      width: 70px;
+      height: 8px;
+      background: var(--text);
+      border-radius: 4px;
     }
 
     /* Window */
     .train-window {
       position: absolute;
-      bottom: 150px;
-      left: 50px;
-      width: 50px;
-      height: 38px;
+      bottom: 85px;
+      left: 20px;
+      width: 25px;
+      height: 25px;
       background: var(--bg);
+      border-radius: 2px;
     }
 
     /* Chimney */
     .train-chimney {
       position: absolute;
-      bottom: 125px;
-      right: 35px;
-      width: 40px;
-      height: 65px;
+      bottom: 95px;
+      right: 40px;
+      width: 25px;
+      height: 35px;
       background: var(--text);
     }
     
@@ -243,43 +277,52 @@
     .train-chimney::after {
       content: "";
       position: absolute;
-      top: -12px;
-      left: -12px;
-      width: 64px;
-      height: 12px;
+      top: -8px;
+      left: -5px;
+      width: 35px;
+      height: 8px;
       background: var(--text);
+      border-radius: 2px;
     }
 
     /* Wheels */
     .train-wheel {
       position: absolute;
       bottom: 0;
-      width: 50px;
-      height: 50px;
+      width: 30px;
+      height: 30px;
       background: var(--bg);
-      border: 14px solid var(--text);
+      border: 6px solid var(--text);
+      border-radius: 50%;
     }
 
-    .train-wheel.w1 { left: 25px; }
-    .train-wheel.w2 { left: 100px; }
-    .train-wheel.w3 { left: 175px; }
+    .train-wheel.big {
+      width: 45px;
+      height: 45px;
+      border-width: 8px;
+    }
+
+    .train-wheel.w1 { left: 15px; }
+    .train-wheel.w2 { left: 55px; }
+    .train-wheel.w3 { left: 105px; bottom: 0; }
 
     /* Smoke */
     .smoke {
       position: absolute;
-      width: 25px;
-      height: 25px;
-      background: var(--text);
+      width: 15px;
+      height: 15px;
+      background: var(--muted);
+      border-radius: 50%;
       opacity: 0;
     }
 
-    .smoke.s1 { right: 43px; bottom: 215px; animation: puff 2s infinite 0s; }
-    .smoke.s2 { right: 18px; bottom: 240px; animation: puff 2s infinite 0.6s; }
-    .smoke.s3 { right: 68px; bottom: 265px; animation: puff 2s infinite 1.2s; }
+    .smoke.s1 { right: 35px; bottom: 140px; animation: puff 2s infinite 0s; }
+    .smoke.s2 { right: 25px; bottom: 155px; animation: puff 2s infinite 0.6s; }
+    .smoke.s3 { right: 45px; bottom: 170px; animation: puff 2s infinite 1.2s; }
 
     @keyframes puff {
-      0% { transform: translateY(0) scale(1); opacity: 0.8; }
-      100% { transform: translateY(-80px) scale(2); opacity: 0; }
+      0% { transform: translateY(0) scale(1); opacity: 0.6; }
+      100% { transform: translateY(-50px) scale(2.5); opacity: 0; }
     }
   </style>
 </head>
@@ -296,12 +339,15 @@
   <section class="train-stage">
     <div class="train">
       <div class="train-cabin"></div>
+      <div class="train-roof"></div>
       <div class="train-body"></div>
+      <div class="train-chassis"></div>
+      <div class="train-cowcatcher"></div>
       <div class="train-window"></div>
       <div class="train-chimney"></div>
       <div class="train-wheel w1"></div>
       <div class="train-wheel w2"></div>
-      <div class="train-wheel w3"></div>
+      <div class="train-wheel w3 big"></div>
       <div class="smoke s1"></div>
       <div class="smoke s2"></div>
       <div class="smoke s3"></div>
