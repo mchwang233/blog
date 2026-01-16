@@ -191,12 +191,17 @@
       left: -200px;
       width: 180px;
       height: 120px;
-      animation: move-train 10s linear infinite;
+      animation: move-train 10s linear infinite, shake 0.4s steps(2) infinite;
     }
 
     @keyframes move-train {
       from { transform: translateX(-250px); }
       to { transform: translateX(100vw); }
+    }
+
+    @keyframes shake {
+      0% { margin-top: 0; }
+      50% { margin-top: 4px; }
     }
 
     /* Chassis (Base) */
