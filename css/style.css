@@ -404,7 +404,7 @@ p.lead {
 .carriage-wheel::after {
     content: "";
     width: 16px; height: 16px;
-    background: var(--pixel-black);
+    background: var(--pixel-white); /* Contrast color for axle */
     border-radius: 50%;
 }
 .carriage-wheel.w1 { left: 30px; }
@@ -559,7 +559,7 @@ p.lead {
 .train-wheel::after {
     content: "";
     width: 20px; height: 20px;
-    background: var(--pixel-black);
+    background: var(--pixel-white); /* Contrast color for axle */
     border-radius: 50%;
 }
 
