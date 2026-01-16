@@ -206,179 +206,196 @@
       100% { transform: translateY(-2px); }
     }
 
-    /* --- Pixel Style Monochrome --- */
+    /* --- Pixel Art Train - Chunky Style --- */
     :root {
        --pixel-black: var(--text);
        --pixel-white: var(--bg);
+    }
+
+    /* Train Container Adjustment */
+    .train-stage {
+        min-height: 320px;
+    }
+    .train-wrapper {
+        width: 300px;
+        height: 200px;
+        margin-top: 60px;
+    }
+
+    /* Cabin */
+    .train-cabin {
+      position: absolute;
+      bottom: 50px;
+      left: 140px; /* Shifted right */
+      width: 100px;
+      height: 110px;
+      background: var(--pixel-white);
+      border: 5px solid var(--pixel-black);
+      z-index: 5;
+    }
+    
+    /* Cabin Roof (Overhang) */
+    .train-cabin::before {
+      content: "";
+      position: absolute;
+      top: -12px;
+      left: -10px;
+      width: 120px;
+      height: 12px;
+      background: var(--pixel-black);
+    }
+
+    /* Cabin Window (Large Square with "Reflection") */
+    .train-window {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      width: 60px;
+      height: 55px;
+      background: var(--pixel-white);
+      border: 4px solid var(--pixel-black);
+    }
+    /* Diagonal line in window */
+    .train-window::after {
+        content: "";
+        position: absolute;
+        bottom: 10px; left: -2px;
+        width: 40px; height: 4px;
+        background: var(--pixel-black);
+        transform: rotate(-45deg);
+        transform-origin: left bottom;
+    }
+    .train-window::before {
+        content: "";
+        position: absolute;
+        bottom: -2px; left: -2px;
+        width: 4px; height: 35px;
+        background: var(--pixel-black);
+        transform: rotate(-45deg);
+        transform-origin: left bottom;
+    }
+
+    /* Boiler (The main cylinder body) */
+    .train-body {
+      position: absolute;
+      bottom: 50px;
+      left: 40px;
+      width: 105px;
+      height: 75px;
+      background: var(--pixel-black);
+      z-index: 6;
+    }
+
+    /* Boiler Front Plate (Red part in image, now black/white pixel) */
+    .train-plate {
+       position: absolute;
+       bottom: 50px;
+       left: 30px; /* Slight overhang front */
+       width: 15px;
+       height: 75px;
+       background: var(--pixel-white);
+       border: 5px solid var(--pixel-black);
+       border-right: none;
+       z-index: 7;
+    }
+    /* Small light in center */
+    .train-plate::after {
+        content: "";
+        position: absolute;
+        top: 25px; left: -2px;
+        width: 8px; height: 15px;
+        background: var(--pixel-black);
+    }
+
+    /* Chimney (Tall with rim) */
+    .train-chimney {
+      position: absolute;
+      bottom: 125px;
+      left: 60px;
+      width: 30px;
+      height: 45px;
+      background: var(--pixel-black);
+      z-index: 8;
+    }
+    .train-chimney::before { /* Rim */
+        content: "";
+        position: absolute;
+        top: -8px; left: -8px;
+        width: 46px; height: 8px;
+        background: var(--pixel-black);
+    }
+
+    /* Cowcatcher (Triangular Front) */
+    .train-cowcatcher {
+        position: absolute;
+        bottom: 20px;
+        left: 0;
+        width: 40px;
+        height: 40px;
+        background: var(--pixel-white);
+        border: 4px solid var(--pixel-black);
+        clip-path: polygon(0 100%, 100% 0, 100% 100%);
+        z-index: 9;
     }
 
     /* Chassis (Running Board) */
     .train-chassis {
       position: absolute;
       bottom: 40px;
-      left: 10px;
-      width: 260px;
-      height: 25px;
-      background: var(--pixel-black);
-      z-index: 10;
-    }
-    
-    /* Buffer Beams */
-    .train-chassis::before,
-    .train-chassis::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      width: 15px;
-      height: 100%;
-      background: var(--pixel-black);
-    }
-    .train-chassis::before { left: 0; }
-    .train-chassis::after { right: 0; }
-
-    /* Cabin */
-    .train-cabin {
-      position: absolute;
-      bottom: 65px;
-      left: 20px;
-      width: 90px;
-      height: 130px;
+      left: 30px;
+      width: 210px;
+      height: 15px;
       background: var(--pixel-white);
       border: 4px solid var(--pixel-black);
-      z-index: 5;
-    }
-    
-    /* Cabin Roof */
-    .train-cabin::before {
-      content: "";
-      position: absolute;
-      top: -10px;
-      left: -8px;
-      width: 106px;
-      height: 10px;
-      background: var(--pixel-black);
-    }
-
-    /* Cabin Window */
-    .train-window {
-      position: absolute;
-      top: 20px;
-      left: 15px;
-      width: 50px;
-      height: 45px;
-      background: var(--pixel-white);
-      border: 4px solid var(--pixel-black);
-    }
-    .train-window::after {
-        content: ""; 
-        display: none;
-    }
-
-    /* Boiler / Side Tanks */
-    .train-body {
-      position: absolute;
-      bottom: 65px;
-      left: 100px;
-      width: 120px;
-      height: 65px;
-      background: var(--pixel-white);
-      border: 4px solid var(--pixel-black);
-      border-left: none; /* Connect to cabin */
       z-index: 4;
     }
 
-    /* Detail: The Number 1 - REMOVED */
-    .train-body::after {
-      display: none;
-    }
-    
-    /* No Stripes */
-    .train-body::before {
-        display: none;
-    }
-
-    /* Face (Replaced by flat boiler front) */
-    .train-face {
-      position: absolute;
-      bottom: 65px;
-      right: 25px;
-      width: 35px;
-      height: 65px;
-      background: var(--pixel-black);
-      z-index: 6;
-      border-radius: 0; /* Pixel style */
-    }
-    
-    /* Eyes/Mouth/Nose - Removed */
-    .train-face .eye, 
-    .train-face .mouth, 
-    .train-face .nose {
-      display: none;
-    }
-
-    /* Chimney */
-    .train-chimney {
-      position: absolute;
-      bottom: 130px;
-      right: 60px;
-      width: 25px;
-      height: 40px;
-      background: var(--pixel-black);
-      z-index: 3;
-    }
-    .train-chimney::before { /* Rim */
-        content: "";
-        position: absolute;
-        top: -6px; left: -5px;
-        width: 35px; height: 8px;
-        background: var(--pixel-black);
-    }
-    
-    /* Dome */
-    .train-dome {
-      position: absolute;
-      bottom: 130px;
-      right: 120px;
-      width: 30px;
-      height: 25px;
-      background: var(--pixel-black);
-      border-radius: 15px 15px 0 0;
-      z-index: 3;
-    }
-
-    /* Wheels (Pixel style) */
+    /* Wheels (3 Big ones) */
     .train-wheel {
       position: absolute;
-      bottom: 5px;
-      width: 50px;
-      height: 50px;
-      background: var(--pixel-white);
-      border: 4px solid var(--pixel-black);
+      bottom: 0px;
+      width: 55px;
+      height: 55px;
+      background: var(--pixel-black);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      animation: spin 1s linear infinite;
-      z-index: 12;
+      animation: spin 0.8s linear infinite;
+      z-index: 10;
     }
-
-    .train-wheel::after { /* Spokes */
+    /* Inner white rim for contrast */
+    .train-wheel::after {
         content: "";
-        width: 100%;
-        height: 4px;
-        background: var(--pixel-black);
+        width: 20px; height: 20px;
+        background: var(--pixel-white);
+        border-radius: 50%;
     }
-    .train-wheel::before {
-        content: "";
-        height: 100%;
-        width: 4px;
-        background: var(--pixel-black);
-        position: absolute;
-    }
-
-    .train-wheel.w1 { left: 40px; }
+    
+    .train-wheel.w1 { left: 45px; }
     .train-wheel.w2 { left: 105px; }
-    .train-wheel.w3 { left: 170px; }
+    .train-wheel.w3 { left: 165px; }
+
+    /* Remove specific dome/face classes not needed for this style */
+    .train-dome, .train-face, .train-body::after { display: none; }
+    
+    /* Connecting Rod is hidden in this chunky style or simplified */
+    .train-rod { display: none; }
+    
+    /* Smoke */
+    .smoke {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      background: var(--pixel-white);
+      border: 3px solid var(--pixel-black); /* Outline smoke */
+      border-radius: 50%;
+      opacity: 0;
+      z-index: 20;
+    }
+    .smoke.s1 { left: 60px; bottom: 180px; animation: puff 2s ease-out infinite; }
+    .smoke.s2 { left: 80px; bottom: 190px; animation: puff 2s ease-out infinite 0.8s; }
+  
 
     @keyframes spin {
       from { transform: rotate(0deg); }
@@ -444,22 +461,15 @@
             <div class="train-window"></div>
         </div>
         <div class="train-body"></div>
-        <div class="train-dome"></div>
+        <div class="train-plate"></div> <!-- Added Front Plate -->
         <div class="train-chimney"></div>
-        <div class="train-face">
-            <div class="eye left"></div>
-            <div class="eye right"></div>
-            <div class="nose"></div>
-            <div class="mouth"></div>
-        </div>
+        <div class="train-cowcatcher"></div> <!-- Added Cowcatcher -->
         <div class="train-chassis"></div>
         
         <div class="train-wheel w1"></div>
         <div class="train-wheel w2"></div>
         <div class="train-wheel w3"></div>
-        
-        <div class="train-rod"></div>
-        
+
         <div class="smoke s1"></div>
         <div class="smoke s2"></div>
       </div>
