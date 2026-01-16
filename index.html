@@ -218,11 +218,11 @@
     }
     /* Film Strip Container */
     .film-strip {
-        background: #1a1a1a;
-        width: 560px;
-        padding: 40px 0; /* Top/Bottom padding for sprocket holes */
+        background: #000;
+        width: 480px;
+        padding: 40px 0; /* Reduced padding from 50px */
         position: relative;
-        box-shadow: 10px 10px 20px rgba(0,0,0,0.2);
+        box-shadow: 0 0 0 2px #333, 0 30px 60px rgba(0,0,0,0.8);
         margin-top: 50px;
         display: flex;
         flex-direction: column;
@@ -235,19 +235,20 @@
         left: 0;
         width: 100%;
         height: 25px;
-        /* Repeating white rounded rectangles pattern */
-        background-image: linear-gradient(90deg, #fff 12px, transparent 12px);
-        background-size: 30px 100%; /* 12px white, 18px transparent gap */
+        /* Repeating white rounded rectangles pattern - using radial for rounded look attempt or just brighter blocks */
+        background-image: linear-gradient(90deg, #fff 16px, transparent 16px);
+        background-size: 34px 100%; /* Wider holes */
         background-position: 9px 0; /* Offset */
         background-repeat: repeat-x;
+        opacity: 0.8; /* Slightly muted so it looks like light table */
     }
-    .film-strip::before { top: 20px; }
-    .film-strip::after { bottom: 8px; }
+    .film-strip::before { top: 15px; } 
+    .film-strip::after { bottom: 15px; } /* Adjusted for narrower padding */
 
     /* Film Frame (Screen) */
     .film-screen {
         width: 100%;
-        height: 350px;
+        height: 280px; /* Reduced height from 350px (approx 1/5 reduction) */
         background: var(--bg);
         border-top: 2px solid #000;
         border-bottom: 2px solid #000;
@@ -302,6 +303,7 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%) scaleX(-1) scale(0.65); /* Scaled */
+        z-index: 10; /* Ensure train is above track */
     }
     
     /* Coupling Link */
@@ -347,30 +349,6 @@
     }
 
     /* Carriage Windows */
-    .carriage-window {
-        position: absolute;
-        top: 20px;
-        width: 50px;
-        height: 40px;
-        background: var(--pixel-white);
-        border: 4px solid var(--pixel-black);
-        z-index: 6; /* On top of body */
-    }
-    .carriage-window.cw1 { left: 20px; } /* Relative to Carriage Container Left boundary? No, relative to parent train-carriage? */
-    /* wait, carriage window needs to be inside carriage body or relative to carriage container? 
-       HTML structure put them inside .train-carriage but outside .carriage-body?
-       If they are absolute, they position relative to .train-carriage.
-       .carriage-body is at left:0, bottom:40px. Height 90px.
-       .train-carriage is bottom:0.
-       So top:20px of .train-carriage is effectively inside the "air" above.
-       Let's adjust top to be relative to the body visual position.
-       Body bottom is 40px. Height 90px. Top of body is at bottom: 130px.
-       Container height 160px.
-       Let's put windows inside body? No, HTML has them as siblings.
-       Let's just correct offsets.
-       Body Top edge is at bottom 130px. 
-       Let's position windows from bottom.
-    */
     .carriage-window {
         position: absolute;
         bottom: 65px; /* inside the body */
@@ -644,8 +622,83 @@
       100% { transform: translateY(-60px) scale(2); opacity: 0; }
     }
 
+    /* Track / Rails */
+    .track {
+        position: absolute;
+        bottom: 0px; /* Moved to the very bottom */
+        left: 0;
+        width: 200%;
+        height: 6px; /* Thinner track */
+        /* Simplified pattern */
+        background-image: 
+            linear-gradient(90deg, transparent 40px, var(--pixel-black) 40px, var(--pixel-black) 46px, transparent 46px), 
+            linear-gradient(to bottom, transparent 0px, var(--pixel-black) 0px, var(--pixel-black) 2px, transparent 2px);
+        background-size: 60px 100%, 100% 100%;
+        background-repeat: repeat-x, no-repeat;
+        animation: track-move 0.4s linear infinite;
+        z-index: 1;
+        opacity: 0.8;
+    }
 
+    @keyframes track-move {
+        from { transform: translateX(0); }
+        to { transform: translateX(-60px); }
+    }
+    
+    /* Station / Platform */
+    .station {
+        position: absolute;
+        bottom: 10px; /* Align with track foundation */
+        left: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        z-index: 2; /* Behind train (10) but above track (1) */
+        will-change: left;
+    }
 
+    .station-sign {
+        background: var(--pixel-white);
+        border: 4px solid var(--pixel-black);
+        padding: 12px 24px; /* Even bigger padding */
+        margin-bottom: 0; /* Remove bottom margin to connect to poles */
+        font-family: monospace;
+        font-weight: bold;
+        font-size: 28px; /* Even larger font */
+        color: var(--pixel-black);
+        box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
+        white-space: nowrap;
+        z-index: 5;
+    }
+
+    /* Replaced single pole with dual poles container */
+    .station-poles {
+        width: 80px; /* Fixed narrower distance between poles */
+        min-width: unset;
+        height: 160px; /* Taller */
+        border-left: 8px solid var(--pixel-black); /* Left Pole */
+        border-right: 8px solid var(--pixel-black); /* Right Pole */
+    }
+    
+    .station-platform {
+        width: 300px; /* Wider platform for big signs */
+        height: 20px; /* Slightly taller base */
+        background: #333;
+        border-top: 4px solid var(--pixel-black);
+        /* Simple pixel pattern */
+        background-image: linear-gradient(90deg, transparent 50%, rgba(0,0,0,0.3) 50%);
+        background-size: 20px 100%;
+    }
+    
+    @keyframes station-move {
+        from { left: 100%; }
+        to { left: -250px; } /* Move completely off screen */
+    }
+
+    .station.animate {
+        animation: station-move 5s linear forwards; /* Adjust time to match track speed approx */
+    }
+    
   </style>
 </head>
 <body>
@@ -691,14 +744,100 @@
               <div class="carriage-wheel w2"></div>
           </div>
         </div>
+        <div class="track"></div>
       </div>
     </div>
   </section>
 
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const wrapper = document.querySelector('.train-wrapper');
+      // Initial offset for the first added carriage
+      // Existing layout:
+      // Loco ~0-280px (roughly)
+      // Carriage 1: left 300px, width 250px -> ends at 550px.
+      let lastRightPos = 550; 
 
+      function addCarriage() {
+         // Create Link
+         const link = document.createElement('div');
+         link.className = 'train-link';
+         link.style.left = (lastRightPos - 20) + 'px'; // Connect to previous
+         wrapper.appendChild(link);
 
+         // Create Carriage
+         const carriage = document.createElement('div');
+         carriage.className = 'train-carriage';
+         carriage.style.left = lastRightPos + 'px';
+         
+         carriage.innerHTML = `
+              <div class="carriage-body"></div>
+              <div class="carriage-window cw1"></div>
+              <div class="carriage-window cw2"></div>
+              <div class="carriage-window cw3"></div>
+              <div class="carriage-wheel w1"></div>
+              <div class="carriage-wheel w2"></div>
+         `;
+         wrapper.appendChild(carriage);
 
+         // Update position for next one
+         // Carriage width 250px + gap 10px = 260px increment
+         lastRightPos += 260; 
 
+         // Move the wrapper slightly to keep the train centered-ish? 
+         // No, let it grow to the left (visual left) as it gets longer.
+         // Because of scaleX(-1), increasing Left goes to visual Left.
+         // This creates an infinitely long train trailing off screen.
+         
+         // Cleanup old carriages to prevent memory leaks if it runs forever
+         // (Optional, but good practice)
+         if (wrapper.children.length > 40) {
+             // Remove the oldest dynamic added ones? 
+             // Complicated to track. Let's just limit total length or let it be.
+             // It's a visual toy.
+         }
+      }
+
+      // Initial carriages: Add 5 carriages immediately so it starts long
+      for (let i = 0; i < 5; i++) {
+          addCarriage();
+      }
+
+      // Continue adding a new carriage every 2 seconds
+      setInterval(addCarriage, 2000);
+
+      // --- Stations Logic ---
+      const filmScreen = document.querySelector('.film-screen');
+      const stationNames = ["起点", "HTML", "CSS", "JavaScript", "Beijing", "Code", "Dream", "Future", "2026", "Love", "Peace"];
+      
+      function spawnStation() {
+          const station = document.createElement('div');
+          station.className = 'station animate';
+          
+          const name = stationNames[Math.floor(Math.random() * stationNames.length)];
+          
+          station.innerHTML = `
+              <div class="station-sign">${name}</div>
+              <div class="station-poles"></div>
+              <div class="station-platform"></div>
+          `;
+          
+          // Insert before train-wrapper so it appears behind (z-index handles it)
+          filmScreen.appendChild(station);
+          
+          // Remove after animation
+          setTimeout(() => {
+              if (station.parentNode) station.parentNode.removeChild(station);
+          }, 5000);
+      }
+      
+      // Spawn a station every 6 seconds
+      setInterval(spawnStation, 6000);
+      // Spawn one immediately
+      spawnStation();
+
+    });
+  </script>
   <section id="about" class="footnote">
     <div>Created By MchWang. | <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">陕ICP备17021455号</a></div>
   </section>
