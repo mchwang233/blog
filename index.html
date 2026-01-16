@@ -787,22 +787,27 @@
       const sceneryContainer = document.querySelector('.scenery-container');
       
       // Generate 35 images: shanhai_1.jpg to shanhai_35.jpg
+      /* Hardcoded list generation removed
       const allImages = [];
       for(let i=1; i<=35; i++) {
         allImages.push(`img/shanhai_${i}.jpg`);
       }
+      */
+      
+      let allImages = [];
 
       // Image selection logic: ensure no repeats in the last 10 images
       let recentImages = []; // Queue to store last 10 used indices
       
       function getNextImage() {
+          if (allImages.length === 0) return ''; // Safely handle empty
+
           let randomIndex;
           let attempts = 0;
           
           do {
              randomIndex = Math.floor(Math.random() * allImages.length);
              attempts++;
-             // Break infinite loop if something goes wrong, though with 35 imgs and 10 buffer it's fine.
           } while (recentImages.includes(randomIndex) && attempts < 100);
           
           // Update queue
@@ -823,9 +828,13 @@
           const item = document.createElement('div');
           item.className = 'scenery-item';
           
-          // Use the smart selector
           const imgSrc = getNextImage();
-          item.innerHTML = `<img src="${imgSrc}" alt="bg">`;
+          if (imgSrc) {
+             item.innerHTML = `<img src="${imgSrc}" alt="bg">`;
+          } else {
+             // Fallback color if no image loaded yet
+             item.style.backgroundColor = '#222';
+          }
           
           if (isInitial) {
               item.style.animation = 'scenery-scroll-initial 5s linear forwards';
@@ -838,19 +847,45 @@
           // Cleanup
           setTimeout(() => {
               if (item.parentNode) item.parentNode.removeChild(item);
-          }, 11000); // 10s + buffer
+          }, 11000); 
       }
 
-      // Initialize Scenery
-      addScenery(true); // The one visible right now
-      addScenery(false); // The one coming in from right immediately
-      
-      // Loop
-      setInterval(() => {
-          addScenery(false);
-      }, 5000); // Create new one every 5s (when previous one hits left edge 0)
+      // Initialize Logic
+      async function initScenery() {
+          try {
+            const response = await fetch('img/images.json');
+            if (response.ok) {
+                allImages = await response.json();
+                console.log('Loaded images manifest:', allImages.length);
+            } else {
+                console.warn('images.json not found, using fallback pattern?');
+            }
+          } catch(e) {
+              console.error('Failed to load images:', e);
+          }
 
-      /* Station logic removed */
+          if (allImages.length === 0) {
+              // Fallback if fetch fails (e.g. local file system without server)
+              // Just consistent with previous pattern as backup
+              for(let i=1; i<=5; i++) allImages.push(`img/shanhai_${i}.jpg`);
+          }
+
+          // Start Animation Loop
+          addScenery(true); 
+          addScenery(false); 
+          
+          setInterval(() => {
+              addScenery(false);
+          }, 5000);
+      }
+      
+      initScenery();
+
+      /* Previously called directly:
+      addScenery(true); 
+      addScenery(false); 
+      setInterval(...)
+      */
 
     });
   </script>
