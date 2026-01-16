@@ -183,59 +183,59 @@
       overflow: hidden;
       display: flex;
       align-items: center;
-      min-height: 200px;
+      min-height: 260px;
     }
 
     .train {
       position: absolute;
-      left: -100px;
-      width: 100px;
-      height: 60px;
-      animation: move-train 12s linear infinite;
+      left: -300px;
+      width: 250px;
+      height: 150px;
+      animation: move-train 10s linear infinite;
     }
 
     @keyframes move-train {
-      from { transform: translateX(-150px); }
+      from { transform: translateX(-300px); }
       to { transform: translateX(100vw); }
     }
 
     /* Body */
     .train-body {
       position: absolute;
-      bottom: 15px;
+      bottom: 35px;
       left: 0;
-      width: 100px;
-      height: 35px;
+      width: 250px;
+      height: 90px;
       background: var(--text);
     }
     
     /* Cabin */
     .train-cabin {
       position: absolute;
-      bottom: 50px;
-      left: 10px;
-      width: 40px;
-      height: 30px;
+      bottom: 125px;
+      left: 25px;
+      width: 100px;
+      height: 75px;
       background: var(--text);
     }
 
     /* Window */
     .train-window {
       position: absolute;
-      bottom: 60px;
-      left: 20px;
-      width: 20px;
-      height: 15px;
+      bottom: 150px;
+      left: 50px;
+      width: 50px;
+      height: 38px;
       background: var(--bg);
     }
 
     /* Chimney */
     .train-chimney {
       position: absolute;
-      bottom: 50px;
-      right: 15px;
-      width: 15px;
-      height: 25px;
+      bottom: 125px;
+      right: 35px;
+      width: 40px;
+      height: 65px;
       background: var(--text);
     }
     
@@ -243,10 +243,10 @@
     .train-chimney::after {
       content: "";
       position: absolute;
-      top: -5px;
-      left: -5px;
-      width: 25px;
-      height: 5px;
+      top: -12px;
+      left: -12px;
+      width: 64px;
+      height: 12px;
       background: var(--text);
     }
 
@@ -254,32 +254,32 @@
     .train-wheel {
       position: absolute;
       bottom: 0;
-      width: 20px;
-      height: 20px;
+      width: 50px;
+      height: 50px;
       background: var(--bg);
-      border: 6px solid var(--text);
+      border: 14px solid var(--text);
     }
 
-    .train-wheel.w1 { left: 10px; }
-    .train-wheel.w2 { left: 40px; }
-    .train-wheel.w3 { left: 70px; }
+    .train-wheel.w1 { left: 25px; }
+    .train-wheel.w2 { left: 100px; }
+    .train-wheel.w3 { left: 175px; }
 
     /* Smoke */
     .smoke {
       position: absolute;
-      width: 10px;
-      height: 10px;
+      width: 25px;
+      height: 25px;
       background: var(--text);
       opacity: 0;
     }
 
-    .smoke.s1 { right: 18px; bottom: 85px; animation: puff 2s infinite 0s; }
-    .smoke.s2 { right: 8px; bottom: 95px; animation: puff 2s infinite 0.6s; }
-    .smoke.s3 { right: 28px; bottom: 105px; animation: puff 2s infinite 1.2s; }
+    .smoke.s1 { right: 43px; bottom: 215px; animation: puff 2s infinite 0s; }
+    .smoke.s2 { right: 18px; bottom: 240px; animation: puff 2s infinite 0.6s; }
+    .smoke.s3 { right: 68px; bottom: 265px; animation: puff 2s infinite 1.2s; }
 
     @keyframes puff {
       0% { transform: translateY(0) scale(1); opacity: 0.8; }
-      100% { transform: translateY(-40px) scale(2); opacity: 0; }
+      100% { transform: translateY(-80px) scale(2); opacity: 0; }
     }
   </style>
 </head>
