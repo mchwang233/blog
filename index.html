@@ -219,15 +219,16 @@
     /* TV Set Container */
     .tv-set {
         position: relative;
-        width: 320px;
-        height: 240px;
+        width: 480px;
+        height: 360px;
         background: var(--text);
-        border-radius: 20px;
-        padding: 20px;
-        box-shadow: 10px 10px 0 rgba(0,0,0,0.1);
+        border-radius: 30px;
+        padding: 30px;
+        box-shadow: 12px 12px 0 rgba(0,0,0,0.1);
         display: flex;
         flex-direction: column;
         align-items: center;
+        margin-top: 50px; /* Moved down */
     }
     
     .tv-set::before { /* Antenna Left */
@@ -306,7 +307,7 @@
         position: absolute;
         top: 50%;
         left: 50%;
-        transform: translate(-50%, -50%) scaleX(-1) scale(0.45); /* Centered and scaled */
+        transform: translate(-50%, -50%) scaleX(-1) scale(0.6); /* Centered and scaled up */
     }
     
     /* Coupling Link */
