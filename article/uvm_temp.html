@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>uvm template</title>
 
-    <meta name="description" content="一个uvm典型模板" />
   
+
   <!-- 使用小火车 emoji 作为 favicon -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚂</text></svg>">
 
@@ -89,15 +89,25 @@
 
   <main class="container">
     <article class="post">
-      <h1 class="post-title">uvm template</h1>
+      <h1 class="post-title"></h1>
 
-            <p class="post-meta">2022-01-18</p>
       
+
       <div class="post-body">
+        <article class="post">
+    <header class="post-header">
+        <h1 class="post-title">uvm template</h1>
+        <div class="post-meta">
+            <span class="post-date">2022-01-18</span>
+            
+        </div>
+    </header>
+    <div class="post-content">
         <p>很早之前就说写一个简单的uvm环境</p>
-        <p>首先是一个简单的dut，主要执行一些加减任务</p>
-        <!--more-->
-        <pre class="verilog"><code>`timescale lns/10fs
+<p>首先是一个简单的dut，主要执行一些加减任务</p>
+<!--more-->
+
+<pre><code class="language-verilog">`timescale lns/10fs
 module mul( 
     clk, 
     rst_n, 
@@ -119,15 +129,16 @@ module mul(
     assign num_c = c;
 
     always @(posedge clk or negedge rst_n)begin
-        if (!rst_n == l&#39;bl)begin
-            c &lt;= 8&#39;h0; 
+        if (!rst_n == l'bl)begin
+            c &lt;= 8'h0; 
         end else begin
             c &lt;= num_a + num_b;
         end
     end
 
-endmodule</code></pre>
-        <pre class="verilog"><code>`timescale lns/10fs
+endmodule
+</code></pre>
+<pre><code class="language-verilog">`timescale lns/10fs
 module top(
     clk,
     rst_n,
@@ -147,9 +158,10 @@ module top(
     . num_b(num_b), 
     . num_c(num_c) 
     );
-endmodule</code></pre>
-        <p>之后是harness</p>
-        <pre class="verilog"><code>module harness;
+endmodule
+</code></pre>
+<p>之后是harness</p>
+<pre><code class="language-verilog">module harness;
     logic elk; 
     logic rst_n; 
     logic [7:0] num_a; 
@@ -195,9 +207,10 @@ endmodule</code></pre>
         $fsdbDumpon;
     end
 
-endmodule</code></pre>
-        <p>之后是interface</p>
-        <pre class="verilog"><code>interface my_interface(input bit clk,input bit rst_n);
+endmodule
+</code></pre>
+<p>之后是interface</p>
+<pre><code class="language-verilog">interface my_interface(input bit clk,input bit rst_n);
 
     logic [7:0] a; 
     logic [7:0] b; 
@@ -209,35 +222,37 @@ endmodule</code></pre>
         inout c;
     endclocking
 
-endinterface</code></pre>
-        <p>之后是transaction</p>
-        <pre class="verilog"><code>class my_transaction extends extends uvm_sequence_item; 
+endinterface
+</code></pre>
+<p>之后是transaction</p>
+<pre><code class="language-verilog">class my_transaction extends extends uvm_sequence_item; 
     rand bit  [7:0] a; 
     rand bit  [7:0] b; 
     rand bit  [7:0] c; 
     rand byte kk[];
-    
+
     constraint k_cons{ 
         kk.size &gt;= 10; 
         kk.size &lt;= 90;
     }
 
     `uvm_object_utils_begin(my_transaction)
-        //&#39;uvm_field_int(a,UVM_ALL_0N)
-        //&#39;uvm_field_int(b,UVM_ALL_0N)
+        //'uvm_field_int(a,UVM_ALL_0N)
+        //'uvm_field_int(b,UVM_ALL_0N)
         `uvm_field_int(c,UVM_ALL_0N)
         `uvm_field_array_int(kk,UVM_ALL_0N)
     `uvm_object_utils_end
-    
+
     extern function new(string name = &quot;my_transaction&quot;); 
 
 endclass
 
 function my_transaction::new(string name = &quot;my_transaction&quot;);
     super.new(name); 
-endfunction</code></pre>
-        <p>之后是sequencer</p>
-        <pre class="verilog"><code>class my_sequencer extends uvm_sequencer #(my_transaction);
+endfunction
+</code></pre>
+<p>之后是sequencer</p>
+<pre><code class="language-verilog">class my_sequencer extends uvm_sequencer #(my_transaction);
 
     `uvm_component_utils(my_sequencer)
     extern function new(string name, uvm_component parent); 
@@ -246,9 +261,10 @@ endclass
 
 function my_sequencer::new(string name, uvm_component parent);
     super.new(name,parent); 
-endfunction</code></pre>
-        <p>之后是tx部分</p>
-        <pre class="verilog"><code>class tx_driver extends uvm_driver #(my_transaction); 
+endfunction
+</code></pre>
+<p>之后是tx部分</p>
+<pre><code class="language-verilog">class tx_driver extends uvm_driver #(my_transaction); 
 
     virtual my_interface vif;
 
@@ -273,8 +289,8 @@ endfunction
 
 task tx_driver::reset_phase(uvm_phase phase);
 
-    vif.a &lt;= $urandom_range(8&#39;hff,8&#39;h0); 
-    vif.b &lt;= $urandom_range(8&#39;hff,8&#39;h0);
+    vif.a &lt;= $urandom_range(8'hff,8'h0); 
+    vif.b &lt;= $urandom_range(8'hff,8'h0);
 
 endtask
 
@@ -292,8 +308,9 @@ task tx_driver::main_phase(uvm_phase phase);
         seq_item_port.item_done();
     end
 
-endtask</code></pre>
-        <pre class="verilog"><code>class tx_monitor extends uvm_monitor;
+endtask
+</code></pre>
+<pre><code class="language-verilog">class tx_monitor extends uvm_monitor;
 
     virtual my_interface vif;
     uvm_analysis_port #(my_transaction) tx_mon_ap;
@@ -331,8 +348,9 @@ task tx_monitor::main_phase(uvm_phase phase);
         @(posedge vif.clk);
     end
 
-endtask</code></pre>
-        <pre class="verilog"><code>class tx_agent extends uvm_agent;
+endtask
+</code></pre>
+<pre><code class="language-verilog">class tx_agent extends uvm_agent;
 
     tx_monitor mon;
     tx_driver  drv;
@@ -344,7 +362,7 @@ endtask</code></pre>
     extern function void build_phase(uvm_phase phase); 
     extern function void connect_phase(uvm_phase phase); 
     extern virtual task main_phase(uvm_phase phase);
-    
+
 endclass
 
 function tx_agent::new(string name, uvm_component parent);
@@ -366,9 +384,10 @@ endfunction
 
 task tx_agent::main_phase(uvm_phase phase);
 super.main_phase(phase); 
-endtask</code></pre>
-        <p>之后是rx部分</p>
-        <pre class="verilog"><code>class rx_monitor extends uvm_monitor; 
+endtask
+</code></pre>
+<p>之后是rx部分</p>
+<pre><code class="language-verilog">class rx_monitor extends uvm_monitor; 
 
     virtual my_interface vif;
     uvm_analysis_port #(my_transaction) rx_mon_ap;
@@ -388,7 +407,7 @@ function void rx_monitor::build_phase(uvm_phase phase);
     super.build_phase(phase); 
     rx_mon_ap = new(&quot;rx_mon_ap&quot;, this);
     if (!uvm_config_db#(virtual my_interface)::get(this,&quot;&quot;,&quot;vif&quot;,vif)) 
-        &#39;uvm_fatal(&quot;rx_monitor&quot;,&quot;virtual interface get fail !&quot;); 
+        'uvm_fatal(&quot;rx_monitor&quot;,&quot;virtual interface get fail !&quot;); 
 endfunction
 
 task rx_monitor::main_phase(uvm_phase phase); 
@@ -400,8 +419,9 @@ task rx_monitor::main_phase(uvm_phase phase);
         rx_tr.c = vif.c; 
         rx_mon_ap.write (rx_tr);
     end
-endtask</code></pre>
-        <pre class="verilog"><code>class rx_agent extends uvm_agent; 
+endtask
+</code></pre>
+<pre><code class="language-verilog">class rx_agent extends uvm_agent; 
 
     rx_monitor mon;
     uvm_analysis_port #(my_transaction) ap;
@@ -430,9 +450,10 @@ endfunction
 
 task rx_agent::main_phase(uvm_phase phase);
     super.main_phase(phase); 
-endtask</code></pre>
-        <p>之后是env</p>
-        <pre class="verilog"><code>class env extends uvm_env;
+endtask
+</code></pre>
+<p>之后是env</p>
+<pre><code class="language-verilog">class env extends uvm_env;
 
     rx_agent   rx_agt; 
     tx_agent   tx_agt; 
@@ -489,9 +510,10 @@ endtask
 
 task env::main_phase(uvm_phase phase);
     super,main_phase(phase); 
-endtask</code></pre>
-        <p>之后是rm</p>
-        <pre class="verilog"><code>class rm extends uvm_component;
+endtask
+</code></pre>
+<p>之后是rm</p>
+<pre><code class="language-verilog">class rm extends uvm_component;
 
     uvm_blocking_get_port #(my_transaction) port; 
     uvm_analysis_port #(my_transaction) rm_ap;
@@ -529,8 +551,9 @@ task rm::main_phase(uvm_phase phase);
         rm_ap.write(send_tr);
     end
 
-endtask</code></pre>
-        <pre class="verilog"><code>class scoreboard extends extends uvm_scoreboard; 
+endtask
+</code></pre>
+<pre><code class="language-verilog">class scoreboard extends extends uvm_scoreboard; 
 
     my_transaction rm_queue[$];
     uvm_blocking_get_port #(my_transaction) rm_port; 
@@ -586,7 +609,10 @@ task scoreboard::main_phase(uvm_phase phase);
 
     join
 
-endtask</code></pre>
+endtask
+</code></pre>
+    </div>
+</article>
       </div>
     </article>
 

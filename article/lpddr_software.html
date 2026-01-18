@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>lpddr 软件流程</title>
 
-    <meta name="description" content="包含ctrl init及phy init" />
   
+
   <!-- 使用小火车 emoji 作为 favicon -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚂</text></svg>">
 
@@ -89,173 +89,162 @@
 
   <main class="container">
     <article class="post">
-      <h1 class="post-title">lpddr 软件流程</h1>
+      <h1 class="post-title"></h1>
 
-            <p class="post-meta">2025-12-19</p>
       
+
       <div class="post-body">
+        <article class="post">
+    <header class="post-header">
+        <h1 class="post-title">lpddr 软件流程</h1>
+        <div class="post-meta">
+            <span class="post-date">2025-12-19</span>
+            
+        </div>
+    </header>
+    <div class="post-content">
         <ul>
-        <li>synopsys lpddr45 controller</li>
-        <li>synopsys lpddr45 phy</li>
-        <li>DFI 5.0</li>
-        </ul>
-        <h1 id="features">features</h1>
-        <p>lpddr ctrl lpddr phy</p>
-        <h1 id="配置流程">配置流程</h1>
-        <table>
-        <colgroup>
-        <col style="width: 1%" />
-        <col style="width: 82%" />
-        <col style="width: 3%" />
-        <col style="width: 12%" />
-        </colgroup>
-        <thead>
-        <tr class="header">
-        <th>Step</th>
-        <th>Application</th>
-        <th>SVTB Task</th>
-        <th>Notes</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr class="odd">
-        <td>1</td>
-        <td>Follow the PHYs power up procedure</td>
-        <td></td>
-        <td>See PUB databook for details</td>
-        </tr>
-        <tr class="even">
-        <td>2</td>
-        <td>Program the DWC_ddrctl registers</td>
-        <td></td>
-        <td>Note 1</td>
-        </tr>
-        <tr class="odd">
-        <td>3</td>
-        <td>Disable auto-refreshes, self-refresh, powerdown and
-        assertion of dfi_dram_clk_disable by
-        setting:<br>RFSHCTL0.dis_auto_refresh =
-        1,<br>PWRCTL.powerdown_en = 0,<br>PWRCTL.selfref_en =
-        0,<br>PWRTL.en_dfi_dram_clk_disable = 0</td>
-        <td>reset_dut</td>
-        <td></td>
-        </tr>
-        <tr class="even">
-        <td>4</td>
-        <td>De-assert reset signal core_ddrc_rstn</td>
-        <td></td>
-        <td></td>
-        </tr>
-        <tr class="odd">
-        <td>5</td>
-        <td>Set DFIMISC.dfi_init_complete_en to ‘0’<br>Set
-        DFIMISC.dfi_reset_n to ‘1’</td>
-        <td>phy_init</td>
-        <td></td>
-        </tr>
-        <tr class="even">
-        <td>6</td>
-        <td>Start PHY initialization and training by accessing relevant
-        PUB registers</td>
-        <td>phy_init</td>
-        <td>See PUB databook for details</td>
-        </tr>
-        <tr class="odd">
-        <td>7</td>
-        <td>Poll the PUB register APBONLY.UctShadowRegs[0] = 1’b0</td>
-        <td>phy_init</td>
-        <td>See PUB databook for details</td>
-        </tr>
-        <tr class="even">
-        <td>8</td>
-        <td>Read the PUB Register APBONLY.UctWriteOnlyShadow for
-        training status</td>
-        <td>phy_init</td>
-        <td>See PUB databook for details</td>
-        </tr>
-        <tr class="odd">
-        <td>9</td>
-        <td>Write the PUB Register APBONLY.DctWriteProt = 0</td>
-        <td>phy_init</td>
-        <td>See PUB databook for details</td>
-        </tr>
-        <tr class="even">
-        <td>10</td>
-        <td>Poll the PUB register APBONLY.UctShadowRegs[0] = 1’b1</td>
-        <td>phy_init</td>
-        <td>See PUB databook for details</td>
-        </tr>
-        <tr class="odd">
-        <td>11</td>
-        <td>Write the PUB Register APBONLY.DctWriteProt = 1</td>
-        <td>phy_init</td>
-        <td>See PUB databook for details</td>
-        </tr>
-        <tr class="even">
-        <td>12</td>
-        <td>Poll the PUB register MASTER.CalBusy = 0</td>
-        <td>phy_init</td>
-        <td>See PUB databook for details</td>
-        </tr>
-        <tr class="odd">
-        <td>13</td>
-        <td>Set DFIMISC.dfi_init_start to ‘1’</td>
-        <td>phy_init</td>
-        <td></td>
-        </tr>
-        <tr class="even">
-        <td>14</td>
-        <td>Poll DFISTAT.dfi_init_complete = 1</td>
-        <td>phy_init</td>
-        <td></td>
-        </tr>
-        <tr class="odd">
-        <td>15</td>
-        <td>Set DFIMISC.dfi_init_start to ‘0’</td>
-        <td>phy_init</td>
-        <td></td>
-        </tr>
-        <tr class="even">
-        <td>16</td>
-        <td>The following registers may need to be updated after
-        training has completed:<br>▪ RANKTMG0.diff_rank_wr_gap<br>▪
-        RANKTMG0.diff_rank_rd_gap<br>▪ DRAMSET1TMG2.rd2wr<br>▪
-        DRAMSET1TMG2.wr2rd<br>▪ DRAMSET1TMG24.rd2wr_s<br>▪
-        DRAMSET1TMG9.wr2rd_s<br>▪ DFITMG0.dfi_t_ctrl_delay<br>▪
-        DFITMG1.dfi_t_wrdata_delay<br>▪ DFITMG2.dfi_twck_delay (LPDDR5
-        only)</td>
-        <td>phy_init</td>
-        <td>Refer to relevant PHY documentation</td>
-        </tr>
-        <tr class="odd">
-        <td>17</td>
-        <td>Set DFIMISC.dfi_init_complete_en to ‘1’</td>
-        <td>phy_init</td>
-        <td></td>
-        </tr>
-        <tr class="even">
-        <td>18</td>
-        <td>Set PWRCTL.selfref_sw to ‘0’</td>
-        <td>phy_init</td>
-        <td></td>
-        </tr>
-        <tr class="odd">
-        <td>19</td>
-        <td>Wait for DWC_ddrctl to move to normal operating mode by
-        monitoring STAT.operating_mode signal</td>
-        <td>reset_dut</td>
-        <td></td>
-        </tr>
-        <tr class="even">
-        <td>20</td>
-        <td>Set back registers in step 3 to the original values if
-        desired</td>
-        <td></td>
-        <td></td>
-        </tr>
-        </tbody>
-        </table>
-        <pre class="mermaid"><code>flowchart TD
+<li>synopsys lpddr45 controller</li>
+<li>synopsys lpddr45 phy</li>
+<li>DFI 5.0</li>
+</ul>
+<h1 id="features">features</h1>
+<p>lpddr ctrl
+lpddr phy</p>
+<h1 id="_1">配置流程</h1>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Application</th>
+<th>SVTB Task</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Follow the PHYs power up procedure</td>
+<td></td>
+<td>See PUB databook for details</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Program the DWC_ddrctl registers</td>
+<td></td>
+<td>Note 1</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Disable auto-refreshes, self-refresh, powerdown and assertion of dfi_dram_clk_disable by setting:<br>RFSHCTL0.dis_auto_refresh = 1,<br>PWRCTL.powerdown_en = 0,<br>PWRCTL.selfref_en = 0,<br>PWRTL.en_dfi_dram_clk_disable = 0</td>
+<td>reset_dut</td>
+<td></td>
+</tr>
+<tr>
+<td>4</td>
+<td>De-assert reset signal core_ddrc_rstn</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>5</td>
+<td>Set DFIMISC.dfi_init_complete_en to ‘0’<br>Set DFIMISC.dfi_reset_n to ‘1’</td>
+<td>phy_init</td>
+<td></td>
+</tr>
+<tr>
+<td>6</td>
+<td>Start PHY initialization and training by accessing relevant PUB registers</td>
+<td>phy_init</td>
+<td>See PUB databook for details</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Poll the PUB register APBONLY.UctShadowRegs[0] = 1’b0</td>
+<td>phy_init</td>
+<td>See PUB databook for details</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Read the PUB Register APBONLY.UctWriteOnlyShadow for training status</td>
+<td>phy_init</td>
+<td>See PUB databook for details</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Write the PUB Register APBONLY.DctWriteProt = 0</td>
+<td>phy_init</td>
+<td>See PUB databook for details</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Poll the PUB register APBONLY.UctShadowRegs[0] = 1’b1</td>
+<td>phy_init</td>
+<td>See PUB databook for details</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Write the PUB Register APBONLY.DctWriteProt = 1</td>
+<td>phy_init</td>
+<td>See PUB databook for details</td>
+</tr>
+<tr>
+<td>12</td>
+<td>Poll the PUB register MASTER.CalBusy = 0</td>
+<td>phy_init</td>
+<td>See PUB databook for details</td>
+</tr>
+<tr>
+<td>13</td>
+<td>Set DFIMISC.dfi_init_start to ‘1’</td>
+<td>phy_init</td>
+<td></td>
+</tr>
+<tr>
+<td>14</td>
+<td>Poll DFISTAT.dfi_init_complete = 1</td>
+<td>phy_init</td>
+<td></td>
+</tr>
+<tr>
+<td>15</td>
+<td>Set DFIMISC.dfi_init_start to ‘0’</td>
+<td>phy_init</td>
+<td></td>
+</tr>
+<tr>
+<td>16</td>
+<td>The following registers may need to be updated after training has completed:<br>▪ RANKTMG0.diff_rank_wr_gap<br>▪ RANKTMG0.diff_rank_rd_gap<br>▪ DRAMSET1TMG2.rd2wr<br>▪ DRAMSET1TMG2.wr2rd<br>▪ DRAMSET1TMG24.rd2wr_s<br>▪ DRAMSET1TMG9.wr2rd_s<br>▪ DFITMG0.dfi_t_ctrl_delay<br>▪ DFITMG1.dfi_t_wrdata_delay<br>▪ DFITMG2.dfi_twck_delay (LPDDR5 only)</td>
+<td>phy_init</td>
+<td>Refer to relevant PHY documentation</td>
+</tr>
+<tr>
+<td>17</td>
+<td>Set DFIMISC.dfi_init_complete_en to ‘1’</td>
+<td>phy_init</td>
+<td></td>
+</tr>
+<tr>
+<td>18</td>
+<td>Set PWRCTL.selfref_sw to ‘0’</td>
+<td>phy_init</td>
+<td></td>
+</tr>
+<tr>
+<td>19</td>
+<td>Wait for DWC_ddrctl to move to normal operating mode by monitoring STAT.operating_mode signal</td>
+<td>reset_dut</td>
+<td></td>
+</tr>
+<tr>
+<td>20</td>
+<td>Set back registers in step 3 to the original values if desired</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-mermaid">flowchart TD
 
     S1[&quot;Step 1: Follow PHYs power-up procedure&quot;]
     S2[&quot;Step 2: Program DWC_ddrctl registers&quot;]
@@ -283,7 +272,10 @@
 
     %% Flow connections
     S1 --&gt; S2 --&gt; S3 --&gt; S4 --&gt; S5 --&gt; S6 --&gt; S7 --&gt; S8 --&gt; S9 --&gt; S10
-    S10 --&gt; S11 --&gt; S12 --&gt; S13 --&gt; S14 --&gt; S15 --&gt; S16 --&gt; S17 --&gt; S18 --&gt; S19 --&gt; S20</code></pre>
+    S10 --&gt; S11 --&gt; S12 --&gt; S13 --&gt; S14 --&gt; S15 --&gt; S16 --&gt; S17 --&gt; S18 --&gt; S19 --&gt; S20
+</code></pre>
+    </div>
+</article>
       </div>
     </article>
 
