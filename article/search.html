@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Home</title>
+  <title>搜索结果</title>
 
   
 
@@ -81,37 +81,15 @@
   <div class="container layout-grid">
     <main class="main-content">
       <div class="post-body">
-        <div class="post-preview">
-  <h2 class="post-preview-title"><a href="imgnote.html">图像笔记</a></h2>
-  <div class="post-preview-meta">2026-01-15</div><div class="post-preview-taxonomies"><span class="categories">Categories: <span class="category">编程</span>, <span class="category">图像</span></span> <span class="tags"><span class="tag">#学习笔记</span>, <span class="tag">#图像</span></span></div>
-  <div class="post-preview-desc"><h1>常见图像格式</h1>
-<h2>格式名称</h2>
-<ul>
-<li>rgb888</li>
-<li>rgb8888</li>
-<li>yuv</li>
-</ul>
-<h2>存储格式</h2>
-<p>这里主要是小端存储</p>
-<p>这里有很多转换脚本 可以参考</p></div>
-</div>
-<div class="post-preview">
-  <h2 class="post-preview-title"><a href="build.html">网站搭建过程</a></h2>
-  <div class="post-preview-meta">2026-01-15</div><div class="post-preview-taxonomies"><span class="categories">Categories: <span class="category">web</span>, <span class="category">coding</span></span> <span class="tags"><span class="tag">#web</span></span></div>
-  <div class="post-preview-desc"><h4>添加搜索功能</h4>
-<h4>优化搜索栏</h4></div>
-</div>
-<div class="post-preview">
-  <h2 class="post-preview-title"><a href="lpddr_software.html">lpddr 软件流程</a></h2>
-  <div class="post-preview-meta">2025-12-19</div>
-  <div class="post-preview-desc"><p>包含ctrl init及phy init</p></div>
-</div>
-<div class="post-preview">
-  <h2 class="post-preview-title"><a href="uvm_temp.html">uvm template</a></h2>
-  <div class="post-preview-meta">2022-01-18</div>
-  <div class="post-preview-desc"><p>很早之前就说写一个简单的uvm环境</p>
-<p>首先是一个简单的dut，主要执行一些加减任务</p></div>
-</div>
+        
+    <div class="search-page-header">
+        <h1>搜索结果</h1>
+        <p>关键词: <span id="search-query-display" class="highlight-text"></span></p>
+    </div>
+    <div id="full-search-results" class="post-body">
+        <div class="loading">正在搜索...</div>
+    </div>
+    
       </div>
     </main>
     

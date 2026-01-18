@@ -790,9 +790,9 @@ nav a:hover {
   border: 1px solid var(--border);
   border-radius: 6px;
   color: var(--text);
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
-  width: 200px;
+  padding: 0.7rem 1.2rem;
+  font-size: 1rem;
+  width: 260px;
   transition: all 0.2s ease;
   outline: none;
 }
@@ -800,7 +800,7 @@ nav a:hover {
 #search-input:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
-  width: 240px; /* Slight expansion effect */
+  width: 320px; /* Slight expansion effect */
 }
 
 /* --- Search Results --- */
@@ -808,7 +808,7 @@ nav a:hover {
   position: absolute;
   top: 100%;
   right: 0;
-  width: 300px;
+  width: 350px;
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 6px;

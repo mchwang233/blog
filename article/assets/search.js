@@ -149,4 +149,149 @@ document.addEventListener('DOMContentLoaded', () => {
       }
   });
 
+  // Handle Enter key for full search page
+  searchInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault(); // Prevent form submission
+      const query = searchInput.value.trim();
+      if (query) {
+        // Redirect to search.html
+        // We need to resolve the path relative to root.
+        // Similar to fetch logic, let's try robust redirection.
+        // Assuming search.html is at root (dist/search.html).
+        
+        let target = 'search.html';
+        const depth = window.location.pathname.split('/').length;
+        if (depth > 2 && !window.location.pathname.endsWith('/')) {
+             // If we are in 'dist/sub/post.html', we need '../search.html' ?
+             // Or better, use absolute path if we knew base.
+             // Let's use relative path finding.
+             // Or rely on <base> tag if it existed.
+             
+             // Simplest: Check if we are at root level.
+             // But simpler: just use relative path logic shared with fetch.
+             // If fetch worked with 'search.json', 'search.html' is likely sibling.
+             // If fetch worked with '../search.json', '../search.html'.
+        }
+        
+        // Let's try to just go to /search.html relative to current page base
+        // But since we generate search.html at root, we need to go up.
+        
+        // Hack: Use the same relative path logic as the logo
+        // The logo href is '/', or specific.
+        // In article template: $root$/index.html.
+        
+        // We can check if window.location contains 'search.html'
+        if (window.location.pathname.endsWith('search.html')) {
+             // Update query param without reload
+             const url = new URL(window.location);
+             url.searchParams.set('q', query);
+             window.history.pushState({}, '', url);
+             handleSearchPage(); // Manually trigger search
+             resultsContainer.style.display = 'none';
+        } else {
+             // Navigate
+             // Try to construct path relative to current
+             // or just absolute path if on server.
+             // Let's assume we can navigate to 'search.html' relative to 'index.html'.
+             
+             // If we are in '/a/b.html', we want '/search.html'.
+             
+             // Let's just set window.location.href to a relative path that we HOPE resolves to root search.html
+             // This is hard without explicit root config.
+             // But we can try: 
+             // If document.querySelector('a.logo') href exists?
+             const logo = document.querySelector('a.logo');
+             if (logo) {
+                 const rootUrl = logo.getAttribute('href');
+                 // rootUrl might be '/' or '../index.html' or similar.
+                 // We want search.html at the same level as index.html
+                 let searchUrl = rootUrl.replace('index.html', 'search.html');
+                 if (searchUrl.endsWith('/')) searchUrl += 'search.html';
+                 // Clean up double slashes
+                 
+                 // If rootUrl is just '/', then '/search.html'
+                 if (rootUrl === '/') searchUrl = '/search.html';
+                 else if (rootUrl === '.') searchUrl = 'search.html';
+                 
+                 window.location.href = searchUrl + '?q=' + encodeURIComponent(query);
+                 return;
+             }
+             
+             window.location.href = 'search.html?q=' + encodeURIComponent(query);
+        }
+      }
+    }
+  });
+
+  // --- Full Search Page Logic ---
+  const handleSearchPage = async () => {
+    const fullResultsContainer = document.getElementById('full-search-results');
+    const queryDisplay = document.getElementById('search-query-display');
+    
+    if (!fullResultsContainer) return;
+    
+    // Parse query param
+    const params = new URLSearchParams(window.location.search);
+    const query = params.get('q') || '';
+    
+    if (queryDisplay) queryDisplay.textContent = query;
+    if (searchInput) searchInput.value = query; // Sync input
+    
+    if (!query) {
+       fullResultsContainer.innerHTML = '<p>请输入搜索关键词。</p>';
+       return;
+    }
+    
+    await fetchSearchData();
+    
+    if (!searchData) {
+        fullResultsContainer.innerHTML = '<p>无法加载搜索索引。</p>';
+        return;
+    }
+    
+    const q = query.toLowerCase();
+    const results = searchData.filter(post => {
+      const title = post.title.toLowerCase();
+      const content = (post.content || '').toLowerCase();
+      const tags = (post.tags || []).join(' ').toLowerCase();
+      return title.includes(q) || content.includes(q) || tags.includes(q);
+    });
+    
+    if (results.length === 0) {
+        fullResultsContainer.innerHTML = '<p>没有找到相关文章。</p>';
+        return;
+    }
+    
+    // Render full results
+    let html = '';
+    results.forEach(post => {
+        // Highlight snippet
+        let snippet = post.content.substring(0, 300);
+        // Maybe find where the query is and show context?
+        const idx = post.content.toLowerCase().indexOf(q);
+        if (idx > -1) {
+            const start = Math.max(0, idx - 100);
+            const end = Math.min(post.content.length, idx + 200);
+            snippet = (start > 0 ? '...' : '') + post.content.substring(start, end) + (end < post.content.length ? '...' : '');
+        }
+        
+        // Highlight logic could be added here
+        
+        html += `
+        <div class="post-preview">
+          <h2 class="post-preview-title"><a href="${post.url}">${post.title}</a></h2>
+          <div class="post-preview-meta">${post.date}</div>
+          <div class="post-preview-desc">${snippet}</div>
+        </div>`;
+    });
+    
+    fullResultsContainer.innerHTML = html;
+  };
+
+  // Check if we are on search page
+  if (document.getElementById('full-search-results')) {
+      handleSearchPage();
+  }
+
 });
