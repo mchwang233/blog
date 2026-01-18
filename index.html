@@ -142,21 +142,19 @@
     .scenery-item {
       position: absolute;
       top: 0; left: 0;
-      width: 641px; /* Slight overlap to prevent sub-pixel gaps */
+      /* 移除固定宽度，由内容(图片)决定宽度 */
       height: 100%;
       will-change: transform;
-      /* Animation removed, controlled by JS */
     }
 
-    /* Keyframes removed as we use JS for seamless looping */
-    /* @keyframes scenery-scroll ... removed */
-    /* @keyframes scenery-scroll-initial ... removed */
+    /* 移除之前的 keyframes 定义 */
 
     .scenery-item img {
       display: block;
-      width: 100%;
-      height: auto;
-      /* 为了更好的兼容性和性能，移除之前的加载类 */
+      /* 强制高度填满，宽度自适应，保证图片按原比例完全显示 */
+      height: 100%;
+      width: auto;
+      max-width: none; /* 防止被父容器限制 */
     }
 
     /* 响应式微调 */
@@ -313,129 +311,154 @@
           return allImages[randomIndex];
       }
 
-      // --- Seamless Scenery Logic (JS Driven) ---
-      // We use two persistent buffers and requestAnimationFrame to ensure
-      // pixel-perfect seamless scrolling without gaps.
+      // --- Seamless Scenery Logic (Queue Based) ---
+      // 重构逻辑：基于队列的动态宽度拼接，支持任意比例图片无缝滚动
       
       const sceneryContainer = document.querySelector('.scenery-container');
-      let item1, item2;
-      let pos1 = 0;
-      let pos2 = 640;
-      const speed = 0.128; // pixels per ms (640px / 5000ms)
-      let lastTime = 0;
+      const CONTAINER_HEIGHT = 280; // 视窗高度
+      const VIEWPORT_WIDTH = 640;   // 视窗宽度
+      
+      let activeItems = []; // 存放当前屏幕上的图块 { element, x, width }
+      let tailX = 0;        // 队尾位置（下一张图插入的起始X坐标）
+      let running = false;
+      
+      // 速度设置：像素/毫秒
+      // 之前是 640px/5000ms = 0.128 px/ms
+      const speed = 0.12; // 调快一点
 
-      function createItem() {
+      // 图片预加载队列，确保证无缝拼接
+      const imageQueue = [];
+      const MIN_QUEUE_SIZE = 3;
+
+      // 辅助：加载图片并获取尺寸
+      function loadImageAsync(src) {
+          return new Promise((resolve, reject) => {
+              const img = new Image();
+              img.onload = () => resolve(img);
+              img.onerror = () => reject(new Error(`Failed to load ${src}`));
+              img.src = src;
+          });
+      }
+
+      // 填充预加载队列
+      async function fillQueue() {
+          while (imageQueue.length < MIN_QUEUE_SIZE) {
+               const src = getNextImage();
+               if (!src) break;
+               
+               try {
+                   const img = await loadImageAsync(src);
+                   imageQueue.push(img);
+               } catch (e) {
+                   console.warn(e);
+                   // 失败则稍后重试或跳过
+                   await new Promise(r => setTimeout(r, 100));
+               }
+          }
+      }
+
+      // 添加下一张图到舞台
+      function addNextItem() {
+          if (imageQueue.length === 0) {
+              // 队列空了，强制加载一个（可能会有一瞬间空白，但 fillQueue 会尽快补上）
+              fillQueue();
+              return;
+          }
+
+          const imgObj = imageQueue.shift();
+          fillQueue(); // 消费了一个，赶紧补
+          
+          // 计算渲染宽度 (保持原比例)
+          const aspect = imgObj.naturalWidth / imgObj.naturalHeight;
+          const renderWidth = CONTAINER_HEIGHT * aspect;
+
           const div = document.createElement('div');
           div.className = 'scenery-item';
-          // Initial placeholder
-          div.style.backgroundColor = '#222'; 
-          return div;
-      }
-
-      function updateItemImage(div) {
-          const imgSrc = getNextImage();
-          if (imgSrc) {
-              // Check if img already exists
-              let img = div.querySelector('img');
-              if (!img) {
-                  img = document.createElement('img');
-                  img.alt = 'bg';
-                  div.appendChild(img);
-              }
-              img.src = imgSrc;
-          }
-      }
-
-      function startAnimationLoop() {
-          // Initialize items
-          sceneryContainer.innerHTML = ''; // Clear existing
-          item1 = createItem();
-          item2 = createItem();
-          sceneryContainer.appendChild(item1);
-          sceneryContainer.appendChild(item2);
-
-          // Set initial images
-          updateItemImage(item1);
-          updateItemImage(item2);
-
-          // Reset positions
-          pos1 = 0;
-          pos2 = 640;
+          div.appendChild(imgObj); // 直接使用预加载好的 img 元素
           
-          requestAnimationFrame(loop);
+          // 初始位置
+          div.style.transform = `translate3d(${tailX}px, 0, 0)`;
+          
+          sceneryContainer.appendChild(div);
+
+          activeItems.push({
+              el: div,
+              x: tailX,
+              width: renderWidth
+          });
+
+          // 更新队尾位置
+          tailX += renderWidth;
       }
 
+      let lastTime = 0;
       function loop(timestamp) {
           if (!lastTime) lastTime = timestamp;
-          const dt = timestamp - lastTime;
+          let dt = timestamp - lastTime;
           lastTime = timestamp;
 
-          if (dt > 100) { 
-              // Tab was inactive or huge lag, reset dt to avoid jump
-              // But we just let it slide, maybe skip frame logic
-          } else {
-              const move = speed * dt;
-              pos1 -= move;
-              pos2 -= move;
+          // 避免切换 tab 后 dt 过大导致跳跃
+          if (dt > 50) dt = 50;
 
-              // Check boundary and recycle
-              // If item1 goes completely off screen (-640)
-              if (pos1 <= -640) {
-                  // Snap it exactly to the end of item2
-                  pos1 = pos2 + 640;
-                  updateItemImage(item1);
-              }
-              if (pos2 <= -640) {
-                  // Snap it exactly to the end of item1
-                  pos2 = pos1 + 640;
-                  updateItemImage(item2);
-              }
+          const move = speed * dt;
 
-              item1.style.transform = `translate3d(${pos1}px, 0, 0)`;
-              item2.style.transform = `translate3d(${pos2}px, 0, 0)`;
+          // 1. 移动现有元素
+          for (let i = 0; i < activeItems.length; i++) {
+              const item = activeItems[i];
+              item.x -= move;
+              item.el.style.transform = `translate3d(${item.x.toFixed(2)}px, 0, 0)`;
           }
-          
+
+          // 2. 更新队尾指针 (它随整体左移)
+          tailX -= move;
+
+          // 3. 移除已完全离开左侧屏幕的元素 (加上一点缓冲区 50px)
+          if (activeItems.length > 0) {
+              const firstItem = activeItems[0];
+              if (firstItem.x + firstItem.width < -50) {
+                  firstItem.el.remove();
+                  activeItems.shift();
+              }
+          }
+
+          // 4. 检查是否需要在右侧补充新元素
+          // 如果队尾已经进入 "即将显示区域" (比如视窗右侧内或稍微出去一点)
+          if (tailX < VIEWPORT_WIDTH + 100) {
+              addNextItem();
+          }
+
           requestAnimationFrame(loop);
       }
 
       // Initialize Logic
-      function initScenery() {
+      async function initScenery() {
           // Try to get images from global variable set by images.js
           if (window.manifestImages && window.manifestImages.length > 0) {
               allImages = window.manifestImages;
               console.log('Loaded images from JS manifest:', allImages.length);
           } else {
               console.warn('window.manifestImages not found or empty.');
+              // 兜底
+              allImages = ['img/mountain-4847687_1920.jpg']; 
           }
 
-          /* Removed fetch logic to avoid CORS/File protocol issues
-          try {
-            const response = await fetch('img/images.json'); 
-            ...
-          }
-          */
-
-          if (allImages.length === 0) {
-              console.warn("No images found. Please check img/images.js");
-              // Fallback for visual debugging only if absolutely needed, or leave blank
-          }
-
-          // Start Animation Loop
-          startAnimationLoop();
+          // 先填充满可视区域
+          console.log("Preloading initial images...");
+          await fillQueue();
           
-          /* Interval logic removed
-          setInterval(() => { addScenery(false); }, 5000);
-          */
+          // 初始铺满屏幕
+          while (tailX < VIEWPORT_WIDTH + 100) {
+               addNextItem();
+               // 如果队列空了但在初始化阶段，只能硬等一下 fillQueue 里的 promise
+               // 由于是 async 这里不会阻塞死，但也需要确保队列有东西
+               if (imageQueue.length === 0) await fillQueue();
+          }
+
+          // Start Animation
+          requestAnimationFrame(loop);
       }
       
       initScenery();
-
-      /* Previously called directly:
-      addScenery(true); 
-      addScenery(false); 
-      setInterval(...)
-      */
-
     });
   </script>
   <section id="about" class="footnote">
