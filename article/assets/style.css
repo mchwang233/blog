@@ -631,6 +631,31 @@ nav a:hover {
   margin-bottom: 1rem;
 }
 
+.post-preview-taxonomies {
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.post-preview-taxonomies .categories,
+.post-preview-taxonomies .tags {
+  margin-right: 1.2rem;
+}
+
+.post-preview-taxonomies .category {
+  display: inline-block;
+  background: rgba(59, 130, 246, 0.15);
+  color: var(--t-blue);
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  margin: 0 0.1rem;
+}
+
+.post-preview-taxonomies .tag {
+  color: var(--t-green);
+  margin-right: 0.3rem;
+}
+
 .post-preview-desc {
   font-size: 1.05rem;
   color: var(--muted);
