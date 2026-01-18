@@ -14,6 +14,7 @@
   <!-- Use dark theme for Prism -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+  <script src="./assets/search.js"></script>
   
   <script>
     // Force set manual mode before Prism loads to ensure no auto-highlighting occurs
@@ -78,12 +79,12 @@
 </head>
 <body>
   <header>
-    <div class="logo">有趣</div>
-    <nav>
-      <a href="/">Home</a>
-      <a href="/article">Articles</a>
-      <a href="#about">About</a>
-    </nav>
+    <a href="./index.html" class="logo" style="text-decoration: none; color: inherit;">有趣</a>
+    <div class="search-box">
+      <form id="search-form" action="javascript:void(0);">
+        <input type="text" id="search-input" name="q" placeholder="搜索..." aria-label="Search">
+      </form>
+    </div>
   </header>
 
   <main class="container">

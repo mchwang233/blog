@@ -15,9 +15,11 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" data-manual></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+  <script src="./assets/search.js"></script>
   <script>
     // 等待所有资源加载完成
     window.addEventListener('load', function() {
+
       // 转换 Pandoc 的类名格式：<pre class="xxx"><code> -> <pre><code class="language-xxx">
       document.querySelectorAll('pre[class]').forEach((pre) => {
         const code = pre.querySelector('code');
@@ -67,12 +69,12 @@
 </head>
 <body>
   <header>
-    <div class="logo">有趣</div>
-    <nav>
-      <a href="/">Home</a>
-      <a href="/article">Articles</a>
-      <a href="#about">About</a>
-    </nav>
+    <a href="/" class="logo" style="text-decoration: none; color: inherit;">有趣</a>
+    <div class="search-box">
+      <form id="search-form" action="javascript:void(0);">
+        <input type="text" id="search-input" name="q" placeholder="搜索..." aria-label="Search">
+      </form>
+    </div>
   </header>
 
   <!-- Main Content (Post List) -->
@@ -94,6 +96,11 @@
 <p>这里有很多转换脚本 可以参考</p></div>
 </div>
 <div class="post-preview">
+  <h2 class="post-preview-title"><a href="build.html">网站搭建过程</a></h2>
+  <div class="post-preview-meta">2026-01-15</div><div class="post-preview-taxonomies"><span class="categories">Categories: <span class="category">web</span>, <span class="category">coding</span></span> <span class="tags"><span class="tag">#web</span></span></div>
+  <div class="post-preview-desc"><h4>添加搜索功能</h4></div>
+</div>
+<div class="post-preview">
   <h2 class="post-preview-title"><a href="lpddr_software.html">lpddr 软件流程</a></h2>
   <div class="post-preview-meta">2025-12-19</div>
   <div class="post-preview-desc"><p>包含ctrl init及phy init</p></div>
@@ -112,6 +119,8 @@
 <section class="widget">
 <h3 class="widget-title">分类</h3>
 <ul class="widget-list">
+<li><a href="#">coding (1)</a></li>
+<li><a href="#">web (1)</a></li>
 <li><a href="#">图像 (1)</a></li>
 <li><a href="#">编程 (1)</a></li>
 </ul>
@@ -119,6 +128,7 @@
 <section class="widget">
 <h3 class="widget-title">标签</h3>
 <div class="tag-cloud">
+<a href="#" class="tag-cloud-item">web (1)</a>
 <a href="#" class="tag-cloud-item">图像 (1)</a>
 <a href="#" class="tag-cloud-item">学习笔记 (1)</a>
 </div>
@@ -127,6 +137,7 @@
 <h3 class="widget-title">最新文章</h3>
 <ul class="widget-list">
 <li><a href="imgnote.html">图像笔记</a></li>
+<li><a href="build.html">网站搭建过程</a></li>
 <li><a href="lpddr_software.html">lpddr 软件流程</a></li>
 <li><a href="uvm_temp.html">uvm template</a></li>
 </ul>
