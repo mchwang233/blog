@@ -695,9 +695,34 @@ nav a:hover {
 }
 
 .post-preview-desc {
-  font-size: 1rem;
+  font-size: 0.95rem; /* Slightly smaller than body text */
   color: #4b5563;
   line-height: 1.6;
+}
+
+/* Reset headings inside preview to look more like normal text */
+.post-preview-desc h1, 
+.post-preview-desc h2, 
+.post-preview-desc h3, 
+.post-preview-desc h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0.5rem 0 0.25rem;
+  padding: 0;
+  border: none;
+}
+
+.post-preview-desc p {
+  margin: 0 0 0.5rem;
+}
+
+.post-preview-desc pre {
+  background: var(--panel);
+  padding: 0.5rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  overflow: hidden; /* Prevent code from breaking layout in preview */
+  max-height: 150px;
 }
 
 /* --- Pagination Styles --- */
