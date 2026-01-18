@@ -131,6 +131,34 @@
     }
     .footnote a:hover { color: var(--nav-hover); }
 
+    /* 背景风景容器 */
+    .scenery-container {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      overflow: hidden;
+      z-index: 0; 
+    }
+
+    .scenery-item {
+      position: absolute;
+      top: 0; left: 0;
+      width: 641px; /* Slight overlap to prevent sub-pixel gaps */
+      height: 100%;
+      will-change: transform;
+      /* Animation removed, controlled by JS */
+    }
+
+    /* Keyframes removed as we use JS for seamless looping */
+    /* @keyframes scenery-scroll ... removed */
+    /* @keyframes scenery-scroll-initial ... removed */
+
+    .scenery-item img {
+      display: block;
+      width: 100%;
+      height: auto;
+      /* 为了更好的兼容性和性能，移除之前的加载类 */
+    }
+
     /* 响应式微调 */
     @media (max-height: 800px) {
         .film-strip { transform: scale(1.1); }
@@ -254,7 +282,6 @@
 
       // --- Stations & Scenery Logic ---
       const filmScreen = document.querySelector('.film-screen');
-      const sceneryContainer = document.querySelector('.scenery-container');
       
       // Generate 35 images: shanhai_1.jpg to shanhai_35.jpg
       /* Hardcoded list generation removed
@@ -266,11 +293,11 @@
       
       let allImages = [];
 
-      // Image selection logic: ensure no repeats in the last 10 images
-      let recentImages = []; // Queue to store last 10 used indices
+      // Image selection logic
+      let recentImages = []; 
       
       function getNextImage() {
-          if (allImages.length === 0) return ''; // Safely handle empty
+          if (allImages.length === 0) return ''; 
 
           let randomIndex;
           let attempts = 0;
@@ -280,44 +307,95 @@
              attempts++;
           } while (recentImages.includes(randomIndex) && attempts < 100);
           
-          // Update queue
           recentImages.push(randomIndex);
-          if (recentImages.length > 10) {
-              recentImages.shift(); // Remove oldest
-          }
+          if (recentImages.length > 10) recentImages.shift(); 
           
           return allImages[randomIndex];
       }
 
-      // --- 1. Continuous Background Scenery ---
-      // We want scenery to clear Screen (640px) in 5 seconds -> matching speed.
-      // Normal animation: start 640 -> end -640. Duration 10s.
-      // Initial animation: start 0 -> end -640. Duration 5s.
+      // --- Seamless Scenery Logic (JS Driven) ---
+      // We use two persistent buffers and requestAnimationFrame to ensure
+      // pixel-perfect seamless scrolling without gaps.
       
-      function addScenery(isInitial = false) {
-          const item = document.createElement('div');
-          item.className = 'scenery-item';
-          
+      const sceneryContainer = document.querySelector('.scenery-container');
+      let item1, item2;
+      let pos1 = 0;
+      let pos2 = 640;
+      const speed = 0.128; // pixels per ms (640px / 5000ms)
+      let lastTime = 0;
+
+      function createItem() {
+          const div = document.createElement('div');
+          div.className = 'scenery-item';
+          // Initial placeholder
+          div.style.backgroundColor = '#222'; 
+          return div;
+      }
+
+      function updateItemImage(div) {
           const imgSrc = getNextImage();
           if (imgSrc) {
-             item.innerHTML = `<img src="${imgSrc}" alt="bg">`;
+              // Check if img already exists
+              let img = div.querySelector('img');
+              if (!img) {
+                  img = document.createElement('img');
+                  img.alt = 'bg';
+                  div.appendChild(img);
+              }
+              img.src = imgSrc;
+          }
+      }
+
+      function startAnimationLoop() {
+          // Initialize items
+          sceneryContainer.innerHTML = ''; // Clear existing
+          item1 = createItem();
+          item2 = createItem();
+          sceneryContainer.appendChild(item1);
+          sceneryContainer.appendChild(item2);
+
+          // Set initial images
+          updateItemImage(item1);
+          updateItemImage(item2);
+
+          // Reset positions
+          pos1 = 0;
+          pos2 = 640;
+          
+          requestAnimationFrame(loop);
+      }
+
+      function loop(timestamp) {
+          if (!lastTime) lastTime = timestamp;
+          const dt = timestamp - lastTime;
+          lastTime = timestamp;
+
+          if (dt > 100) { 
+              // Tab was inactive or huge lag, reset dt to avoid jump
+              // But we just let it slide, maybe skip frame logic
           } else {
-             // Fallback color if no image loaded yet
-             item.style.backgroundColor = '#222';
+              const move = speed * dt;
+              pos1 -= move;
+              pos2 -= move;
+
+              // Check boundary and recycle
+              // If item1 goes completely off screen (-640)
+              if (pos1 <= -640) {
+                  // Snap it exactly to the end of item2
+                  pos1 = pos2 + 640;
+                  updateItemImage(item1);
+              }
+              if (pos2 <= -640) {
+                  // Snap it exactly to the end of item1
+                  pos2 = pos1 + 640;
+                  updateItemImage(item2);
+              }
+
+              item1.style.transform = `translate3d(${pos1}px, 0, 0)`;
+              item2.style.transform = `translate3d(${pos2}px, 0, 0)`;
           }
           
-          if (isInitial) {
-              item.style.animation = 'scenery-scroll-initial 5s linear forwards';
-          } else {
-              item.style.animation = 'scenery-scroll 10s linear forwards';
-          }
-          
-          sceneryContainer.appendChild(item);
-          
-          // Cleanup
-          setTimeout(() => {
-              if (item.parentNode) item.parentNode.removeChild(item);
-          }, 11000); 
+          requestAnimationFrame(loop);
       }
 
       // Initialize Logic
@@ -343,12 +421,11 @@
           }
 
           // Start Animation Loop
-          addScenery(true); 
-          addScenery(false); 
+          startAnimationLoop();
           
-          setInterval(() => {
-              addScenery(false);
-          }, 5000);
+          /* Interval logic removed
+          setInterval(() => { addScenery(false); }, 5000);
+          */
       }
       
       initScenery();
