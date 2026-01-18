@@ -1,8 +1,8 @@
 :root {
   color-scheme: light;
   /* Morandi / Paper Texture Palette */
-  --bg: #fdfcf8;           /* Paper White/Cream */
-  --panel: #f4f1ea;        /* Warm Light Beige */
+  --bg: #f5f2e9;           /* User requested background */
+  --panel: #fdfcf8;        /* Lighter paper for cards/panels */
   --text: #5c5552;         /* Warm Dark Grey */
   --muted: #8d8682;        /* Taupe */
   --accent: #8DA399;       /* Morandi Sage Green */
@@ -16,7 +16,7 @@
    --t-green: #9fb39f;     /* Sage */
    --t-yellow: #dcc094;    /* Sand */
    --t-dark: #5c5552;      /* Warm Dark Grey */
-   --t-light: #fdfcf8;     /* Paper White */
+   --t-light: #f5f2e9;     /* Matches BG */
 }
 
 /* --- Base Styles --- */
@@ -424,7 +424,7 @@ nav a:hover {
     left: 0;
     width: 100%;
     height: 25px;
-    background-image: linear-gradient(90deg, #fdfcf8 16px, transparent 16px); /* Use bg color */
+    background-image: linear-gradient(90deg, var(--bg) 16px, transparent 16px); /* Use bg color */
     background-size: 34px 100%;
     background-position: 9px 0;
     background-repeat: repeat-x;
