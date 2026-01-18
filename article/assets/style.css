@@ -870,3 +870,25 @@ nav a:hover {
     left: 0;
   }
 }
+
+/* --- Search Page --- */
+.search-page-header {
+  margin-bottom: 2rem;
+  border-bottom: 2px solid var(--border);
+  padding-bottom: 1rem;
+}
+
+.search-page-header h1 {
+  margin: 0 0 0.5rem;
+  font-size: 2rem;
+}
+
+.highlight-text {
+  color: var(--accent);
+  font-weight: bold;
+}
+
+.loading {
+  color: var(--muted);
+  font-style: italic;
+}
