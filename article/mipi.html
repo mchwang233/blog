@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Home</title>
+  <title>MIPI相关内容</title>
 
   
 
@@ -11,29 +11,25 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚂</text></svg>">
 
   <link rel="stylesheet" href="./assets/style.css" />
+  <!-- Use light theme for Prism -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" data-manual></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+  <script src="./assets/search.js"></script>
+  
+  <script>
+    // Force set manual mode before Prism loads to ensure no auto-highlighting occurs
+    window.Prism = window.Prism || {};
+    window.Prism.manual = true;
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
-  <script src="./assets/search.js"></script>
   <script>
-    // 等待所有资源加载完成
-    window.addEventListener('load', function() {
-
-      // 转换 Pandoc 的类名格式：<pre class="xxx"><code> -> <pre><code class="language-xxx">
-      document.querySelectorAll('pre[class]').forEach((pre) => {
-        const code = pre.querySelector('code');
-        if (code && pre.className && !pre.className.includes('mermaid')) {
-          // 将 pre 的 class 移动到 code 并添加 language- 前缀
-          const lang = pre.className.trim();
-          if (lang !== 'mermaid' && lang !== 'language-mermaid') {
-            code.className = 'language-' + lang;
-            pre.removeAttribute('class');
-          }
-        }
-      });
+    // Use DOMContentLoaded to run as early as possible after parsing
+    document.addEventListener('DOMContentLoaded', function() {
       
-      // 处理 Mermaid 代码块
+      // 1. First, handle Mermaid blocks to convert them to divs and detach from pre/code
+      // This prevents Prism from ever seeing them as code blocks
       document.querySelectorAll('pre code.language-mermaid, pre.mermaid code').forEach((block) => {
         const pre = block.parentElement;
         const mermaidDiv = document.createElement('div');
@@ -48,11 +44,24 @@
         mermaidDiv.textContent = mermaidCode;
         pre.replaceWith(mermaidDiv);
       });
+
+      // 2. Fix Pandoc class names for other code blocks (e.g. pre.python -> code.language-python)
+      document.querySelectorAll('pre[class]').forEach((pre) => {
+        const code = pre.querySelector('code');
+        if (code && pre.className) {
+          const lang = pre.className.trim();
+          // Double check we're not touching mermaid if any slipped through
+          if (lang !== 'mermaid' && lang !== 'language-mermaid') {
+            code.className = 'language-' + lang;
+            pre.removeAttribute('class');
+          }
+        }
+      });
       
-      // 初始化 Mermaid
+      // 3. Initialize and Run Mermaid
       mermaid.initialize({ 
         startOnLoad: false,
-        theme: 'default', 
+        theme: 'default',
         securityLevel: 'loose',
         logLevel: 'debug'
       });
@@ -63,6 +72,7 @@
         console.error('Mermaid rendering error:', error);
       });
       
+      // 4. Run Prism highlight manually
       Prism.highlightAll();
     });
   </script>
@@ -77,63 +87,26 @@
     </div>
   </header>
 
-  <!-- Main Content (Post List) -->
   <div class="container layout-grid">
     <main class="main-content">
-      <div class="post-body">
-        <div class="post-preview">
-  <h2 class="post-preview-title"><a href="mipi.html">MIPI相关内容</a></h2>
-  <div class="post-preview-meta">2026-01-15</div><div class="post-preview-taxonomies"><span class="categories">Categories: <span class="category">coding</span></span> <span class="tags"><span class="tag">#mipi</span></span></div>
-  <div class="post-preview-desc"><h2>CSI</h2>
-<h2>DSI</h2></div>
-</div>
-<div class="post-preview">
-  <h2 class="post-preview-title"><a href="imgnote.html">图像笔记</a></h2>
-  <div class="post-preview-meta">2026-01-15</div><div class="post-preview-taxonomies"><span class="categories">Categories: <span class="category">编程</span>, <span class="category">图像</span></span> <span class="tags"><span class="tag">#学习笔记</span>, <span class="tag">#图像</span></span></div>
-  <div class="post-preview-desc"><h1>常见图像格式</h1>
-<h2>格式名称</h2>
-<ul>
-<li>rgb888</li>
-<li>rgb8888</li>
-<li>yuv</li>
-</ul>
-<h2>存储格式</h2>
-<p>这里主要是小端存储</p>
-<p>这里有很多转换脚本 可以参考</p></div>
-</div>
-<div class="post-preview">
-  <h2 class="post-preview-title"><a href="build.html">网站搭建过程</a></h2>
-  <div class="post-preview-meta">2026-01-15</div><div class="post-preview-taxonomies"><span class="categories">Categories: <span class="category">web</span>, <span class="category">coding</span></span> <span class="tags"><span class="tag">#web</span></span></div>
-  <div class="post-preview-desc"><h4>添加搜索功能</h4>
-<h4>优化搜索栏</h4>
-<h5>优化1</h5>
-<h4>modified title</h4>
-<h4>改进界面</h4>
-<h4>改进字体大小</h4>
-<ul>
-<li>1</li>
-</ul>
-<h4>改进tag及categories 添加跳转</h4>
-<h4>优化article</h4>
-<ul>
-<li>改进字体大小</li>
-<li>改进分类</li>
-</ul></div>
-</div>
-<div class="post-preview">
-  <h2 class="post-preview-title"><a href="lpddr_software.html">lpddr 软件流程</a></h2>
-  <div class="post-preview-meta">2025-12-19</div>
-  <div class="post-preview-desc"><p>包含ctrl init及phy init</p></div>
-</div>
-<div class="post-preview">
-  <h2 class="post-preview-title"><a href="uvm_temp.html">uvm template</a></h2>
-  <div class="post-preview-meta">2022-01-18</div>
-  <div class="post-preview-desc"><p>很早之前就说写一个简单的uvm环境</p>
-<p>首先是一个简单的dut，主要执行一些加减任务</p></div>
-</div>
-      </div>
+      <article class="post">
+    <header class="post-header">
+        <h1 class="post-title">MIPI相关内容</h1>
+        <div class="post-meta">
+            <span class="post-date">2026-01-15</span>
+            <span class="post-categories"><a href="categories/coding.html">coding</a></span>
+            <span class="post-tags"><a href="tags/mipi.html">mipi</a></span>
+        </div>
+    </header>
+    <div class="post-content">
+        <h2 id="csi">CSI</h2>
+<h2 id="dsi">DSI</h2>
+    </div>
+</article>
+
+      <div id="gitalk-container"></div>
     </main>
-    
+
     <aside class="sidebar">
       <div class="sidebar-box">
 <section class="widget">
@@ -175,9 +148,18 @@
     </div>
   </section>
 
+  <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    const gitalk = new Gitalk({
+      clientID: 'Ov23lig7OZ6L8ual62n1',
+      clientSecret: 'ea3366714a0eb02aa2b00f051a159eeb7228024d',
+      repo: 'blog',
+      owner: 'mchwang233',
+      admin: ['mchwang233'],
+      id: location.pathname, 
+      distractionFreeMode: false
     });
+    gitalk.render('gitalk-container');
   </script>
 </body>
 </html>
