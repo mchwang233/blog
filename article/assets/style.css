@@ -528,31 +528,40 @@ nav a:hover {
 
 /* --- Article / Markdown Styles --- */
 .post-title {
-  font-size: clamp(2rem, 4vw, 3rem);
+  font-size: 2.2rem;
+  font-weight: 700;
   margin: 0 0 1rem;
+  line-height: 1.3;
 }
 
 .post-meta {
-  margin: 0 0 1.5rem;
+  margin: 0 0 2rem;
   color: var(--muted);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
 }
 
 .post-body {
-  font-size: 1.05rem;
+  font-size: 1.1rem;
   line-height: 1.8;
+  color: #374151; /* Slightly darker than base text for readability */
 }
 
 .post-body h2 {
+  font-size: 1.5rem;
   margin-top: 2.5rem;
+  margin-bottom: 1rem;
   border-bottom: 1px solid var(--border);
   padding-bottom: 0.5rem;
   color: var(--text);
+  font-weight: 600;
 }
 
 .post-body h3 {
+  font-size: 1.25rem;
   margin-top: 2rem;
+  margin-bottom: 0.75rem;
   color: var(--text);
+  font-weight: 600;
 }
 
 .post-body img { 
@@ -629,8 +638,8 @@ nav a:hover {
 
 /* --- Post Preview Styles (Index Page) --- */
 .post-preview {
-  margin-bottom: 2.5rem;
-  padding-bottom: 2.5rem;
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
   border-bottom: 1px solid var(--border);
 }
 
@@ -639,9 +648,10 @@ nav a:hover {
 }
 
 .post-preview-title {
-  font-size: 1.75rem;
+  font-size: 1.4rem;
   margin: 0 0 0.5rem;
-  font-weight: 700;
+  font-weight: 600;
+  line-height: 1.4;
 }
 
 .post-preview-title a {
@@ -655,13 +665,13 @@ nav a:hover {
 
 .post-preview-meta {
   color: var(--muted);
-  font-size: 0.9rem;
-  margin-bottom: 1rem;
+  font-size: 0.85rem;
+  margin-bottom: 0.75rem;
 }
 
 .post-preview-taxonomies {
-  margin-bottom: 1rem;
-  font-size: 0.85rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.8rem;
   color: var(--muted);
 }
 
@@ -685,9 +695,9 @@ nav a:hover {
 }
 
 .post-preview-desc {
-  font-size: 1.05rem;
-  color: var(--muted);
-  line-height: 1.7;
+  font-size: 1rem;
+  color: #4b5563;
+  line-height: 1.6;
 }
 
 /* --- Pagination Styles --- */
@@ -729,22 +739,25 @@ nav a:hover {
 
 /* --- Sidebar Widgets --- */
 .widget {
-  margin-bottom: 2.5rem;
+  margin-bottom: 2rem;
 }
 
 .widget-title {
-  font-size: 1.1rem;
-  margin: 0 0 1rem;
+  font-size: 1rem;
+  margin: 0 0 0.75rem;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid var(--border);
   color: var(--text);
   font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .widget-list {
   list-style: none;
   padding: 0;
   margin: 0;
+  font-size: 0.95rem;
 }
 
 .widget-list li {
