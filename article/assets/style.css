@@ -1043,3 +1043,79 @@ nav a:hover {
     background: var(--border);
     margin: 2rem 0;
 }
+
+/* --- Post Meta (Tags & Categories Buttons) --- */
+.post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin: 0 0 2rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.post-date {
+  color: var(--muted);
+  font-weight: 500;
+  margin-right: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+}
+.post-date::before {
+  content: "📅";
+  margin-right: 6px;
+  font-size: 1em;
+}
+
+.post-categories, .post-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* Category Buttons */
+.post-categories a {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  background: rgba(59, 130, 246, 0.1); 
+  color: var(--accent);
+  border-radius: 4px;
+  font-size: 0.85rem;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.post-categories a:hover {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+/* Tag Buttons */
+.post-tags a {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  background: var(--border); 
+  color: var(--muted);
+  border-radius: 12px;
+  font-size: 0.85rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.post-tags a::before {
+  content: "#";
+  margin-right: 2px;
+  opacity: 0.6;
+}
+
+.post-tags a:hover {
+  background: var(--text);
+  color: #fff;
+  transform: translateY(-1px);
+}
