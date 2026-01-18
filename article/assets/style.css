@@ -1,21 +1,22 @@
 :root {
   color-scheme: light;
-  --bg: #ffffff;
-  --panel: #f8fafc;
-  --text: #334155;
-  --muted: #64748b;
-  --accent: #2563eb;
-  --border: #e2e8f0;
-  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --grid: rgba(0, 0, 0, 0.04);
+  /* Morandi / Paper Texture Palette */
+  --bg: #fdfcf8;           /* Paper White/Cream */
+  --panel: #f4f1ea;        /* Warm Light Beige */
+  --text: #5c5552;         /* Warm Dark Grey */
+  --muted: #8d8682;        /* Taupe */
+  --accent: #8DA399;       /* Morandi Sage Green */
+  --border: #e6e2da;       /* Soft Beige */
+  --shadow: 0 4px 12px -2px rgba(92, 85, 82, 0.08), 0 2px 6px -1px rgba(92, 85, 82, 0.04); /* Softer, warmer shadow */
+  --grid: rgba(92, 85, 82, 0.03);
   
-   /* Colorful Train Palette */
-   --t-red: #ef4444;       /* Boiler */
-   --t-blue: #3b82f6;      /* Cabin */
-   --t-green: #10b981;     /* Carriage */
-   --t-yellow: #f59e0b;    /* Details/Wheels */
-   --t-dark: #334155;      /* Chassis/Dark parts */
-   --t-light: #f1f5f9;     /* Windows/Contrast */
+   /* Morandi Train Palette */
+   --t-red: #d68c8c;       /* Dusty Rose */
+   --t-blue: #8aa2b3;      /* Dusty Blue */
+   --t-green: #9fb39f;     /* Sage */
+   --t-yellow: #dcc094;    /* Sand */
+   --t-dark: #5c5552;      /* Warm Dark Grey */
+   --t-light: #fdfcf8;     /* Paper White */
 }
 
 /* --- Base Styles --- */
@@ -405,11 +406,11 @@ nav a:hover {
 
 /* Film Strip */
 .film-strip {
-    background: #000;
+    background: #3e3b39; /* Softer black */
     width: 640px; 
     padding: 40px 0;
     position: relative;
-    box-shadow: 0 0 0 2px #333, 0 30px 60px rgba(0,0,0,0.8);
+    box-shadow: 0 0 0 2px #5c5552, 0 15px 30px rgba(92, 85, 82, 0.4); /* Softer shadow */
     margin-top: 0;
     display: flex;
     flex-direction: column;
@@ -423,7 +424,7 @@ nav a:hover {
     left: 0;
     width: 100%;
     height: 25px;
-    background-image: linear-gradient(90deg, #fff 16px, transparent 16px);
+    background-image: linear-gradient(90deg, #fdfcf8 16px, transparent 16px); /* Use bg color */
     background-size: 34px 100%;
     background-position: 9px 0;
     background-repeat: repeat-x;
@@ -436,8 +437,8 @@ nav a:hover {
     width: 100%;
     height: 280px;
     background: var(--bg);
-    border-top: 2px solid #000;
-    border-bottom: 2px solid #000;
+    border-top: 2px solid #5c5552;
+    border-bottom: 2px solid #5c5552;
     overflow: hidden;
     position: relative;
 }
@@ -512,8 +513,8 @@ nav a:hover {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    filter: contrast(1.2) brightness(0.7);
-    background-color: #334155;
+    filter: contrast(1.1) sepia(0.2) brightness(0.9); /* Vintage logic */
+    background-color: var(--t-dark);
 }
 
 @keyframes scenery-scroll {
@@ -543,7 +544,7 @@ nav a:hover {
 .post-body {
   font-size: 1.1rem;
   line-height: 1.8;
-  color: #374151; /* Slightly darker than base text for readability */
+  color: var(--text); /* Use variable for consistency */
 }
 
 .post-body h2 {
@@ -575,28 +576,35 @@ nav a:hover {
 .post-body pre {
   overflow: auto;
   padding: 1.25rem;
-  background: #1e293b; /* Darker than panel */
+  background: #4a4744; /* Warm dark grey for code blocks */
   border: 1px solid var(--border);
   border-radius: 8px;
-  color: #e2e8f0;
+  color: #fdfcf8; /* Paper white text */
 }
 
 .post-body code {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-  background: rgba(255,255,255,0.1);
+  background: rgba(141, 134, 130, 0.15); /* Subtle warm grey background */
   padding: 0.2em 0.4em;
   border-radius: 4px;
+  color: #a84646; /* Morandi red for inline code */
 }
 
 .post-body pre code {
   background: transparent;
   padding: 0;
+  color: inherit;
 }
 
 .post-body blockquote {
   margin: 1.5rem 0;
   padding: 1rem 1.5rem;
-  background: rgba(31, 41, 55, 0.4);
+  background: var(--panel);
+  border-left: 4px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  color: var(--muted);
+  font-style: italic;
+}
   border-left: 4px solid var(--accent);
   border-radius: 4px;
   color: var(--muted);
@@ -682,8 +690,8 @@ nav a:hover {
 
 .post-preview-taxonomies .category {
   display: inline-block;
-  background: rgba(59, 130, 246, 0.15);
-  color: var(--t-blue);
+  background: rgba(141, 163, 153, 0.2);
+  color: var(--accent);
   padding: 0.1rem 0.4rem;
   border-radius: 4px;
   margin: 0 0.1rem;
@@ -696,7 +704,7 @@ nav a:hover {
 
 .post-preview-desc {
   font-size: 0.95rem; /* Slightly smaller than body text */
-  color: #4b5563;
+  color: var(--text);
   line-height: 1.6;
 }
 
@@ -837,7 +845,7 @@ nav a:hover {
 
 #search-input:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
+  box-shadow: 0 0 0 2px rgba(141, 163, 153, 0.2);
   width: 320px; /* Slight expansion effect */
 }
 
@@ -989,7 +997,7 @@ nav a:hover {
 }
 
 .post-content code {
-    background: rgba(37, 99, 235, 0.1);
+    background: rgba(141, 163, 153, 0.15);
     color: var(--accent);
     padding: 0.2rem 0.4rem;
     border-radius: 4px;
@@ -1079,14 +1087,14 @@ nav a:hover {
 .post-categories a {
   display: inline-block;
   padding: 0.2rem 0.6rem;
-  background: rgba(59, 130, 246, 0.1); 
+  background: rgba(141, 163, 153, 0.15); 
   color: var(--accent);
   border-radius: 4px;
   font-size: 0.85rem;
   text-decoration: none;
   font-weight: 500;
   transition: all 0.2s ease;
-  border: 1px solid rgba(59, 130, 246, 0.2);
+  border: 1px solid rgba(141, 163, 153, 0.3);
 }
 
 .post-categories a:hover {
@@ -1118,4 +1126,27 @@ nav a:hover {
   background: var(--text);
   color: #fff;
   transform: translateY(-1px);
+}
+
+/* --- Prism JS Theme Overrides for Morandi/Paper Look --- */
+code[class*="language-"],
+pre[class*="language-"] {
+    color: var(--t-dark) !important;
+    text-shadow: none !important;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace !important;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+    background: var(--panel) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 8px !important;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+    background: rgba(141, 163, 153, 0.15) !important;
+    color: var(--accent) !important;
+    border-radius: 4px;
+    padding: 0.2rem 0.4rem !important;
 }
