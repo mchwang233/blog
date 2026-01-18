@@ -192,6 +192,7 @@ p.lead {
 }
 
 .train-wrapper {
+  display: none; /* Hide the train */
   position: relative;
   width: 600px;
   height: 250px;
@@ -320,6 +321,7 @@ p.lead {
 
 /* Train Wrapper Specifics */
 .train-wrapper {
+    display: none; /* Hide the train */
     width: 600px;
     height: 250px;
     position: absolute;
@@ -622,6 +624,7 @@ p.lead {
 
 /* Track / Rails */
 .track {
+    display: none; /* Hide the track */
     position: absolute;
     bottom: 0px;
     left: 0;
