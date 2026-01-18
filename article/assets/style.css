@@ -930,3 +930,116 @@ nav a:hover {
   color: var(--muted);
   font-style: italic;
 }
+
+/* --- Article Content Typography --- */
+.post-content {
+    font-size: 1.125rem; /* ~18px */
+    line-height: 1.8;
+    color: var(--text);
+    margin-top: 1.5rem;
+}
+
+.post-content p {
+    margin-bottom: 1.5rem;
+    text-align: justify;
+}
+
+.post-content h1, 
+.post-content h2, 
+.post-content h3, 
+.post-content h4, 
+.post-content h5, 
+.post-content h6 {
+    color: var(--text);
+    margin-top: 2.5rem;
+    margin-bottom: 1.25rem;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.post-content h1 { font-size: 1.8rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
+.post-content h2 { font-size: 1.6rem; }
+.post-content h3 { font-size: 1.4rem; }
+.post-content h4 { font-size: 1.25rem; }
+.post-content h5 { font-size: 1.125rem; font-weight: bold; }
+.post-content h6 { font-size: 1rem; text-transform: uppercase; letter-spacing: 0.05em; }
+
+.post-content ul, 
+.post-content ol {
+    margin-bottom: 1.5rem;
+    padding-left: 2rem;
+}
+
+.post-content li {
+    margin-bottom: 0.5rem;
+}
+
+.post-content blockquote {
+    border-left: 4px solid var(--accent);
+    margin: 1.5rem 0;
+    padding: 1rem 1.5rem;
+    background: var(--panel);
+    color: var(--muted);
+    font-style: italic;
+    border-radius: 0 4px 4px 0;
+}
+
+.post-content blockquote p:last-child {
+    margin-bottom: 0;
+}
+
+.post-content code {
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--accent);
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.9em;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+}
+
+.post-content pre {
+    margin: 1.5rem 0;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+}
+
+.post-content pre code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+    font-size: 0.95em;
+}
+
+.post-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 1.5rem 0;
+    box-shadow: var(--shadow);
+}
+
+.post-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.5rem;
+    font-size: 0.95em;
+}
+
+.post-content th, 
+.post-content td {
+    padding: 0.75rem;
+    border: 1px solid var(--border);
+    text-align: left;
+}
+
+.post-content th {
+    background: var(--panel);
+    font-weight: 600;
+}
+
+.post-content hr {
+    border: 0;
+    height: 1px;
+    background: var(--border);
+    margin: 2rem 0;
+}
