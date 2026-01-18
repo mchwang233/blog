@@ -3,18 +3,92 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>有趣</title>
+  <title>Mch</title>
   <!-- 使用小火车 emoji 作为 favicon -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚂</text></svg>">
   <link rel="stylesheet" href="css/style.css">
   <script src="img/images.js"></script> <!-- Load image manifest before main script -->
+  <style>
+    /* 文艺风格覆盖样式 */
+    body {
+        font-family: "Merriweather", "Georgia", "Times New Roman", serif;
+        background-color: #1a1a1a; /* 更柔和的深色背景 */
+        color: #d4d4d4;
+    }
+    
+    header {
+        padding: 4rem 0 2rem;
+        justify-content: center;
+        flex-direction: column;
+        border-bottom: none;
+    }
+    
+    .logo {
+        font-family: "Playfair Display", serif;
+        font-size: 3rem;
+        font-weight: 400;
+        margin-bottom: 2rem;
+        letter-spacing: 0.1em;
+        position: relative;
+    }
+    
+    /* 装饰线条 */
+    .logo::after {
+        content: "";
+        display: block;
+        width: 40px;
+        height: 1px;
+        background: #555;
+        margin: 1rem auto 0;
+    }
+
+    nav {
+        display: flex;
+        gap: 2rem;
+    }
+
+    nav a {
+        color: #888;
+        font-size: 0.9rem;
+        font-weight: 400;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        transition: color 0.3s ease;
+        margin: 0; 
+    }
+
+    nav a:hover {
+        color: #fff;
+    }
+    
+    /* 调整胶片容器位置使其更协调 */
+    .train-stage {
+        margin: 4rem 0;
+    }
+    
+    .film-strip {
+        box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        border: 1px solid #333;
+    }
+    
+    /* 隐藏原有的 footer 样式，使用极简风格 */
+    .footnote {
+        border-top: none;
+        text-align: center;
+        font-size: 0.8rem;
+        opacity: 0.5;
+        margin-top: 4rem;
+        font-family: sans-serif; /* 底部信息保持清晰 */
+        font-weight: 300;
+    }
+  </style>
 </head>
 <body>
   <header>
-    <div class="logo">有趣</div>
+    <div class="logo">Mch</div>
     <nav>
       <a href="/">Home</a>
-      <a href="/article">Articles</a>
+      <a href="article/">Articles</a>
       <a href="#about">About</a>
     </nav>
   </header>
