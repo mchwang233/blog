@@ -45,6 +45,34 @@ a:hover { color: var(--accent); }
   margin: 0 auto;
 }
 
+/* --- Layout Grid --- */
+.layout-grid {
+  display: flex;
+  gap: 3rem;
+  padding-top: 1rem;
+}
+
+.main-content {
+  flex: 3;
+  min-width: 0; /* Prevent flex item from overflowing */
+}
+
+.sidebar {
+  flex: 1;
+  min-width: 250px;
+}
+
+@media (max-width: 800px) {
+  .layout-grid {
+    flex-direction: column;
+  }
+  
+  .sidebar {
+    order: 2; /* Put sidebar below content on mobile */
+    margin-top: 2rem;
+  }
+}
+
 /* --- Header --- */
 header {
   max-width: 1080px;
@@ -697,4 +725,57 @@ nav a:hover {
 .pagination .disabled {
   opacity: 0.5;
   pointer-events: none;
+}
+
+/* --- Sidebar Widgets --- */
+.widget {
+  margin-bottom: 2.5rem;
+}
+
+.widget-title {
+  font-size: 1.1rem;
+  margin: 0 0 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  font-weight: 600;
+}
+
+.widget-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.widget-list li {
+  margin-bottom: 0.75rem;
+}
+
+.widget-list li a {
+  color: var(--muted);
+  display: block;
+}
+
+.widget-list li a:hover {
+  color: var(--accent);
+}
+
+.tag-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tag-cloud-item {
+  color: var(--muted);
+  background: var(--border);
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+}
+
+.tag-cloud-item:hover {
+  background: var(--accent);
+  color: #fff;
 }
