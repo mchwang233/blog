@@ -11,6 +11,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Generate Image Manifest
+        run: python cache_manager.py
+
       # 如果你需要构建（比如 npm run build），在这里加构建步骤
       # - name: Setup Node
       #   uses: actions/setup-node@v4
