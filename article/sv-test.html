@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>lpddr 软件流程</title>
+  <title>一个简单的sv验证框架</title>
 
   
 
@@ -91,183 +91,132 @@
     <main class="main-content">
       <article class="post">
     <header class="post-header">
-        <h1 class="post-title">lpddr 软件流程</h1>
+        <h1 class="post-title">一个简单的sv验证框架</h1>
         <div class="post-meta">
-            <span class="post-date">2025-12-19</span>
+            <span class="post-date">2020-10-21 21:49:22</span>
             
-            
+            <span class="post-tags"><a href="tags/sv.html">sv</a><a href="tags/验证.html">验证</a></span>
         </div>
     </header>
     <div class="post-content">
-        <ul>
-<li>synopsys lpddr45 controller</li>
-<li>synopsys lpddr45 phy</li>
-<li>DFI 5.0</li>
-</ul>
-<!--more-->
+        <p>最近一直在做一些小模块的验证，之前都是在用现成的环境修修改改。
+写一个纯sv的环境；</p>
+<p>首先是harness；</p>
+<!-- more -->
 
-<h1 id="_1">配置流程</h1>
-<table>
-<thead>
-<tr>
-<th>Step</th>
-<th>Application</th>
-<th>SVTB Task</th>
-<th>Notes</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1</td>
-<td>Follow the PHYs power up procedure</td>
-<td></td>
-<td>See PUB databook for details</td>
-</tr>
-<tr>
-<td>2</td>
-<td>Program the DWC_ddrctl registers</td>
-<td></td>
-<td>Note 1</td>
-</tr>
-<tr>
-<td>3</td>
-<td>Disable auto-refreshes, self-refresh, powerdown and assertion of dfi_dram_clk_disable by setting:<br>RFSHCTL0.dis_auto_refresh = 1,<br>PWRCTL.powerdown_en = 0,<br>PWRCTL.selfref_en = 0,<br>PWRTL.en_dfi_dram_clk_disable = 0</td>
-<td>reset_dut</td>
-<td></td>
-</tr>
-<tr>
-<td>4</td>
-<td>De-assert reset signal core_ddrc_rstn</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>5</td>
-<td>Set DFIMISC.dfi_init_complete_en to ‘0’<br>Set DFIMISC.dfi_reset_n to ‘1’</td>
-<td>phy_init</td>
-<td></td>
-</tr>
-<tr>
-<td>6</td>
-<td>Start PHY initialization and training by accessing relevant PUB registers</td>
-<td>phy_init</td>
-<td>See PUB databook for details</td>
-</tr>
-<tr>
-<td>7</td>
-<td>Poll the PUB register APBONLY.UctShadowRegs[0] = 1’b0</td>
-<td>phy_init</td>
-<td>See PUB databook for details</td>
-</tr>
-<tr>
-<td>8</td>
-<td>Read the PUB Register APBONLY.UctWriteOnlyShadow for training status</td>
-<td>phy_init</td>
-<td>See PUB databook for details</td>
-</tr>
-<tr>
-<td>9</td>
-<td>Write the PUB Register APBONLY.DctWriteProt = 0</td>
-<td>phy_init</td>
-<td>See PUB databook for details</td>
-</tr>
-<tr>
-<td>10</td>
-<td>Poll the PUB register APBONLY.UctShadowRegs[0] = 1’b1</td>
-<td>phy_init</td>
-<td>See PUB databook for details</td>
-</tr>
-<tr>
-<td>11</td>
-<td>Write the PUB Register APBONLY.DctWriteProt = 1</td>
-<td>phy_init</td>
-<td>See PUB databook for details</td>
-</tr>
-<tr>
-<td>12</td>
-<td>Poll the PUB register MASTER.CalBusy = 0</td>
-<td>phy_init</td>
-<td>See PUB databook for details</td>
-</tr>
-<tr>
-<td>13</td>
-<td>Set DFIMISC.dfi_init_start to ‘1’</td>
-<td>phy_init</td>
-<td></td>
-</tr>
-<tr>
-<td>14</td>
-<td>Poll DFISTAT.dfi_init_complete = 1</td>
-<td>phy_init</td>
-<td></td>
-</tr>
-<tr>
-<td>15</td>
-<td>Set DFIMISC.dfi_init_start to ‘0’</td>
-<td>phy_init</td>
-<td></td>
-</tr>
-<tr>
-<td>16</td>
-<td>The following registers may need to be updated after training has completed:<br>▪ RANKTMG0.diff_rank_wr_gap<br>▪ RANKTMG0.diff_rank_rd_gap<br>▪ DRAMSET1TMG2.rd2wr<br>▪ DRAMSET1TMG2.wr2rd<br>▪ DRAMSET1TMG24.rd2wr_s<br>▪ DRAMSET1TMG9.wr2rd_s<br>▪ DFITMG0.dfi_t_ctrl_delay<br>▪ DFITMG1.dfi_t_wrdata_delay<br>▪ DFITMG2.dfi_twck_delay (LPDDR5 only)</td>
-<td>phy_init</td>
-<td>Refer to relevant PHY documentation</td>
-</tr>
-<tr>
-<td>17</td>
-<td>Set DFIMISC.dfi_init_complete_en to ‘1’</td>
-<td>phy_init</td>
-<td></td>
-</tr>
-<tr>
-<td>18</td>
-<td>Set PWRCTL.selfref_sw to ‘0’</td>
-<td>phy_init</td>
-<td></td>
-</tr>
-<tr>
-<td>19</td>
-<td>Wait for DWC_ddrctl to move to normal operating mode by monitoring STAT.operating_mode signal</td>
-<td>reset_dut</td>
-<td></td>
-</tr>
-<tr>
-<td>20</td>
-<td>Set back registers in step 3 to the original values if desired</td>
-<td></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<pre><code class="language-mermaid">flowchart TD
+<pre><code class="language-verilog">
+module harness
 
-    S1[&quot;Step 1: Follow PHYs power-up procedure&quot;]
-    S2[&quot;Step 2: Program DWC_ddrctl registers&quot;]
-    S3[&quot;Step 3: Disable auto-refresh, self-refresh, powerdown &lt;br&gt;and dfi_dram_clk_disable&quot;]
-    S4[&quot;Step 4: De-assert core_ddrc_rstn&quot;]
-    S5[&quot;Step 5: Set dfi_init_complete_en=0 and dfi_reset_n=1&quot;]
-    S6[&quot;Step 6: Start PHY init &amp; training (access PUB registers)&quot;]
-    S7[&quot;Step 7: Poll PUB APBONLY.UctShadowRegs[0] = 0&quot;]
-    S8[&quot;Step 8: Read PUB UctWriteOnlyShadow (training status)&quot;]
-    S9[&quot;Step 9: Write PUB DctWriteProt = 0&quot;]
-    S10[&quot;Step 10: Poll PUB UctShadowRegs[0] = 1&quot;]
+bit clk;
+bit rst_n;
 
-    S11[&quot;Step 11: Write PUB DctWriteProt = 1&quot;]
-    S12[&quot;Step 12: Poll MASTER.CalBusy = 0&quot;]
-    S13[&quot;Step 13: Set dfi_init_start = 1&quot;]
-    S14[&quot;Step 14: Poll dfi_init_complete = 1&quot;]
-    S15[&quot;Step 15: Set dfi_init_start = 0&quot;]
+w_inf inf(bit clk,bit rst_n);
 
-    S16[&quot;Step 16: Update training-dependent registers&quot;]
+tc test();
 
-    S17[&quot;Step 17: Set dfi_init_complete_en = 1&quot;]
-    S18[&quot;Step 18: Set selfref_sw = 0&quot;]
-    S19[&quot;Step 19: Wait for operating_mode to NORMAL&quot;]
-    S20[&quot;Step 20: Restore Step 3 registers if desired&quot;]
+dut dut(
+    clk  (inf.clk),
+    rst_n(inf.rst_n),
+    a    (inf.a),
+    b    (inf.b)
+);
 
-    %% Flow connections
-    S1 --&gt; S2 --&gt; S3 --&gt; S4 --&gt; S5 --&gt; S6 --&gt; S7 --&gt; S8 --&gt; S9 --&gt; S10
-    S10 --&gt; S11 --&gt; S12 --&gt; S13 --&gt; S14 --&gt; S15 --&gt; S16 --&gt; S17 --&gt; S18 --&gt; S19 --&gt; S20
+initial begin
+    clk = 0;
+    forever #0.5ns clk = ~clk;
+end
+
+endmodule
+
+</code></pre>
+<p>之后是interface；</p>
+<pre><code class="language-verilog">interface w_inf(bit clk,bit rst_n);
+
+    logic a;
+    logic b;
+    clocking drv_cb @(posedge clk);
+        inout a;
+        inout b;
+    endclocking
+
+endinterface
+</code></pre>
+<p>之后定义一个transaction；</p>
+<pre><code class="language-verilog">class transaction
+
+    bit a;
+    bit b;
+
+endclass
+</code></pre>
+<p>之后是定义一个sequence；</p>
+<pre><code class="language-verilog">
+class w_sequence
+
+    bit a[$];
+
+    virtual w_inf bus;
+
+    extern virtual new(w_inf inf);
+
+    extern virtual task tx_process();
+
+    extern virtual task rx_process();
+
+    extern virtual function chk_ans(); 
+
+endclass
+
+task w_sequence::txprocess();
+endtask
+
+task w_sequence::rxprocess();
+endtask
+
+function w_sequence::new(w_inf inf);
+    bus = inf;
+endtask
+
+</code></pre>
+<p>最后定义一下tc;</p>
+<pre><code class="language-verilog">program tc;
+
+sequence seq;
+
+w_inf inf;
+
+inf = harness.inf;
+
+initial begin
+
+    seq = new(inf);
+
+    fork
+
+    begin
+        seq.tx_process();
+    end
+
+    begin
+        seq.rx_process();
+    end
+
+    begin
+        harness.rst_n = 0; 
+        repeat(4)@(posedge vif.clk);
+        harness.rst_n = 1;
+
+        repeat(100)@(posedge vif.clk);
+
+        $finish;
+
+    end
+
+    join
+end
+
+endprogram
+
 </code></pre>
     </div>
 </article>

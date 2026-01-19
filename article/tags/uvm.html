@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>标签: 学习笔记</title>
+  <title>标签: uvm</title>
 
   
 
@@ -81,11 +81,20 @@
   <div class="container layout-grid">
     <main class="main-content">
       <div class="post-body">
-        <h1 class="post-title">标签: 学习笔记</h1>
+        <h1 class="post-title">标签: uvm</h1>
 <div class="post-preview">
-  <h2 class="post-preview-title"><a href="../imgnote.html">图像笔记</a></h2>
-  <div class="post-preview-meta">2026-01-15</div>
-  <div class="post-preview-desc"><h1>常见图像格式</h1></div>
+  <h2 class="post-preview-title"><a href="../uvm-model-1-0.html">uvm编译的一些分享</a></h2>
+  <div class="post-preview-meta">2022-06-11 17:46:37</div>
+  <div class="post-preview-desc"><p>很久之前写过一个非常简单的uvm_model
+<a href="https://wmchappy.cn/2021/01/24/uvm-model/">文章地址</a>
+但是没有提编译的一些细节：
+这里面一部分是封装在package中的，一部分则是直接在.f文件直接加载的。
+组件主要是通过package封装的，至于case以及sequence则采用，直接加载的方式。
+这样做的原因是，如果case以及sequence也采用package封装的话，会给调用rtl中的hierarchy造成很多的麻烦。</p>
+<p>```verilog
+../tc/vcs_pkg.svh
+../tc/user_plus.sv
+../tc/seq/b...</p></div>
 </div>
       </div>
     </main>

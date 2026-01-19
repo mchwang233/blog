@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>基于php7的简单web端MySQL后台</title>
+
+  
+
+  <!-- 使用小火车 emoji 作为 favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚂</text></svg>">
+
+  <link rel="stylesheet" href="./assets/style.css" />
+  <!-- Use light theme for Prism -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+  <script src="./assets/search.js"></script>
+  
+  <script>
+    // Force set manual mode before Prism loads to ensure no auto-highlighting occurs
+    window.Prism = window.Prism || {};
+    window.Prism.manual = true;
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+  <script>
+    // Use DOMContentLoaded to run as early as possible after parsing
+    document.addEventListener('DOMContentLoaded', function() {
+      
+      // 1. First, handle Mermaid blocks to convert them to divs and detach from pre/code
+      // This prevents Prism from ever seeing them as code blocks
+      document.querySelectorAll('pre code.language-mermaid, pre.mermaid code').forEach((block) => {
+        const pre = block.parentElement;
+        const mermaidDiv = document.createElement('div');
+        mermaidDiv.className = 'mermaid';
+
+        const parser = new DOMParser();
+        const doc = parser.parseFromString('<!doctype html><body>' + block.innerHTML, 'text/html');
+        let mermaidCode = doc.body.textContent || '';
+        mermaidCode = mermaidCode.replace(/<br>\s*\n\s*/g, '<br>');
+        mermaidCode = mermaidCode.replace(/S16\[[\s\S]*?\]/, 'S16["Step 16: Update training-dependent registers"]');
+
+        mermaidDiv.textContent = mermaidCode;
+        pre.replaceWith(mermaidDiv);
+      });
+
+      // 2. Fix Pandoc class names for other code blocks (e.g. pre.python -> code.language-python)
+      document.querySelectorAll('pre[class]').forEach((pre) => {
+        const code = pre.querySelector('code');
+        if (code && pre.className) {
+          const lang = pre.className.trim();
+          // Double check we're not touching mermaid if any slipped through
+          if (lang !== 'mermaid' && lang !== 'language-mermaid') {
+            code.className = 'language-' + lang;
+            pre.removeAttribute('class');
+          }
+        }
+      });
+      
+      // 3. Initialize and Run Mermaid
+      mermaid.initialize({ 
+        startOnLoad: false,
+        theme: 'default',
+        securityLevel: 'loose',
+        logLevel: 'debug'
+      });
+      
+      mermaid.run({
+        querySelector: '.mermaid'
+      }).catch(function(error) {
+        console.error('Mermaid rendering error:', error);
+      });
+      
+      // 4. Run Prism highlight manually
+      Prism.highlightAll();
+    });
+  </script>
+</head>
+<body>
+  <header>
+    <a href="./index.html" class="logo" style="text-decoration: none; color: inherit;">追逐星墨</a>
+    <div class="search-box">
+      <form id="search-form" action="javascript:void(0);">
+        <input type="text" id="search-input" name="q" placeholder="搜索..." aria-label="Search">
+      </form>
+    </div>
+  </header>
+
+  <div class="container layout-grid">
+    <main class="main-content">
+      <article class="post">
+    <header class="post-header">
+        <h1 class="post-title">基于php7的简单web端MySQL后台</h1>
+        <div class="post-meta">
+            <span class="post-date">2019-05-16 15:51:03</span>
+            
+            <span class="post-tags"><a href="tags/x.html">x</a><a href="tags/php.html">php</a><a href="tags/MySQL.html">MySQL</a><a href="tags/web.html">web</a></span>
+        </div>
+    </header>
+    <div class="post-content">
+        <p>在web端处理数据库信息要的快捷性更好一些，所有本文针对php7对之前php5的代码做了相关改进，以实现对数据库的增加，删除及更改等功能，在后面的版本中还会增加其适应能力，以及数据库自行识别能力。</p>
+<!-- more -->
+
+<p>以下时相关代码，原php5代码可以参考前辈大佬的<a href="https://www.cnblogs.com/cckui/p/8283648.html">点击进入</a></p>
+<p>1.0版代码如下：</p>
+<p>主界面：</p>
+<pre><code class="language-php+HTML">&lt;?php
+include_once(&quot;model.php&quot;);//引用处理类文件
+$f=new ht();
+$f -&gt; h_head();
+$f -&gt; h_table();
+$f -&gt; h_footer();
+
+?&gt;
+</code></pre>
+<p>主界面模板文件：</p>
+<pre><code class="language-php+HTML">&lt;?php
+// model.php(程序处理类)
+ Class ht{
+   function h_head(){
+    echo &lt;&lt;&lt; html
+    &lt;!DOCTYPE html&gt;
+    &lt;html&gt;
+    &lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;西电导航后台管理系统&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;style type=&quot;text/css&quot;&gt;
+    .wrapper {width: 1000px;margin: 20px auto;}
+    h2 {text-align: center;}
+    .add {margin-bottom: 20px;}
+    .add a {text-decoration: none;color: #fff;background-color: green;padding: 6px;border-radius: 5px;}
+    td {text-align: center;}
+    table {
+        table-layout: fixed;
+        word-wrap:break-word;
+        }
+    &lt;/style&gt;
+    &lt;body&gt;
+    &lt;div class=&quot;wrapper&quot;&gt;
+        &lt;h2&gt;西电导航数据库后台管理系统&lt;/h2&gt;
+        &lt;div class=&quot;add&quot;&gt;
+            &lt;a href=&quot;addnews.html&quot;&gt;增加条目&lt;/a&gt;
+        &lt;/div&gt;
+        &lt;table width=&quot;960&quot; border=&quot;1&quot; &gt;
+            &lt;tr&gt;
+                &lt;th&gt;标题&lt;/th&gt;
+                &lt;th&gt;url&lt;/th&gt;
+                &lt;th&gt;发布时间&lt;/th&gt;
+                &lt;th&gt;内容&lt;/th&gt;
+                &lt;th&gt;操作&lt;/th&gt;
+            &lt;/tr&gt;
+html;
+   }
+
+
+   function h_footer(){
+       echo &lt;&lt;&lt; html
+        &lt;/table&gt;
+        &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;script type=&quot;text/javascript&quot;&gt;
+        function del (id) {
+            if (confirm(&quot;确定删除这条新闻吗？&quot;)){
+                window.location = &quot;action-del.php?title=&quot;+id;
+            }
+        }
+        &lt;/script&gt;
+        &lt;/body&gt;
+        &lt;/html&gt;
+html;
+    }
+
+
+    function h_table(){
+        header(&quot;Content-type: text/html; charset=utf-8&quot;);
+        $servername = &quot;localhost&quot;;
+        $username = &quot;root&quot;;
+        $password = &quot;root&quot;;
+        $conn = new mysqli($servername, $username, $password,&quot;test&quot;);
+
+        if ($conn-&gt;connect_error) {
+            die(&quot;连接失败: &quot; . $conn-&gt;connect_error);
+          } 
+        mysqli_set_charset($conn,'utf8'); 
+        // 3. 从DBNAME中查询到news数据库，返回数据库结果集,并按照addtime降序排列  
+        // 结果集
+        $result = mysqli_query($conn,&quot;SELECT * FROM bs_3&quot;);
+        // var_dump($result);die;
+
+        // 解析结果集,$row为新闻所有数据，$newsNum为新闻数目
+        $newsNum=mysqli_num_rows($result);
+
+        for($i=0; $i&lt;$newsNum; $i++){
+            $row = mysqli_fetch_assoc($result);
+            echo &quot;&lt;tr&gt;&quot;;
+            echo &quot;&lt;td&gt;{$row['title']}&lt;/td&gt;&quot;;
+            echo &quot;&lt;td&gt;{$row['url']}&lt;/td&gt;&quot;;
+            echo &quot;&lt;td&gt;{$row['t_date']}&lt;/td&gt;&quot;;
+            echo &quot;&lt;td&gt;{$row['page']}&lt;/td&gt;&quot;;
+            echo &quot;&lt;td&gt;
+                    &lt;a href='javascript:del(\&quot;{$row['title']}\&quot;)'&gt;删除&lt;/a&gt;
+                    &lt;a href='editnews.php?id={$row['title']}'&gt;修改&lt;/a&gt;
+                  &lt;/td&gt;&quot;;
+            echo &quot;&lt;/tr&gt;&quot;;
+        }
+        }
+
+ }
+
+?&gt;
+</code></pre>
+<p>添加界面：</p>
+<pre><code class="language-HTML">&lt;!DOCTYPE html&gt;  
+&lt;html&gt;  
+&lt;head lang=&quot;en&quot;&gt;  
+    &lt;meta charset=&quot;UTF-8&quot;&gt;  
+    &lt;title&gt;添加内容&lt;/title&gt;  
+&lt;/head&gt;
+&lt;style type=&quot;text/css&quot;&gt;
+    form{
+        margin: 20px;
+    }
+&lt;/style&gt;
+&lt;body&gt;
+&lt;form action=&quot;action-addnews.php&quot; method=&quot;post&quot;&gt;  
+    &lt;label&gt;标题：&lt;/label&gt;&lt;input type=&quot;text&quot; name=&quot;title&quot;&gt;  
+    &lt;label&gt;url:&lt;/label&gt;&lt;input type=&quot;text&quot; name=&quot;url&quot;&gt;   
+    &lt;label&gt;发布时间：&lt;/label&gt;&lt;input type=&quot;date&quot; name=&quot;t_date&quot;&gt;  
+    &lt;label&gt;内容：&lt;/label&gt;&lt;input type=&quot;text&quot; name=&quot;page&quot;&gt;  
+    &lt;input type=&quot;submit&quot; value=&quot;提交&quot;&gt;  
+&lt;/form&gt;  
+&lt;/body&gt;  
+&lt;/html&gt;
+</code></pre>
+<p>添加操作执行代码：</p>
+<pre><code class="language-php">&lt;?php
+// 处理增加操作的页面 
+require &quot;dbconfig.php&quot;;
+// 连接mysql
+$link = @mysqli_connect(HOST,USER,PASS) or die(&quot;提示：数据库连接失败！&quot;);
+// 选择数据库
+mysqli_select_db($link,DBNAME);
+// 编码设置
+mysqli_set_charset($link,'utf8');
+
+// 获取增加的新闻
+$title = $_POST['title'];
+$url = $_POST['url'];
+$t_date = $_POST['t_date'];
+$page = $_POST['page'];
+// 插入数据
+mysqli_query($link,&quot;INSERT INTO bs_3(title,url,t_date,page) VALUES ('$title','$url','$t_date','$page')&quot;) or die('添加数据出错!'); 
+header(&quot;Location:index.php&quot;);  
+</code></pre>
+<p>删除操作：</p>
+<pre><code class="language-php">&lt;?php
+// 处理删除操作的页面 
+require &quot;dbconfig.php&quot;;
+// 连接mysql
+$link = @mysqli_connect(HOST,USER,PASS) or die(&quot;提示：数据库连接失败！&quot;);
+// 选择数据库
+mysqli_select_db($link,DBNAME);
+// 编码设置
+mysqli_set_charset($link,'utf8');
+
+$title = $_GET['title'];
+echo $title;
+$title=str_replace('&quot;','',$title);
+//删除指定数据  
+mysqli_query($link,&quot;DELETE FROM bs_3 WHERE title='$title'&quot;)or die(&quot;提示：删除失败&quot;);
+// 删除完跳转到新闻页
+
+echo $title;
+header(&quot;Location:index.php&quot;);  
+?&gt;
+</code></pre>
+<p>修改操作：</p>
+<p>界面：</p>
+<pre><code class="language-php+HTML">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;修改数据库内容&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+    require &quot;dbconfig.php&quot;;
+
+    $link = @mysqli_connect(HOST,USER,PASS) or die(&quot;提示：数据库连接失败！&quot;);
+    mysqli_select_db($link,DBNAME);
+    mysqli_set_charset($link,'utf8');
+
+    $id = $_GET['id'];
+    $sql = mysqli_query($link,&quot;SELECT * FROM bs_3 WHERE title='$id'&quot;);
+    echo &quot;请谨慎修改&quot;;
+    $sql_arr =  mysqli_fetch_assoc($sql); 
+
+?&gt;
+
+&lt;form action=&quot;action-editnews.php&quot; method=&quot;post&quot;&gt;
+    &lt;label&gt;标题：&lt;/label&gt;&lt;input type=&quot;text&quot; name=&quot;title&quot; value=&quot;&lt;?php echo $sql_arr['title']?&gt;&quot;&gt;
+    &lt;label&gt;url：&lt;/label&gt;&lt;input type=&quot;text&quot; name=&quot;url&quot; value=&quot;&lt;?php echo $sql_arr['url']?&gt;&quot;&gt;
+    &lt;label&gt;发布时间：&lt;/label&gt;&lt;input type=&quot;date&quot; name=&quot;t_date&quot; value=&quot;&lt;?php echo $sql_arr['t_date']?&gt;&quot;&gt;
+    &lt;label&gt;内容：&lt;/label&gt;&lt;input type=&quot;text&quot; name=&quot;page&quot; value=&quot;&lt;?php echo $sql_arr['page']?&gt;&quot;&gt;
+    &lt;input type=&quot;submit&quot; value=&quot;提交&quot;&gt;
+&lt;/form&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>执行：</p>
+<pre><code class="language-php">&lt;?php
+// 处理编辑操作的页面 
+require &quot;dbconfig.php&quot;;
+// 连接mysql
+$link = @mysqli_connect(HOST,USER,PASS) or die(&quot;提示：数据库连接失败！&quot;);
+// 选择数据库
+mysqli_select_db($link,DBNAME);
+// 编码设置
+mysqli_set_charset($link,'utf8');
+
+// 获取修改的新闻
+$title = $_POST['title'];
+$url = $_POST['url'];
+$t_date = $_POST['t_date'];
+$page = $_POST['page'];
+// 更新数据
+mysqli_query($link,&quot;UPDATE bs_3 SET title='$title',url='$url',t_date='$t_date',page='$page' WHERE title='$title'&quot;) or die('修改数据出错：'); 
+header(&quot;Location:index.php&quot;);  
+</code></pre>
+<p>数据库关键信息写入页：</p>
+<pre><code class="language-php">&lt;?php  
+define(&quot;HOST&quot;,&quot;localhost&quot;);  
+define(&quot;USER&quot;,&quot;root&quot;);  
+define(&quot;PASS&quot;,&quot;root&quot;);
+define(&quot;DBNAME&quot;,&quot;test&quot;);
+</code></pre>
+    </div>
+</article>
+
+      <div id="gitalk-container"></div>
+    </main>
+
+    <aside class="sidebar">
+      <div class="sidebar-box">
+<section class="widget">
+<h3 class="widget-title">分类</h3>
+<ul class="widget-list">
+<li><a href="categories/mipi.html">mipi (1)</a></li>
+<li><a href="categories/图像.html">图像 (1)</a></li>
+<li><a href="categories/编程.html">编程 (1)</a></li>
+</ul>
+</section>
+<section class="widget">
+<h3 class="widget-title">标签</h3>
+<div class="tag-cloud">
+<a href="tags/Cphy.html" class="tag-cloud-item">Cphy (1)</a>
+<a href="tags/Dphy.html" class="tag-cloud-item">Dphy (1)</a>
+<a href="tags/MySQL.html" class="tag-cloud-item">MySQL (1)</a>
+<a href="tags/php.html" class="tag-cloud-item">php (1)</a>
+<a href="tags/sv.html" class="tag-cloud-item">sv (2)</a>
+<a href="tags/uvm.html" class="tag-cloud-item">uvm (1)</a>
+<a href="tags/web.html" class="tag-cloud-item">web (1)</a>
+<a href="tags/x.html" class="tag-cloud-item">x (1)</a>
+<a href="tags/图像.html" class="tag-cloud-item">图像 (1)</a>
+<a href="tags/学习笔记.html" class="tag-cloud-item">学习笔记 (1)</a>
+<a href="tags/验证.html" class="tag-cloud-item">验证 (1)</a>
+</div>
+</section>
+<section class="widget">
+<h3 class="widget-title">最新文章</h3>
+<ul class="widget-list">
+<li><a href="mipi.html">MIPI相关内容</a></li>
+<li><a href="imgnote.html">图像笔记</a></li>
+<li><a href="lpddr_software.html">lpddr 软件流程</a></li>
+<li><a href="uvm_temp.html">uvm template</a></li>
+<li><a href="uvm-model-1-0.html">uvm编译的一些分享</a></li>
+</ul>
+</section>
+</div>
+    </aside>
+  </div>
+
+  <section id="about" class="footnote">
+    <div class="container">
+      <span>Created By MchWang. | <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">陕ICP备17021455号</a></span>
+    </div>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+  <script>
+    const gitalk = new Gitalk({
+      clientID: 'Ov23lig7OZ6L8ual62n1',
+      clientSecret: 'ea3366714a0eb02aa2b00f051a159eeb7228024d',
+      repo: 'blog',
+      owner: 'mchwang233',
+      admin: ['mchwang233'],
+      id: location.pathname, 
+      distractionFreeMode: false
+    });
+    gitalk.render('gitalk-container');
+  </script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Home</title>
+  <title>uvm编译的一些分享</title>
 
   
 
@@ -11,29 +11,25 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚂</text></svg>">
 
   <link rel="stylesheet" href="./assets/style.css" />
+  <!-- Use light theme for Prism -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" data-manual></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+  <script src="./assets/search.js"></script>
+  
+  <script>
+    // Force set manual mode before Prism loads to ensure no auto-highlighting occurs
+    window.Prism = window.Prism || {};
+    window.Prism.manual = true;
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
-  <script src="./assets/search.js"></script>
   <script>
-    // 等待所有资源加载完成
-    window.addEventListener('load', function() {
-
-      // 转换 Pandoc 的类名格式：<pre class="xxx"><code> -> <pre><code class="language-xxx">
-      document.querySelectorAll('pre[class]').forEach((pre) => {
-        const code = pre.querySelector('code');
-        if (code && pre.className && !pre.className.includes('mermaid')) {
-          // 将 pre 的 class 移动到 code 并添加 language- 前缀
-          const lang = pre.className.trim();
-          if (lang !== 'mermaid' && lang !== 'language-mermaid') {
-            code.className = 'language-' + lang;
-            pre.removeAttribute('class');
-          }
-        }
-      });
+    // Use DOMContentLoaded to run as early as possible after parsing
+    document.addEventListener('DOMContentLoaded', function() {
       
-      // 处理 Mermaid 代码块
+      // 1. First, handle Mermaid blocks to convert them to divs and detach from pre/code
+      // This prevents Prism from ever seeing them as code blocks
       document.querySelectorAll('pre code.language-mermaid, pre.mermaid code').forEach((block) => {
         const pre = block.parentElement;
         const mermaidDiv = document.createElement('div');
@@ -48,11 +44,24 @@
         mermaidDiv.textContent = mermaidCode;
         pre.replaceWith(mermaidDiv);
       });
+
+      // 2. Fix Pandoc class names for other code blocks (e.g. pre.python -> code.language-python)
+      document.querySelectorAll('pre[class]').forEach((pre) => {
+        const code = pre.querySelector('code');
+        if (code && pre.className) {
+          const lang = pre.className.trim();
+          // Double check we're not touching mermaid if any slipped through
+          if (lang !== 'mermaid' && lang !== 'language-mermaid') {
+            code.className = 'language-' + lang;
+            pre.removeAttribute('class');
+          }
+        }
+      });
       
-      // 初始化 Mermaid
+      // 3. Initialize and Run Mermaid
       mermaid.initialize({ 
         startOnLoad: false,
-        theme: 'default', 
+        theme: 'default',
         securityLevel: 'loose',
         logLevel: 'debug'
       });
@@ -63,6 +72,7 @@
         console.error('Mermaid rendering error:', error);
       });
       
+      // 4. Run Prism highlight manually
       Prism.highlightAll();
     });
   </script>
@@ -77,54 +87,64 @@
     </div>
   </header>
 
-  <!-- Main Content (Post List) -->
   <div class="container layout-grid">
     <main class="main-content">
-      <div class="post-body">
-        <div class="post-preview">
-  <h2 class="post-preview-title"><a href="mipi.html">MIPI相关内容</a></h2>
-  <div class="post-preview-meta">2026-01-15</div><div class="post-preview-taxonomies"><span class="categories">Categories: <span class="category">mipi</span></span> <span class="tags"><span class="tag">#Cphy</span>, <span class="tag">#Dphy</span></span></div>
-  <div class="post-preview-desc"><h2>CSI</h2>
-<h2>DSI</h2></div>
-</div>
-<div class="post-preview">
-  <h2 class="post-preview-title"><a href="imgnote.html">图像笔记</a></h2>
-  <div class="post-preview-meta">2026-01-15</div><div class="post-preview-taxonomies"><span class="categories">Categories: <span class="category">编程</span>, <span class="category">图像</span></span> <span class="tags"><span class="tag">#学习笔记</span>, <span class="tag">#图像</span></span></div>
-  <div class="post-preview-desc"><h1>常见图像格式</h1></div>
-</div>
-<div class="post-preview">
-  <h2 class="post-preview-title"><a href="lpddr_software.html">lpddr 软件流程</a></h2>
-  <div class="post-preview-meta">2025-12-19</div>
-  <div class="post-preview-desc"><ul>
-<li>synopsys lpddr45 controller</li>
-<li>synopsys lpddr45 phy</li>
-<li>DFI 5.0</li>
-</ul></div>
-</div>
-<div class="post-preview">
-  <h2 class="post-preview-title"><a href="uvm_temp.html">uvm template</a></h2>
-  <div class="post-preview-meta">2022-01-18</div>
-  <div class="post-preview-desc"><p>很早之前就说写一个简单的uvm环境</p>
-<p>首先是一个简单的dut，主要执行一些加减任务</p></div>
-</div>
-<div class="post-preview">
-  <h2 class="post-preview-title"><a href="uvm-model-1-0.html">uvm编译的一些分享</a></h2>
-  <div class="post-preview-meta">2022-06-11 17:46:37</div><div class="post-preview-taxonomies"><span class="tags"><span class="tag">#sv</span>, <span class="tag">#uvm</span></span></div>
-  <div class="post-preview-desc"><p>很久之前写过一个非常简单的uvm_model
+      <article class="post">
+    <header class="post-header">
+        <h1 class="post-title">uvm编译的一些分享</h1>
+        <div class="post-meta">
+            <span class="post-date">2022-06-11 17:46:37</span>
+            
+            <span class="post-tags"><a href="tags/sv.html">sv</a><a href="tags/uvm.html">uvm</a></span>
+        </div>
+    </header>
+    <div class="post-content">
+        <p>很久之前写过一个非常简单的uvm_model
 <a href="https://wmchappy.cn/2021/01/24/uvm-model/">文章地址</a>
 但是没有提编译的一些细节：
 这里面一部分是封装在package中的，一部分则是直接在.f文件直接加载的。
 组件主要是通过package封装的，至于case以及sequence则采用，直接加载的方式。
 这样做的原因是，如果case以及sequence也采用package封装的话，会给调用rtl中的hierarchy造成很多的麻烦。</p>
-<p>```verilog
-../tc/vcs_pkg.svh
+<pre><code class="language-verilog">../tc/vcs_pkg.svh
 ../tc/user_plus.sv
-../tc/seq/b...</p></div>
-</div>
-<div class="pagination"><span class="disabled">&laquo; Prev</span><span class="current">1</span><a href="page2.html">2</a><a href="page2.html">Next &raquo;</a></div>
-      </div>
+../tc/seq/base_sequence.sv
+../tc/seq/sequence_normal.sv
+../tc/tc_base.sv
+../tc/tc_normal.sv
+../tc/tc_direct.sv
+../tc/tc_random.sv
+</code></pre>
+<p>以上是tc.f文件</p>
+<pre><code class="language-verilog">import  uvm_pkg::*;
+import  base_utils_pkg::*;
+import  env_pkg::*;
+</code></pre>
+<p>以上是vcs_pkg.svh的内容</p>
+<pre><code class="language-verilog">+incdir+../env
++incdir+../harness
++incdir+../reg
++incdir+../tc
++incdir+../utils
++incdir+../utils/tx_utils
++incdir+../utils/rx_utils
++incdir+../utils/base_utils
+../comm/sv_define.sv
+../comm/glb_plus.sv
+../utils/base_utils/my_interface.sv
+../utils/base_utils/base_utils_pkg.svh
+../utils/tx_utils/tx_utils_pkg.svh
+../utils/rx_utils/rx_utils_pkg.svh
+../env/env_pkg.svh
+-f ../tc/tc.f
+../harness/harness.sv
+</code></pre>
+<p>以上是tb.f的相关内容。</p>
+    </div>
+</article>
+
+      <div id="gitalk-container"></div>
     </main>
-    
+
     <aside class="sidebar">
       <div class="sidebar-box">
 <section class="widget">
@@ -171,9 +191,18 @@
     </div>
   </section>
 
+  <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    const gitalk = new Gitalk({
+      clientID: 'Ov23lig7OZ6L8ual62n1',
+      clientSecret: 'ea3366714a0eb02aa2b00f051a159eeb7228024d',
+      repo: 'blog',
+      owner: 'mchwang233',
+      admin: ['mchwang233'],
+      id: location.pathname, 
+      distractionFreeMode: false
     });
+    gitalk.render('gitalk-container');
   </script>
 </body>
 </html>

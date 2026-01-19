@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>标签: 学习笔记</title>
+  <title>标签: 验证</title>
 
   
 
@@ -81,11 +81,30 @@
   <div class="container layout-grid">
     <main class="main-content">
       <div class="post-body">
-        <h1 class="post-title">标签: 学习笔记</h1>
+        <h1 class="post-title">标签: 验证</h1>
 <div class="post-preview">
-  <h2 class="post-preview-title"><a href="../imgnote.html">图像笔记</a></h2>
-  <div class="post-preview-meta">2026-01-15</div>
-  <div class="post-preview-desc"><h1>常见图像格式</h1></div>
+  <h2 class="post-preview-title"><a href="../sv-test.html">一个简单的sv验证框架</a></h2>
+  <div class="post-preview-meta">2020-10-21 21:49:22</div>
+  <div class="post-preview-desc"><p>最近一直在做一些小模块的验证，之前都是在用现成的环境修修改改。
+写一个纯sv的环境；</p>
+<p>首先是harness；</p>
+<!-- more -->
+
+<p>```verilog</p>
+<p>module harness</p>
+<p>bit clk;
+bit rst_n;</p>
+<p>w_inf inf(bit clk,bit rst_n);</p>
+<p>tc test();</p>
+<p>dut dut(
+    clk  (inf.clk),
+    rst_n(inf.rst_n),
+    a    (inf.a),
+    b    (inf.b)
+);</p>
+<p>initial begin
+    clk = 0;
+    forever #0.5n...</p></div>
 </div>
       </div>
     </main>
