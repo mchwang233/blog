@@ -948,8 +948,14 @@ nav a:hover {
 }
 
 .post-content p {
-    margin-bottom: 0.85rem; /* Reduced from 1rem */
+    margin-bottom: 0; /* No extra space between paragraphs */
+    text-indent: 2em; /* Indent first line to separate paragraphs visually */
     text-align: justify;
+}
+
+/* Exclude indentation for paragraphs containing images */
+.post-content p:has(img) {
+    text-indent: 0;
 }
 
 .post-content h1, 
