@@ -6,6 +6,7 @@
   <title>lpddr phy</title>
 
   
+
   <!-- 使用小火车 emoji 作为 favicon -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚂</text></svg>">
 
@@ -88,18 +89,115 @@
 
   <div class="container layout-grid">
     <main class="main-content">
-      <p><img width="1223" height="627" alt="image" src="https://github.com/user-attachments/assets/1c625fb2-cd74-4294-83a8-475927ea6016" />
-      <img width="1837" height="975" alt="image" src="https://github.com/user-attachments/assets/f755c5f5-b4f4-4cf4-adcc-e165cc75657f" />
-      <img width="1848" height="956" alt="image" src="https://github.com/user-attachments/assets/a19b0acb-fb9b-4683-88bc-8e3d5207cc03" />
-      <img width="1780" height="982" alt="image" src="https://github.com/user-attachments/assets/a26960e4-56a7-4d23-83e3-991cf56e2bf6" />
-      <img width="1845" height="974" alt="image" src="https://github.com/user-attachments/assets/77c129a1-dc7b-47ac-8ffb-2a9da8a97290" />
-      <img width="1816" height="978" alt="image" src="https://github.com/user-attachments/assets/bdb57d10-027a-4631-bcda-6bd0fc92e39c" /></p>
+      <article class="post">
+    <header class="post-header">
+        <h1 class="post-title">lpddr phy</h1>
+        <div class="post-meta">
+            <span class="post-date">1999-01-15</span>
+            <span class="post-categories"><a href="categories/web.html">web</a><a href="categories/coding.html">coding</a></span>
+            <span class="post-tags"><a href="tags/web.html">web</a></span>
+        </div>
+    </header>
+    <div class="post-content">
+        
+            <div id="password-form" class="password-lock" style="text-align: center; padding: 50px 0;">
+                <p>This content is password protected.</p>
+                <div style="margin: 20px 0;">
+                    <input type="password" id="article-password" placeholder="Enter password" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px;" />
+                    <button onclick="decryptArticle()" style="padding: 8px 16px; background: #333; color: white; border: none; border-radius: 4px; cursor: pointer;">Unlock</button>
+                </div>
+                <p id="error-msg" style="color:red;display:none;margin-top:10px;">Incorrect password</p>
+            </div>
+            <div id="decrypted-content"></div>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+            <script>
+              var check_iv = "FhrBO3xQYbkXnAynQ5aIEA==";
+              var check_data = "6EJfheDXh4FRTcJqF7Xq0deSZLCwxQaQUAukSmwwXgE4NS4NgM5oYPpLsAQrcmgGQNqrVrZVX/BAA+yPWrxe5U0UQ+1EvfsRw49AN4RuJET/Jna7LIsj/K5+r/vMvfcJ58Zv3KfvibYglvvYudZc8o3RltWI70ncqKEr85oxdKqRwWy0blYAe/zFTFhz2mBuU58YiLz+2RCLPR9k4gvBLp3/+P+vdkKHigXYXTadCSSeuIB4LPxh1/Lms4Jiv8/DxLDvPVNoYTDWct9FWIcv29kXvAPfDwm9vrvLn2zVpVR4ud28b+H4XfCoEIH+IUymlClq80FQhgeEcM4ncPiBFx3wbCvQ3ptCaQAQTBYYsex6XUurl8RLFxaDhQfGFitlxw6bC44sbLrQN9PCVmXxqdQl1tRUXSkQqsjjLLF4pViB1y05hWz/DP1lx4mqVK+LG0OfBKg3e1OzBJ+/2FlN8JQ2nuu8YKLLzTHR1HDQZmy3pNvArsZkfX5SZRXS0vxt9HAYOeWKSlpSH0PKTwZhs7Zsy1prvEAaKt8j0SrX5ohilD5cPNNkAiXwPO5T4/uQj55WrldaYP1Xi4aWQllw5bUuIKmgyFBqEjspbOc7Dq2ymv08LRnoBg4Q50kUB/kN4gfBu6u/uslrodxife9lzFsr8zLQl3aGpjiAWv0S5aoeC8zmCzrLxhtNC7MP408zBG07X2RISmUBLP2K7rvMoGpgfTQo3oKGQqh31WXgOCKGTvQ/RDqSNSdKRsxFdf5IDUlitwE4CYcugvxL0xP42HN9e0Bbc4brogKKnQIrF67dmm72eMxk9EFNt34s8qCob+7teRIFDetVZkcrPtxh3NWgHyyKkHsLoQr6wnrhl5VWHVUYclLvjt0cqk9GSWdoRPydMnxFzkXhRp8Z4Kar0IFSjz2+ryQbbPhw/HZA464tu3uGoC2xAB9T970VE8rDk5y5e6aR6520mycdQzIvAcFz77uuSOKCxj5O3psg2rkQ+caVkdypyAWZAS2pKaX47ooDrgUJp3/Twi3ivBPxim7IXS9qn9qmP4x95/bvXueB5g8VIGnJq0r4WrOfqyJLO/NtigNPrmtlmeWB/CXQVMYaD5XEukDuSl0AYSmi+BjczlYLRWwP53dsO7kwd7wD2kMrWgH7NHJYVI0Nynakz6UMdAnMW/Z0mQ015LzwsLTd6gBKbqs8UaiAN71J247eCov1r4vbhSGvVQDsuPOUeEluZ8ihOa/ay6y3vZ6HjhUqw+iLpqgBjv+Mz/AaN3RZujLhDfjMGFxqOGhfvCkBWAf1TDqwHIuoksvZd0ZojzdcVHWSRtJgNmkUzhE5t0umRaKcpS9p/dkxZYECAGdgh+Zi8Rxg1rh91ms3awXhcPWyiglmNbUo3N17NfbZ8NqTID2ffds+ZOHFvAwFkGts47OwgCQfyaScP0VP3eXqDM6zuzYI2R+VnbE+Z5NwLWiuWxWWh6s6EYjvSOaw637NEniUfOXReKadpSkb7/dXdwz0YWpp9PWyFoXKKp9SpLq9yZt57pDEnAXJoMohisd0VDqKzcG7o97XjhagmbrCZK1G8adtWaIaAJ6Lk0LQDZpE";
+              
+              function decryptArticle() {
+                 var password = document.getElementById("article-password").value;
+                 var key = CryptoJS.SHA256(password);
+                 var iv = CryptoJS.enc.Base64.parse(check_iv);
+                 
+                 try {
+                     var decrypted = CryptoJS.AES.decrypt(check_data, key, {
+                         iv: iv,
+                         mode: CryptoJS.mode.CBC,
+                         padding: CryptoJS.pad.Pkcs7
+                     });
+                     var str = decrypted.toString(CryptoJS.enc.Utf8);
+                     if (str.length > 0) {
+                         document.getElementById("decrypted-content").innerHTML = str;
+                         document.getElementById("password-form").style.display = "none";
+                         
+                         // Re-highlight code blocks if highlight.js is present (optional)
+                         if (window.hljs) {
+                             document.querySelectorAll('pre code').forEach((block) => {
+                                 hljs.highlightBlock(block);
+                             });
+                         }
+                     } else {
+                         document.getElementById("error-msg").style.display = "block";
+                     }
+                 } catch (e) {
+                     console.error(e);
+                     document.getElementById("error-msg").style.display = "block";
+                 }
+              }
+              
+              document.getElementById("article-password").addEventListener("keypress", function(event) {
+                if (event.key === "Enter") {
+                  event.preventDefault();
+                  decryptArticle();
+                }
+              });
+            </script>
+            
+    </div>
+</article>
 
       <div id="gitalk-container"></div>
     </main>
 
     <aside class="sidebar">
-      
+      <div class="sidebar-box">
+<section class="widget">
+<h3 class="widget-title">分类</h3>
+<ul class="widget-list">
+<li><a href="categories/coding.html">coding (1)</a></li>
+<li><a href="categories/mipi.html">mipi (1)</a></li>
+<li><a href="categories/web.html">web (1)</a></li>
+<li><a href="categories/图像.html">图像 (1)</a></li>
+<li><a href="categories/编程.html">编程 (1)</a></li>
+</ul>
+</section>
+<section class="widget">
+<h3 class="widget-title">标签</h3>
+<div class="tag-cloud">
+<a href="tags/Cphy.html" class="tag-cloud-item">Cphy (1)</a>
+<a href="tags/Dphy.html" class="tag-cloud-item">Dphy (1)</a>
+<a href="tags/MySQL.html" class="tag-cloud-item">MySQL (1)</a>
+<a href="tags/php.html" class="tag-cloud-item">php (1)</a>
+<a href="tags/sv.html" class="tag-cloud-item">sv (2)</a>
+<a href="tags/uvm.html" class="tag-cloud-item">uvm (1)</a>
+<a href="tags/web.html" class="tag-cloud-item">web (2)</a>
+<a href="tags/x.html" class="tag-cloud-item">x (1)</a>
+<a href="tags/图像.html" class="tag-cloud-item">图像 (1)</a>
+<a href="tags/学习笔记.html" class="tag-cloud-item">学习笔记 (1)</a>
+<a href="tags/验证.html" class="tag-cloud-item">验证 (1)</a>
+</div>
+</section>
+<section class="widget">
+<h3 class="widget-title">最新文章</h3>
+<ul class="widget-list">
+<li><a href="mipi.html">MIPI相关内容</a></li>
+<li><a href="imgnote.html">图像笔记</a></li>
+<li><a href="lpddr_software.html">lpddr 软件流程</a></li>
+<li><a href="uvm-model-1-0.html">uvm编译的一些分享</a></li>
+<li><a href="uvm_temp.html">uvm template</a></li>
+</ul>
+</section>
+</div>
     </aside>
   </div>
 
