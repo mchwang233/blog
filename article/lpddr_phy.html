@@ -99,60 +99,18 @@
         </div>
     </header>
     <div class="post-content">
-        
-            <div id="password-form" class="password-lock" style="text-align: center; padding: 50px 0;">
-                <p>This content is password protected.</p>
-                <div style="margin: 20px 0;">
-                    <input type="password" id="article-password" placeholder="Enter password" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px;" />
-                    <button onclick="decryptArticle()" style="padding: 8px 16px; background: #333; color: white; border: none; border-radius: 4px; cursor: pointer;">Unlock</button>
-                </div>
-                <p id="error-msg" style="color:red;display:none;margin-top:10px;">Incorrect password</p>
-            </div>
-            <div id="decrypted-content"></div>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-            <script>
-              var check_iv = "/swi5EB4CVQNJ9TVATNrkg==";
-              var check_data = "bbHU8MN59vJrQE2Sagt03fglabKoVox41esDQqSMg+OjK9t2/3ysrWFRCmYfHP8Ke4Tj5Eky7li5Emtjk83rsAvOnnUjaFOwaqrzl2kabX5eFCoGOEHW8MTfyYnwF1vRc9ch/dp3TZ/MyHl8PIw8ESu/hCclPfzJYCiU3nVdD+qEqWzu/4H7o6O6tEp0YlA7deJlzkpPYkroL/PxWFJqT3eCPBHpUnNp4fYAKpfaCIRNnNL6rzEYz/M2Gi9INTJa+w03lXVKYg1XDXLZxjDQVGkwMXEnU9iyyJ/rlTaIgrhuAh9naqPT4KyUO9ZiDCMlGfABe/bSQ/FrgpAH2aSKdUQ+6/jd09uowhzEjCnv7utPAHHIH2aDE682J0FeKydwuOP+Owj64F1JUk6psoHnrVxGdy59pxybPThuhbiYFGUzhk7AvQezs0g4h9+iYT21oOvLPCZbLxbKp5Uq7RR2+2+OXFZlnatsai+L3WrW8xiy8FYyPlQOgquzidCiAnpfFrgNlRNbDCPDksJmTyRhu7yrkJVwv8vNKTPfAOMDRgF+N0u1xM/H0ccj+yIzXhUEoQgdHi6AY82Tw8SiDqWwjnGzzjd7/O5Ilj5UTohg6xlyT9h9OIYfEzthzVp70CYkP2SDgMdu1qsuo9p/sOeMo8XxeD4ugnLbxZAvYtDvPkleS91IXm62rFyzYmglRgLDaWaVZD4UY+4JTr4oh1GEJVrW1gVJl9knAoBo6e7niLrJ8MLlFR/zQunX+vqW0R8mAfZ8XTchztDywhcFWNKn5apJGJvSaLtulSgTpYixmdquKp4HQ7eT/ucDM2tLXEomAqp45HBOde23YvqUCkBrN2l1Hqdm2QPP0CPAYSVqQ6WlvcB2jk/g8lcIQOB7oaOYcDgmfrxQvI/pRQeSf3V91E+SXVzghRoFxw7teIByLCQydwQoV3vB3h4L65BAjZE2h3J37M8QIzVrDL+2YaPe/zGd+IixcT6LPg2h2N3eSMAhq5iXe2AKDSa/XC0q+mXYwsyo1nBDjHBJLca/GqyXlee96uv3WmUT5YOrJc75PSx9D3C49nGNp8YEHM7zoI+PvOxaxvsGKv6icgmQ535JhsDiyPRhUJSK0n9M+zwJSBfB1i4kJU09HGfCeFe5lQFf85uW5RBzFezJksdwlHxQ/3q6DYWxiEoH1nni8OqO60GPxDbgNKT6ckGXGf7CIDxeDRKgoSTBpfYEn/ggxIO2q9WMv9MUVZNPgbFe6qHtOKHQ1vOyhRzrk0lxJZZ+U7+ngzF/vLmgmnrzFBCh2Jr58bWFW6DceH/82V3Y2iJ2Q//vLXuaFugx5HNsAlImuUC2mYP4WXH3XI2kVpdb+RMUxTyM6cWkuLenNImMCHnJAFixg5PGagqGHAcxZhjLCBDjow2spJY/9BJnQlM4NS9AfAEP3yxC0Fma4Tukjp2dxnjgAq+bUXy6A2CagbU1L1uN+idpyUNrptHiOzcanSzl3lWMtngdjGxZAJqVg9NoOmJIv7oe6FbjEjY2Bwj+Kcq5jOaGBSu9v6z+HNRsr4qEdGscaq3f2a0H015X2d7KxwwB5nAoEXTpkR0LInuY50HK";
-              
-              function decryptArticle() {
-                 var password = document.getElementById("article-password").value;
-                 var key = CryptoJS.SHA256(password);
-                 var iv = CryptoJS.enc.Base64.parse(check_iv);
-                 
-                 try {
-                     var decrypted = CryptoJS.AES.decrypt(check_data, key, {
-                         iv: iv,
-                         mode: CryptoJS.mode.CBC,
-                         padding: CryptoJS.pad.Pkcs7
-                     });
-                     var str = decrypted.toString(CryptoJS.enc.Utf8);
-                     if (str.length > 0) {
-                         document.getElementById("decrypted-content").innerHTML = str;
-                         document.getElementById("password-form").style.display = "none";
-                         
-                         // Re-highlight code blocks if highlight.js is present (optional)
-                         if (window.hljs) {
-                             document.querySelectorAll('pre code').forEach((block) => {
-                                 hljs.highlightBlock(block);
-                             });
-                         }
-                     } else {
-                         document.getElementById("error-msg").style.display = "block";
-                     }
-                 } catch (e) {
-                     console.error(e);
-                     document.getElementById("error-msg").style.display = "block";
-                 }
-              }
-              
-              document.getElementById("article-password").addEventListener("keypress", function(event) {
-                if (event.key === "Enter") {
-                  event.preventDefault();
-                  decryptArticle();
-                }
-              });
-            </script>
-            
+        <p><img width="1223" height="627" alt="image" src="https://github.com/user-attachments/assets/1c625fb2-cd74-4294-83a8-475927ea6016" />
+<img width="1837" height="975" alt="image" src="https://github.com/user-attachments/assets/f755c5f5-b4f4-4cf4-adcc-e165cc75657f" />
+<img width="1848" height="956" alt="image" src="https://github.com/user-attachments/assets/a19b0acb-fb9b-4683-88bc-8e3d5207cc03" />
+<img width="1780" height="982" alt="image" src="https://github.com/user-attachments/assets/a26960e4-56a7-4d23-83e3-991cf56e2bf6" />
+<img width="1845" height="974" alt="image" src="https://github.com/user-attachments/assets/77c129a1-dc7b-47ac-8ffb-2a9da8a97290" />
+<img width="1816" height="978" alt="image" src="https://github.com/user-attachments/assets/bdb57d10-027a-4631-bcda-6bd0fc92e39c" />
+<img width="1764" height="981" alt="image" src="https://github.com/user-attachments/assets/0a9ed686-3658-4d4f-a205-a02ca95fefbf" />
+<img width="1856" height="992" alt="image" src="https://github.com/user-attachments/assets/31e87d81-2e7d-41fb-b698-811af1fe25c5" />
+<img width="1830" height="1007" alt="image" src="https://github.com/user-attachments/assets/93fceb22-6d64-4123-bf43-7d6ef7d50814" />
+<img width="1675" height="1030" alt="image" src="https://github.com/user-attachments/assets/ac155965-b2a2-4dc6-8c00-8bb14a701478" />
+<img width="1715" height="978" alt="image" src="https://github.com/user-attachments/assets/07a76707-43d4-4f31-aeaf-373146ba8e08" />
+<img width="1831" height="1021" alt="image" src="https://github.com/user-attachments/assets/36f6f50c-440d-4da5-b788-6dde452ad17a" /></p>
     </div>
 </article>
 
