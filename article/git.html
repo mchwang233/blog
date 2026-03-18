@@ -1,0 +1,481 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>git开发流程</title>
+
+  
+
+  <!-- 使用小火车 emoji 作为 favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚂</text></svg>">
+
+  <link rel="stylesheet" href="./assets/style.css" />
+  <!-- Use light theme for Prism -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+  <script src="./assets/search.js"></script>
+  
+  <script>
+    // Force set manual mode before Prism loads to ensure no auto-highlighting occurs
+    window.Prism = window.Prism || {};
+    window.Prism.manual = true;
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+  <script>
+    // Use DOMContentLoaded to run as early as possible after parsing
+    document.addEventListener('DOMContentLoaded', function() {
+      
+      // 1. First, handle Mermaid blocks to convert them to divs and detach from pre/code
+      // This prevents Prism from ever seeing them as code blocks
+      document.querySelectorAll('pre code.language-mermaid, pre.mermaid code').forEach((block) => {
+        const pre = block.parentElement;
+        const mermaidDiv = document.createElement('div');
+        mermaidDiv.className = 'mermaid';
+
+        const parser = new DOMParser();
+        const doc = parser.parseFromString('<!doctype html><body>' + block.innerHTML, 'text/html');
+        let mermaidCode = doc.body.textContent || '';
+        mermaidCode = mermaidCode.replace(/<br>\s*\n\s*/g, '<br>');
+        mermaidCode = mermaidCode.replace(/S16\[[\s\S]*?\]/, 'S16["Step 16: Update training-dependent registers"]');
+
+        mermaidDiv.textContent = mermaidCode;
+        pre.replaceWith(mermaidDiv);
+      });
+
+      // 2. Fix Pandoc class names for other code blocks (e.g. pre.python -> code.language-python)
+      document.querySelectorAll('pre[class]').forEach((pre) => {
+        const code = pre.querySelector('code');
+        if (code && pre.className) {
+          const lang = pre.className.trim();
+          // Double check we're not touching mermaid if any slipped through
+          if (lang !== 'mermaid' && lang !== 'language-mermaid') {
+            code.className = 'language-' + lang;
+            pre.removeAttribute('class');
+          }
+        }
+      });
+      
+      // 3. Initialize and Run Mermaid
+      mermaid.initialize({ 
+        startOnLoad: false,
+        theme: 'default',
+        securityLevel: 'loose',
+        logLevel: 'debug'
+      });
+      
+      mermaid.run({
+        querySelector: '.mermaid'
+      }).catch(function(error) {
+        console.error('Mermaid rendering error:', error);
+      });
+      
+      // 4. Run Prism highlight manually
+      Prism.highlightAll();
+    });
+  </script>
+</head>
+<body>
+  <header>
+    <a href="./index.html" class="logo" style="text-decoration: none; color: inherit;">追逐星墨</a>
+    <div class="search-box">
+      <form id="search-form" action="javascript:void(0);">
+        <input type="text" id="search-input" name="q" placeholder="搜索..." aria-label="Search">
+      </form>
+    </div>
+  </header>
+
+  <div class="container layout-grid">
+    <main class="main-content">
+      <article class="post">
+    <header class="post-header">
+        <h1 class="post-title">git开发流程</h1>
+        <div class="post-meta">
+            <span class="post-date">2026-03-18</span>
+            
+            
+        </div>
+    </header>
+    <div class="post-content">
+        <h1 id="git">🚀 Git 高级用法完整手册（软件开发实战版）</h1>
+<blockquote>
+<p>适用于：日常开发 / 团队协作 / PR流程 / 代码管理
+核心目标：<strong>历史清晰 + 协作顺畅 + 可回溯 + 可控风险</strong></p>
+</blockquote>
+<hr />
+<h1 id="1">📌 1. 分支模型（推荐规范）</h1>
+<h2 id="_1">常见分支</h2>
+<table>
+<thead>
+<tr>
+<th>分支</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>main</td>
+<td>可发布代码（稳定）</td>
+</tr>
+<tr>
+<td>develop</td>
+<td>日常集成</td>
+</tr>
+<tr>
+<td>feature/xxx</td>
+<td>功能开发</td>
+</tr>
+<tr>
+<td>bugfix/xxx</td>
+<td>普通修复</td>
+</tr>
+<tr>
+<td>hotfix/xxx</td>
+<td>紧急修复</td>
+</tr>
+<tr>
+<td>release/xxx</td>
+<td>发版准备</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="_2">分支关系图</h2>
+<pre><code class="language-mermaid">gitGraph
+    commit id: &quot;init&quot;
+    commit id: &quot;main-1&quot;
+    commit id: &quot;main-2&quot;
+
+    branch feature/login
+    checkout feature/login
+    commit id: &quot;feat-1&quot;
+    commit id: &quot;feat-2&quot;
+
+    checkout main
+    commit id: &quot;main-3&quot;
+</code></pre>
+<hr />
+<h1 id="2">📌 2. 标准开发流程（最重要）</h1>
+<pre><code class="language-mermaid">flowchart TD
+    A[切 main] --&gt; B[pull 最新代码]
+    B --&gt; C[新建 feature 分支]
+    C --&gt; D[开发]
+    D --&gt; E[commit]
+    E --&gt; F{main 有更新?}
+
+    F -- 否 --&gt; G[push]
+    G --&gt; H[PR]
+    H --&gt; I[Review]
+    I --&gt; J[合并 main]
+
+    F -- 是 --&gt; K[rebase main]
+    K --&gt; L{冲突?}
+    L -- 否 --&gt; G
+    L -- 是 --&gt; M[解决冲突]
+    M --&gt; K
+</code></pre>
+<hr />
+<h1 id="3">📌 3. 常用命令模板</h1>
+<h2 id="_3">新建功能分支</h2>
+<pre><code class="language-bash">git checkout main
+git pull origin main
+git checkout -b feature/login
+</code></pre>
+<h2 id="_4">提交代码</h2>
+<pre><code class="language-bash">git add .
+git commit -m &quot;feat: add login&quot;
+</code></pre>
+<h2 id="_5">推送远程</h2>
+<pre><code class="language-bash">git push -u origin feature/login
+</code></pre>
+<hr />
+<h1 id="4-rebase">📌 4. rebase（核心技能）</h1>
+<h2 id="rebase">为什么用 rebase？</h2>
+<p>👉 保持提交历史“线性、干净”</p>
+<hr />
+<h2 id="_6">使用方式</h2>
+<pre><code class="language-bash">git checkout main
+git pull origin main
+git checkout feature/login
+git rebase main
+</code></pre>
+<hr />
+<h2 id="_7">冲突处理</h2>
+<pre><code class="language-bash"># 修改冲突文件
+git add .
+git rebase --continue
+</code></pre>
+<p>放弃：</p>
+<pre><code class="language-bash">git rebase --abort
+</code></pre>
+<hr />
+<h2 id="rebase_1">rebase 流程图</h2>
+<pre><code class="language-mermaid">flowchart TD
+    A[rebase main] --&gt; B{冲突?}
+    B -- 否 --&gt; C[完成]
+    B -- 是 --&gt; D[修改冲突]
+    D --&gt; E[git add]
+    E --&gt; F[continue]
+    F --&gt; B
+</code></pre>
+<hr />
+<h1 id="5-rebase-i">📌 5. rebase -i（整理提交）</h1>
+<pre><code class="language-bash">git rebase -i HEAD~3
+</code></pre>
+<h3 id="_8">常用操作</h3>
+<table>
+<thead>
+<tr>
+<th>指令</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pick</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>squash</td>
+<td>合并</td>
+</tr>
+<tr>
+<td>reword</td>
+<td>改提交信息</td>
+</tr>
+<tr>
+<td>drop</td>
+<td>删除</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="_9">提交流程图</h2>
+<pre><code class="language-mermaid">flowchart TD
+    A[多个杂乱 commit] --&gt; B[rebase -i]
+    B --&gt; C[整理历史]
+    C --&gt; D[清晰提交]
+</code></pre>
+<hr />
+<h1 id="6-push">📌 6. push 策略</h1>
+<h2 id="push">普通 push</h2>
+<pre><code class="language-bash">git push
+</code></pre>
+<h2 id="rebase-push">rebase 后 push</h2>
+<pre><code class="language-bash">git push --force-with-lease
+</code></pre>
+<p>⚠️ 永远优先：</p>
+<pre><code>--force-with-lease
+</code></pre>
+<p>而不是：</p>
+<pre><code>--force
+</code></pre>
+<hr />
+<h1 id="7-stash">📌 7. stash（临时保存）</h1>
+<pre><code class="language-bash">git stash
+git stash pop
+</code></pre>
+<p>查看：</p>
+<pre><code class="language-bash">git stash list
+</code></pre>
+<hr />
+<h1 id="8-cherry-pick">📌 8. cherry-pick（挑提交）</h1>
+<pre><code class="language-bash">git cherry-pick &lt;commit_id&gt;
+</code></pre>
+<h2 id="_10">使用场景</h2>
+<ul>
+<li>把某个修复带到 hotfix</li>
+<li>不想 merge 整个分支</li>
+</ul>
+<hr />
+<h2 id="_11">流程图</h2>
+<pre><code class="language-mermaid">flowchart LR
+    A[某个 commit] --&gt; B[cherry-pick]
+    B --&gt; C[另一个分支]
+</code></pre>
+<hr />
+<h1 id="9-reset-vs-revert">📌 9. reset vs revert</h1>
+<h2 id="reset">reset（改历史，本地用）</h2>
+<pre><code class="language-bash">git reset --soft HEAD~1
+git reset --mixed HEAD~1
+git reset --hard HEAD~1
+</code></pre>
+<hr />
+<h2 id="revert">revert（安全撤销，团队用）</h2>
+<pre><code class="language-bash">git revert &lt;commit_id&gt;
+</code></pre>
+<hr />
+<h2 id="_12">对比</h2>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>是否改历史</th>
+<th>是否安全</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>reset</td>
+<td>是</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>revert</td>
+<td>否</td>
+<td>✅</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="10-reflog">📌 10. reflog（后悔药）</h1>
+<pre><code class="language-bash">git reflog
+git reset --hard &lt;id&gt;
+</code></pre>
+<p>👉 可以恢复：</p>
+<ul>
+<li>被 reset 的提交</li>
+<li>丢失的 commit</li>
+<li>错误 rebase</li>
+</ul>
+<hr />
+<h1 id="11-bisect-bug">📌 11. bisect（二分定位 bug）</h1>
+<pre><code class="language-bash">git bisect start
+git bisect bad
+git bisect good &lt;commit&gt;
+</code></pre>
+<p>测试后：</p>
+<pre><code class="language-bash">git bisect good
+git bisect bad
+</code></pre>
+<p>结束：</p>
+<pre><code class="language-bash">git bisect reset
+</code></pre>
+<hr />
+<h1 id="12">📌 12. 查看历史</h1>
+<pre><code class="language-bash">git log --oneline --graph --decorate --all
+</code></pre>
+<p>查看文件历史：</p>
+<pre><code class="language-bash">git log -- file.c
+</code></pre>
+<p>查看某次提交：</p>
+<pre><code class="language-bash">git show &lt;commit_id&gt;
+</code></pre>
+<hr />
+<h1 id="13-blame">📌 13. blame（查是谁改的）</h1>
+<pre><code class="language-bash">git blame file.c
+</code></pre>
+<hr />
+<h1 id="14-fetch-vs-pull">📌 14. fetch vs pull</h1>
+<h2 id="_13">推荐流程</h2>
+<pre><code class="language-bash">git fetch origin
+git rebase origin/main
+</code></pre>
+<hr />
+<h2 id="_14">对比</h2>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>行为</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pull</td>
+<td>fetch + merge</td>
+</tr>
+<tr>
+<td>fetch</td>
+<td>只下载</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="15-hotfix">📌 15. hotfix 流程</h1>
+<pre><code class="language-mermaid">flowchart TD
+    A[main] --&gt; B[hotfix 分支]
+    B --&gt; C[修复]
+    C --&gt; D[提交]
+    D --&gt; E[PR]
+    E --&gt; F[合并 main]
+</code></pre>
+<hr />
+<h1 id="16">📌 16. 完整开发节奏</h1>
+<pre><code class="language-mermaid">flowchart LR
+    A[main] --&gt; B[feature]
+    B --&gt; C[开发]
+    C --&gt; D[commit]
+    D --&gt; E[rebase]
+    E --&gt; F[整理历史]
+    F --&gt; G[push]
+</code></pre>
+    </div>
+</article>
+
+      <div id="gitalk-container"></div>
+    </main>
+
+    <aside class="sidebar">
+      <div class="sidebar-box">
+<section class="widget">
+<h3 class="widget-title">分类</h3>
+<ul class="widget-list">
+<li><a href="categories/mipi.html">mipi (1)</a></li>
+<li><a href="categories/图像.html">图像 (1)</a></li>
+<li><a href="categories/编程.html">编程 (1)</a></li>
+</ul>
+</section>
+<section class="widget">
+<h3 class="widget-title">标签</h3>
+<div class="tag-cloud">
+<a href="tags/Cphy.html" class="tag-cloud-item">Cphy (1)</a>
+<a href="tags/Dphy.html" class="tag-cloud-item">Dphy (1)</a>
+<a href="tags/MySQL.html" class="tag-cloud-item">MySQL (1)</a>
+<a href="tags/php.html" class="tag-cloud-item">php (1)</a>
+<a href="tags/sv.html" class="tag-cloud-item">sv (2)</a>
+<a href="tags/uvm.html" class="tag-cloud-item">uvm (1)</a>
+<a href="tags/web.html" class="tag-cloud-item">web (1)</a>
+<a href="tags/x.html" class="tag-cloud-item">x (1)</a>
+<a href="tags/图像.html" class="tag-cloud-item">图像 (1)</a>
+<a href="tags/学习笔记.html" class="tag-cloud-item">学习笔记 (1)</a>
+<a href="tags/验证.html" class="tag-cloud-item">验证 (1)</a>
+</div>
+</section>
+<section class="widget">
+<h3 class="widget-title">最新文章</h3>
+<ul class="widget-list">
+<li><a href="git.html">git开发流程</a></li>
+<li><a href="Agent_build.html">关于agent的一些想法</a></li>
+<li><a href="mipi.html">MIPI相关内容</a></li>
+<li><a href="imgnote.html">图像笔记</a></li>
+<li><a href="lpddr_software.html">lpddr 软件流程</a></li>
+</ul>
+</section>
+</div>
+    </aside>
+  </div>
+
+  <section id="about" class="footnote">
+    <div class="container">
+      <span>Created By MchWang. | <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">陕ICP备17021455号</a></span>
+    </div>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+  <script>
+    const gitalk = new Gitalk({
+      clientID: 'Ov23lig7OZ6L8ual62n1',
+      clientSecret: 'ea3366714a0eb02aa2b00f051a159eeb7228024d',
+      repo: 'blog',
+      owner: 'mchwang233',
+      admin: ['mchwang233'],
+      id: location.pathname, 
+      distractionFreeMode: false
+    });
+    gitalk.render('gitalk-container');
+  </script>
+</body>
+</html>
