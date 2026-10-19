@@ -11,6 +11,9 @@ document.addEventListener('DOMContentLoaded', () => {
     ? new URL(searchInput.dataset.root, document.baseURI)
     : new URL('.', logo ? logo.href : document.baseURI);
   const searchPageURL = new URL('search.html', rootURL);
+  const iconSpriteURL = searchInput.dataset.iconsUrl
+    ? new URL(searchInput.dataset.iconsUrl, document.baseURI)
+    : new URL('assets/icons.svg', rootURL);
   const suggestionLimit = 8;
   const fullResultLimit = 50;
   let searchDataPromise;
@@ -179,10 +182,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const namespace = 'http://www.w3.org/2000/svg';
     const svg = document.createElementNS(namespace, 'svg');
     svg.setAttribute('class', 'icon');
+    svg.setAttribute('width', '18');
+    svg.setAttribute('height', '18');
     svg.setAttribute('aria-hidden', 'true');
     svg.setAttribute('focusable', 'false');
     const use = document.createElementNS(namespace, 'use');
-    use.setAttribute('href', new URL('assets/icons.svg#calendar', rootURL).href);
+    const calendarURL = new URL(iconSpriteURL);
+    calendarURL.hash = 'calendar';
+    use.setAttribute('href', calendarURL.href);
     svg.appendChild(use);
     return svg;
   };

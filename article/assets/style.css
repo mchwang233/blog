@@ -73,10 +73,10 @@ a:focus-visible, button:focus-visible, input:focus-visible, summary:focus-visibl
 .post-preview-meta .icon { width: 14px; height: 14px; color: #8b9788; }
 .post-preview-taxonomies { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 9px; margin-bottom: 13px; font-size: 11px; }
 .post-preview-taxonomies .icon { width: 13px; height: 13px; }
-.category, .post-categories a { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; color: var(--accent); background: var(--accent-soft); border: 1px solid #e0e8dc; border-radius: 5px; font-size: 11px; }
-.category:hover, .post-categories a:hover { color: #2d4d3d; background: #e0eadc; }
-.tag, .post-tags a { display: inline-flex; align-items: center; gap: 4px; padding: 2px 4px; color: #73836e; font-size: 11px; }
-.tag:hover, .post-tags a:hover { color: var(--accent); }
+.post-preview-taxonomies .category, .post-categories a { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; color: var(--accent); background: var(--accent-soft); border: 1px solid #e0e8dc; border-radius: 5px; font-size: 11px; }
+.post-preview-taxonomies .category:hover, .post-categories a:hover { color: #2d4d3d; background: #e0eadc; }
+.post-preview-taxonomies .tag, .post-tags a { display: inline-flex; align-items: center; gap: 4px; padding: 2px 4px; color: #73836e; font-size: 11px; }
+.post-preview-taxonomies .tag:hover, .post-tags a:hover { color: var(--accent); }
 .post-preview-desc { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; max-height: 5.4em; overflow: hidden; color: #747b70; font-size: 13px; line-height: 1.8; overflow-wrap: anywhere; }
 .post-preview-desc > :first-child { margin-top: 0; }
 .post-preview-desc > :last-child { margin-bottom: 0; }
