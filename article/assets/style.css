@@ -37,7 +37,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, summary:focus-visibl
 .logo-caption { display: block; margin-top: 3px; color: var(--muted); font-family: var(--font); font-size: 11px; font-weight: 400; letter-spacing: .5px; }
 .site-nav { display: flex; gap: 4px; margin-left: auto; }
 .site-nav a { display: inline-flex; align-items: center; justify-content: center; min-height: 40px; gap: 7px; padding: 8px 12px; color: var(--muted); border-radius: var(--radius-sm); font-size: 13px; font-weight: 500; white-space: nowrap; }
-.site-nav a:hover, .site-nav a:focus-visible, .site-nav a[aria-current="page"] { color: var(--accent); background: var(--accent-soft); }
+.site-nav a:hover, .site-nav a:focus-visible { color: var(--accent); background: var(--accent-soft); }
 .site-nav .icon { width: 16px; height: 16px; }
 
 /* Keep search width stable while focusing. */
@@ -279,8 +279,7 @@ code[class*="language-"], pre[class*="language-"] { color: #47553d; text-shadow:
 }
 @media (max-width: 420px) {
   .sidebar-box { grid-template-columns: minmax(0, 1fr); }
-  .site-nav { flex: 1 0 100%; margin-left: 0; }
-  .site-nav a { padding-inline: 12px; }
+  .site-nav a { padding-inline: 6px; }
   .site-nav .icon { display: none; }
   .post-preview { padding-inline: 14px; }
   .post { padding-inline: 14px; }
