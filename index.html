@@ -1,470 +1,214 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mch</title>
-  <!-- M 字母图标，沿用 Article 与 Todos 的深绿底、浅色线条风格 -->
+  <meta name="theme-color" content="#f5f3ee">
+  <title>追逐星墨</title>
   <link rel="icon" type="image/svg+xml" href="img/favicon.svg?v=015c0946ade5">
   <link rel="stylesheet" href="css/style.css">
-  <script src="img/images.js"></script> <!-- Load image manifest before main script -->
-  <style>
-    /* 全屏文艺柔和风格覆盖样式 */
-    :root {
-        /* 柔和的莫兰迪色系 / 纸张质感配色 */
-        --bg-color: #f5f2e9;   /* 米白/暖灰，像旧书页 */
-        --text-color: #4a4a4a; /* 深灰，不如纯黑刺眼 */
-        --accent-color: #8c9ea3; /* 灰蓝，低饱和度 */
-        --border-color: #e0ddd5;
-        --nav-hover: #6b7c85;
-    }
-
-    body {
-        font-family: "Optima", "Palatino", "Georgia", serif; /* 优雅的衬线/人文主义无衬线字体 */
-        background-color: var(--bg-color);
-        color: var(--text-color);
-        margin: 0;
-        padding: 0;
-        height: 100vh;
-        overflow: hidden; /* 禁止滚动 */
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between; /* 垂直分布：头-中-脚 */
-    }
-    
-    /* 顶部布局：紧凑且优雅 */
-    header {
-        padding: 1.5rem 2rem;
-        display: flex;
-        justify-content: space-between; /* 左右分开 */
-        align-items: center;
-        width: 100%;
-        max-width: 1200px;
-        margin: 0 auto;
-        border-bottom: 1px solid transparent; /* 移除原来的边框感 */
-        flex: 0 0 auto; /* 不伸缩 */
-    }
-    
-    .logo {
-        font-family: "Playfair Display", serif;
-        font-size: 2rem;
-        font-weight: 700;
-        color: #2c3e50;
-        letter-spacing: 0.05em;
-        margin: 0;
-    }
-    
-    /* 移除之前的装饰线 */
-    .logo::after { display: none; }
-
-    nav {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 2rem;
-    }
-
-    nav a {
-        color: var(--accent-color);
-        font-size: 0.95rem;
-        font-weight: 500;
-        text-transform: capitalize; /* 首字母大写，比全大写更柔和 */
-        letter-spacing: 0.05em;
-        text-decoration: none;
-        transition: all 0.3s ease;
-        position: relative;
-        margin: 0;
-    }
-
-    nav a:hover {
-        color: var(--nav-hover);
-    }
-    
-    /* 简单的下划线动效 */
-    nav a::after {
-        content: '';
-        position: absolute;
-        width: 0;
-        height: 1px;
-        bottom: -4px;
-        left: 0;
-        background-color: var(--nav-hover);
-        transition: width 0.3s ease;
-    }
-    nav a:hover::after {
-        width: 100%;
-    }
-    
-    /* 核心舞台：绝对居中 */
-    .train-stage {
-        flex: 1; /* 占据剩余空间 */
-        margin: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-height: auto; /* 重置最小高度 */
-        opacity: 0.95; /* 微透感 */
-    }
-    
-    /* 胶片框体样式调整 - 融入浅色背景 */
-    .film-strip {
-        box-shadow: 0 20px 60px rgba(0,0,0,0.15); /* 更轻柔的阴影 */
-        border: 8px solid #333; /* 像一个相框 */
-        background: #222;
-        /* 保持之前的缩放，但可能需要根据屏幕微调，暂时保持 1.5 */
-        transform: scale(1.3); /* 稍微调小一点以免撑破小屏幕 */
-    }
-    
-    /* 底部信息 */
-    .footnote {
-        border-top: none;
-        text-align: center;
-        font-size: 0.8rem;
-        color: #999;
-        padding: 1rem;
-        margin: 0 auto;
-        flex: 0 0 auto;
-    }
-    
-    .footnote a {
-        color: #888;
-        text-decoration: none;
-        transition: color 0.2s;
-    }
-    .footnote a:hover { color: var(--nav-hover); }
-
-    /* 背景风景容器 */
-    .scenery-container {
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      overflow: hidden;
-      z-index: 0; 
-    }
-
-    .scenery-item {
-      position: absolute;
-      top: 0; left: 0;
-      /* 移除固定宽度，由内容(图片)决定宽度 */
-      height: 100%;
-      will-change: transform;
-    }
-
-    /* 移除之前的 keyframes 定义 */
-
-    .scenery-item img {
-      display: block;
-      /* 强制高度填满，宽度自适应，保证图片按原比例完全显示 */
-      height: 100%;
-      width: auto;
-      max-width: none; /* 防止被父容器限制 */
-    }
-
-    /* 响应式微调 */
-    @media (max-height: 800px) {
-        .film-strip { transform: scale(1.1); }
-        .logo { font-size: 1.5rem; }
-    }
-  </style>
+  <!-- Deployment generates this manifest with cache_manager.py. The page also works without it. -->
+  <script src="img/images.js" defer></script>
 </head>
 <body>
-  <header>
-    <div class="logo">Mch</div>
-    <nav>
-      <a href="/">Home</a>
-      <a href="article/" target="_blank" rel="noopener" aria-label="Articles (opens in a new tab)">Articles</a>
-      <a href="https://mch.wang/todos" target="_blank" rel="noopener" aria-label="Todos (opens in a new tab)">Todos</a>
-      <a href="#about">About</a>
+  <a class="skip-link" href="#main-content">跳转到正文</a>
+  <header class="site-header">
+    <a class="logo" href="./" aria-label="追逐星墨，返回首页">
+      <img class="logo-mark" src="img/favicon.svg" width="36" height="36" alt="">
+      <span class="logo-text">追逐星墨<span class="logo-caption">记录每一程的所思所见</span></span>
+    </a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="./" aria-current="page">首页</a>
+      <a href="article/">文章</a>
+      <a href="https://mch.wang/todos/">待办</a>
     </nav>
   </header>
 
-  <section class="train-stage">
-    <div class="film-strip">
+  <main id="main-content" class="home-main" tabindex="-1">
+    <h1 class="visually-hidden">追逐星墨</h1>
+    <figure class="film-strip" aria-label="山海风景摄影胶片">
       <div class="film-screen">
-        <div class="scenery-container"></div>
-        <div class="train-wrapper">
-          <div class="train">
-            <div class="train-cabin">
-                <div class="train-window"></div>
-            </div>
-            <div class="train-body"></div>
-            <div class="train-plate"></div>
-            <div class="train-chimney"></div>
-            <div class="train-cowcatcher"></div>
-            <div class="train-chassis"></div>
-            
-            <div class="train-wheel w1"></div>
-            <div class="train-wheel w2"></div>
-            <div class="train-wheel w3"></div>
-
-            <div class="smoke s1"></div>
-            <div class="smoke s2"></div>
-          </div>
-          
-          <div class="train-link"></div>
-          
-          <div class="train-carriage">
-              <div class="carriage-body"></div>
-              <div class="carriage-window cw1"></div>
-              <div class="carriage-window cw2"></div>
-              <div class="carriage-window cw3"></div>
-              <div class="carriage-wheel w1"></div>
-              <div class="carriage-wheel w2"></div>
-          </div>
+        <div class="scenery-container" aria-hidden="true">
+          <img class="scenery-fallback" src="img/life.png" alt="" fetchpriority="high">
         </div>
-        <div class="track"></div>
       </div>
+      <figcaption class="visually-hidden">人生海海，山山而川。</figcaption>
+    </figure>
+    <div class="film-controls">
+      <button id="motion-toggle" type="button" aria-pressed="false" hidden>暂停播放</button>
     </div>
-  </section>
+  </main>
+
+  <footer id="about" class="footnote">
+    <span>追逐星墨<span class="footer-divider">/</span>Created by MchWang.</span>
+    <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">陕ICP备17021455号</a>
+  </footer>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      /* Train Logic Disabled
-      // --- Train Logic Restored ---
-      const wrapper = document.querySelector('.train-wrapper');
-      
-      // Initial offset for the first added carriage
-      // Static Car 1 starts at 305px.
-      // Gap logic (25px gap): 
-      // Step = Body(220) + Gap(25) = 245.
-      // Next Car Pos = 305 + 245 = 550.
-      let lastRightPos = 550; 
+      const screen = document.querySelector('.film-screen');
+      const container = document.querySelector('.scenery-container');
+      const fallback = document.querySelector('.scenery-fallback');
+      const toggle = document.getElementById('motion-toggle');
+      const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      const manifest = Array.isArray(window.manifestImages) ? window.manifestImages : [];
+      const sources = [...new Set([...manifest.filter(src => typeof src === 'string' && src.trim()), 'img/life.png'])];
+      const failed = new Set();
+      const loaded = new Map();
+      let items = [];
+      let tailX = 0;
+      let lastSource = '';
+      let loading = false;
+      let manuallyPaused = false;
+      let frame = 0;
+      let previousTime = 0;
 
-      function addCarriage() {
-         // Create Link
-         const link = document.createElement('div');
-         link.className = 'train-link';
-         // Link needs to overlap previous body by 10px.
-         // Link Width 45. Gap 25. Overlap Next 10.
-         // Relative to Next Car (lastRightPos): -35px.
-         link.style.left = (lastRightPos - 35) + 'px'; 
-         wrapper.appendChild(link);
+      const isPaused = () => manuallyPaused || motion.matches || document.hidden;
 
-         // Create Carriage
-         const carriage = document.createElement('div');
-         carriage.className = 'train-carriage';
-         carriage.style.left = lastRightPos + 'px';
-         
-         carriage.innerHTML = `
-              <div class="carriage-body"></div>
-              <div class="carriage-window cw1"></div>
-              <div class="carriage-window cw2"></div>
-              <div class="carriage-window cw3"></div>
-              <div class="carriage-wheel w1"></div>
-              <div class="carriage-wheel w2"></div>
-         `;
-         wrapper.appendChild(carriage);
-
-         // Update position for next one
-         // Body(220) + Gap(25) = 245
-         lastRightPos += 245; 
-         
-         // Limiter to prevent infinite DOM growth invisible off-screen
-         if (wrapper.children.length > 20) {
-             // Just stop adding or remove old? 
-             // Since they grow to the left (negative visual space), 
-             // eventually they are far off screen.
-             // We can just keep adding or better, stop adding after some length.
-             // But user likes infinite train. Let's keep adding but maybe remove?
-             // Removing from DOM changes index. Logic relies on append.
-             // Let's just limit to 20 carriages for performance, it's enough visual fill.
-             // Actually, if we stop adding, the "shake" animation continues.
-             // Let's just keep adding for now, it's a toy.
-         }
-      }
-
-      // Initial carriages
-      for (let i = 0; i < 3; i++) {
-          addCarriage();
-      }
-
-      // Continue adding
-      setInterval(addCarriage, 2000);
-      */
-
-      // --- Stations & Scenery Logic ---
-      const filmScreen = document.querySelector('.film-screen');
-      
-      // Generate 35 images: shanhai_1.jpg to shanhai_35.jpg
-      /* Hardcoded list generation removed
-      const allImages = [];
-      for(let i=1; i<=35; i++) {
-        allImages.push(`img/shanhai_${i}.jpg`);
-      }
-      */
-      
-      let allImages = [];
-
-      // Image selection logic
-      let recentImages = []; 
-      
-      function getNextImage() {
-          if (allImages.length === 0) return ''; 
-
-          let randomIndex;
-          let attempts = 0;
-          
-          do {
-             randomIndex = Math.floor(Math.random() * allImages.length);
-             attempts++;
-          } while (recentImages.includes(randomIndex) && attempts < 100);
-          
-          recentImages.push(randomIndex);
-          if (recentImages.length > 10) recentImages.shift(); 
-          
-          return allImages[randomIndex];
-      }
-
-      // --- Seamless Scenery Logic (Queue Based) ---
-      // 重构逻辑：基于队列的动态宽度拼接，支持任意比例图片无缝滚动
-      
-      const sceneryContainer = document.querySelector('.scenery-container');
-      const CONTAINER_HEIGHT = 280; // 视窗高度
-      const VIEWPORT_WIDTH = 640;   // 视窗宽度
-      
-      let activeItems = []; // 存放当前屏幕上的图块 { element, x, width }
-      let tailX = 0;        // 队尾位置（下一张图插入的起始X坐标）
-      let running = false;
-      
-      // 速度设置：像素/毫秒
-      // 之前是 640px/5000ms = 0.128 px/ms
-      const speed = 0.12; // 调快一点
-
-      // 图片预加载队列，确保证无缝拼接
-      const imageQueue = [];
-      const MIN_QUEUE_SIZE = 3;
-
-      // 辅助：加载图片并获取尺寸
-      function loadImageAsync(src) {
-          return new Promise((resolve, reject) => {
-              const img = new Image();
-              img.onload = () => resolve(img);
-              img.onerror = () => reject(new Error(`Failed to load ${src}`));
-              img.src = src;
-          });
-      }
-
-      // 填充预加载队列
-      async function fillQueue() {
-          while (imageQueue.length < MIN_QUEUE_SIZE) {
-               const src = getNextImage();
-               if (!src) break;
-               
-               try {
-                   const img = await loadImageAsync(src);
-                   imageQueue.push(img);
-               } catch (e) {
-                   console.warn(e);
-                   // 失败则稍后重试或跳过
-                   await new Promise(r => setTimeout(r, 100));
-               }
+      function loadImage(src) {
+        if (loaded.has(src)) return Promise.resolve(loaded.get(src));
+        return new Promise(resolve => {
+          const img = new Image();
+          let settled = false;
+          const timeout = setTimeout(() => finish(false), 8000);
+          function finish(ok) {
+            if (settled) return;
+            settled = true;
+            clearTimeout(timeout);
+            img.onload = null;
+            img.onerror = null;
+            if (ok && img.naturalWidth && img.naturalHeight) {
+              loaded.set(src, img);
+              resolve(img);
+            } else {
+              failed.add(src);
+              img.removeAttribute('src');
+              resolve(null);
+            }
           }
+          img.onload = () => finish(true);
+          img.onerror = () => finish(false);
+          img.src = src;
+        });
       }
 
-      // 添加下一张图到舞台
-      function addNextItem() {
-          if (imageQueue.length === 0) {
-              // 队列空了，强制加载一个（可能会有一瞬间空白，但 fillQueue 会尽快补上）
-              fillQueue();
-              return;
+      async function nextImage() {
+        const available = sources.filter(src => !failed.has(src));
+        const preferred = available.filter(src => src !== lastSource);
+        const choices = preferred.length ? preferred : available;
+        if (!choices.length) return null;
+        const start = Math.floor(Math.random() * choices.length);
+        // A broken source is excluded for this page visit. Every attempt is bounded.
+        for (let index = 0; index < choices.length; index++) {
+          const src = choices[(start + index) % choices.length];
+          const img = await loadImage(src);
+          if (img) {
+            lastSource = src;
+            return img;
           }
-
-          const imgObj = imageQueue.shift();
-          fillQueue(); // 消费了一个，赶紧补
-          
-          // 计算渲染宽度 (保持原比例)
-          const aspect = imgObj.naturalWidth / imgObj.naturalHeight;
-          const renderWidth = CONTAINER_HEIGHT * aspect;
-
-          const div = document.createElement('div');
-          div.className = 'scenery-item';
-          div.appendChild(imgObj); // 直接使用预加载好的 img 元素
-          
-          // 初始位置
-          div.style.transform = `translate3d(${tailX}px, 0, 0)`;
-          
-          sceneryContainer.appendChild(div);
-
-          activeItems.push({
-              el: div,
-              x: tailX,
-              width: renderWidth
-          });
-
-          // 更新队尾位置
-          tailX += renderWidth;
+        }
+        // The previous image may be the only source that still loads.
+        if (lastSource && !failed.has(lastSource)) return loaded.get(lastSource) || null;
+        return null;
       }
 
-      let lastTime = 0;
-      function loop(timestamp) {
-          if (!lastTime) lastTime = timestamp;
-          let dt = timestamp - lastTime;
-          lastTime = timestamp;
-
-          // 避免切换 tab 后 dt 过大导致跳跃
-          if (dt > 50) dt = 50;
-
-          const move = speed * dt;
-
-          // 1. 移动现有元素
-          for (let i = 0; i < activeItems.length; i++) {
-              const item = activeItems[i];
-              item.x -= move;
-              item.el.style.transform = `translate3d(${item.x.toFixed(2)}px, 0, 0)`;
+      async function fillScreen() {
+        if (loading) return;
+        loading = true;
+        try {
+          if (!screen.clientHeight || !screen.clientWidth) return;
+          // Cap work per pass even if a manifest contains extremely narrow images.
+          let added = 0;
+          while (tailX < screen.clientWidth + screen.clientHeight && added < 12) {
+            const original = await nextImage();
+            if (!original) break;
+            const img = original.cloneNode();
+            img.alt = '';
+            const element = document.createElement('div');
+            element.className = 'scenery-item';
+            const ratio = original.naturalWidth / original.naturalHeight;
+            const itemWidth = Math.max(1, screen.clientHeight * ratio);
+            element.style.width = `${itemWidth}px`;
+            element.style.transform = `translate3d(${tailX}px, 0, 0)`;
+            element.appendChild(img);
+            container.appendChild(element);
+            items.push({ element, x: tailX, width: itemWidth, ratio });
+            tailX += itemWidth;
+            added++;
           }
-
-          // 2. 更新队尾指针 (它随整体左移)
-          tailX -= move;
-
-          // 3. 移除已完全离开左侧屏幕的元素 (加上一点缓冲区 50px)
-          if (activeItems.length > 0) {
-              const firstItem = activeItems[0];
-              if (firstItem.x + firstItem.width < -50) {
-                  firstItem.el.remove();
-                  activeItems.shift();
-              }
-          }
-
-          // 4. 检查是否需要在右侧补充新元素
-          // 如果队尾已经进入 "即将显示区域" (比如视窗右侧内或稍微出去一点)
-          if (tailX < VIEWPORT_WIDTH + 100) {
-              addNextItem();
-          }
-
-          requestAnimationFrame(loop);
+          // Keep the static local photograph visible until the viewport is filled.
+          fallback.hidden = tailX >= screen.clientWidth;
+        } finally {
+          loading = false;
+        }
+        updateMotion();
       }
 
-      // Initialize Logic
-      async function initScenery() {
-          // Try to get images from global variable set by images.js
-          if (window.manifestImages && window.manifestImages.length > 0) {
-              allImages = window.manifestImages;
-              console.log('Loaded images from JS manifest:', allImages.length);
-          } else {
-              console.warn('window.manifestImages not found or empty.');
-              // 兜底
-              allImages = ['img/mountain-4847687_1920.jpg']; 
-          }
-
-          // 先填充满可视区域
-          console.log("Preloading initial images...");
-          await fillQueue();
-          
-          // 初始铺满屏幕
-          while (tailX < VIEWPORT_WIDTH + 100) {
-               addNextItem();
-               // 如果队列空了但在初始化阶段，只能硬等一下 fillQueue 里的 promise
-               // 由于是 async 这里不会阻塞死，但也需要确保队列有东西
-               if (imageQueue.length === 0) await fillQueue();
-          }
-
-          // Start Animation
-          requestAnimationFrame(loop);
+      function animate(time) {
+        frame = 0;
+        if (isPaused() || !items.length) return;
+        const elapsed = previousTime ? Math.min(time - previousTime, 50) : 0;
+        previousTime = time;
+        // Wait for the next photograph at the edge instead of revealing an empty frame.
+        const distance = Math.min(elapsed * 0.065, Math.max(0, tailX - screen.clientWidth));
+        for (const item of items) {
+          item.x -= distance;
+          item.element.style.transform = `translate3d(${item.x.toFixed(2)}px, 0, 0)`;
+        }
+        tailX -= distance;
+        while (items.length && items[0].x + items[0].width < -1) {
+          items.shift().element.remove();
+        }
+        if (tailX < screen.clientWidth + screen.clientHeight / 2 && !loading) fillScreen();
+        if (!frame) frame = requestAnimationFrame(animate);
       }
-      
-      initScenery();
+
+      function updateMotion() {
+        const paused = manuallyPaused || motion.matches;
+        toggle.hidden = !items.length || motion.matches;
+        toggle.textContent = paused ? '继续播放' : '暂停播放';
+        toggle.setAttribute('aria-pressed', String(paused));
+        screen.classList.toggle('is-paused', isPaused());
+        if (isPaused()) {
+          cancelAnimationFrame(frame);
+          frame = 0;
+          previousTime = 0;
+        } else if (!frame && items.length) {
+          previousTime = 0;
+          frame = requestAnimationFrame(animate);
+        }
+      }
+
+      function resizeFilm() {
+        if (!items.length) {
+          fillScreen();
+          return;
+        }
+        const height = screen.clientHeight;
+        // Reflow the existing photographs at their natural aspect ratios.
+        let nextX = 0;
+        for (const item of items) {
+          item.x = nextX;
+          item.width = Math.max(1, height * item.ratio);
+          item.element.style.width = `${item.width}px`;
+          item.element.style.transform = `translate3d(${nextX}px, 0, 0)`;
+          nextX += item.width;
+        }
+        tailX = nextX;
+        fillScreen();
+      }
+
+      toggle.addEventListener('click', () => {
+        manuallyPaused = !manuallyPaused;
+        updateMotion();
+      });
+      motion.addEventListener('change', updateMotion);
+      document.addEventListener('visibilitychange', updateMotion);
+      if ('ResizeObserver' in window) new ResizeObserver(resizeFilm).observe(screen);
+      else window.addEventListener('resize', resizeFilm, { passive: true });
+      fillScreen();
+      updateMotion();
     });
   </script>
-  <section id="about" class="footnote">
-    <div>Created By MchWang. | <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">陕ICP备17021455号</a></div>
-  </section>
 </body>
 </html>
