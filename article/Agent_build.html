@@ -7,13 +7,13 @@
 
   
 
-  <!-- 使用小火车 emoji 作为 favicon -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚂</text></svg>">
+  <meta name="theme-color" content="#f5f3ee" />
+  <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg" />
 
-  <link rel="stylesheet" href="./assets/style.css" />
   <!-- Use light theme for Prism -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+  <link rel="stylesheet" href="./assets/style.css" />
   <script src="./assets/search.js"></script>
   
   <script>
@@ -78,41 +78,55 @@
   </script>
 </head>
 <body>
-  <header>
-    <a href="./index.html" class="logo" style="text-decoration: none; color: inherit;">追逐星墨</a>
+  <a class="skip-link" href="#main-content">跳转到正文</a>
+  <header class="site-header">
+    <a href="./index.html" class="logo" aria-label="追逐星墨，返回首页">
+      <span class="logo-mark"><svg class="icon" aria-hidden="true" focusable="false"><use href="./assets/icons.svg#train"></use></svg></span>
+      <span class="logo-text">追逐星墨<span class="logo-caption">记录每一程的所思所见</span></span>
+    </a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="./index.html"><svg class="icon" aria-hidden="true" focusable="false"><use href="./assets/icons.svg#book-open"></use></svg>文章</a>
+      <a href="./index.html#topics"><svg class="icon" aria-hidden="true" focusable="false"><use href="./assets/icons.svg#tag"></use></svg>标签</a>
+    </nav>
     <div class="search-box">
-      <form id="search-form" action="javascript:void(0);">
-        <input type="text" id="search-input" name="q" placeholder="搜索..." aria-label="Search">
+      <form id="search-form" role="search" action="./search.html">
+        <svg class="icon search-icon" aria-hidden="true" focusable="false"><use href="./assets/icons.svg#search"></use></svg>
+        <input type="search" id="search-input" name="q" placeholder="搜索文章、标签…" aria-label="搜索文章和标签" autocomplete="off" data-root="./" aria-keyshortcuts="/" />
+        <kbd class="search-shortcut" aria-hidden="true">/</kbd>
       </form>
     </div>
   </header>
 
   <div class="container layout-grid">
-    <main class="main-content">
+    <main id="main-content" class="main-content article-main" tabindex="-1">
       <article class="post">
-    <header class="post-header">
+    <header class="article-header">
+        <a class="article-back" href="index.html"><svg class="icon" aria-hidden="true" focusable="false"><use href="assets/icons.svg#arrow-left"></use></svg>返回文章列表</a>
         <h1 class="post-title">关于agent的一些想法</h1>
         <div class="post-meta">
-            <span class="post-date">2026-03-04</span>
+            <span class="post-date"><svg class="icon" aria-hidden="true" focusable="false"><use href="assets/icons.svg#calendar"></use></svg><time datetime="2026-03-04">2026-03-04</time></span>
             
             
         </div>
     </header>
     <div class="post-content">
         
-            <div id="password-form" class="password-lock" style="text-align: center; padding: 50px 0;">
-                <p>This content is password protected.</p>
-                <div style="margin: 20px 0;">
-                    <input type="password" id="article-password" placeholder="Enter password" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px;" />
-                    <button onclick="decryptArticle()" style="padding: 8px 16px; background: #333; color: white; border: none; border-radius: 4px; cursor: pointer;">Unlock</button>
+            <form id="password-form" class="password-lock" onsubmit="event.preventDefault(); decryptArticle();">
+                <div class="password-lock-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="assets/icons.svg#lock"></use></svg></div>
+                <h2>这篇文章已加密</h2>
+                <p id="article-password-help">输入访问密码，继续阅读完整内容。</p>
+                <label for="article-password">访问密码</label>
+                <div class="password-controls">
+                    <input type="password" id="article-password" placeholder="请输入密码" autocomplete="current-password" aria-describedby="article-password-help error-msg" required />
+                    <button type="submit">解锁文章<svg class="icon" aria-hidden="true" focusable="false"><use href="assets/icons.svg#arrow-right"></use></svg></button>
                 </div>
-                <p id="error-msg" style="color:red;display:none;margin-top:10px;">Incorrect password</p>
-            </div>
+                <p id="error-msg" class="password-error" role="alert" hidden>密码不正确，请重试。</p>
+            </form>
             <div id="decrypted-content"></div>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
             <script>
-              var check_iv = "hLO3f9CvwlSo+cBBaUohwg==";
-              var check_data = "ogoqY8S6vQJU9LJzpunMnnZecpjQlG/qJ7Xh7QK/P1R6iSZzcLH4o6Iw7PHhoug0aeYgXkBEJINkcrZveQMfkg9MeQjk/z80EpmWmAMk7u2UVvaos5tiVUsgUCjlKR+KEIBafPPykVgow00UhaTnVkRN6fIvpXiIrciSFKpJG9TflrAceuq2Bx7COIkgnJdzTnXWk4pbpdkZo5By3wPBMf6h+c80GJkq85n8tjds6vFRK658dgCyCrLp+XPOS8aM+gIlxyPKuKdDK7HDn/qJo7g8i3ER+ZcUmeewi3joSn67dLtzn0CTA84u1Hz3x3SrEnANRPLetOv3ekMvKURfHMXxcCw9dK0U6SpBJaWo7+RXu1bO4odYYVWGXFDrbvqTOJeJo44AM9e4DKLkDphLuNu1HnJ5/mnEMRUU9uTytiilvLObeAfzyvDf+6srq9UGYg0qxROC2T22cdlgrYzlR5uABc+52bVivbF9/V3qfyyWJzpVALHdU6MNyE5b3r7adTZuwcBhXhrD04uHM0KpP9UwzisBhJaRkbDuYDm7LhB1NbKRR7/d5vzX0t9O3CIf7foMOIm6FqaUb/0sozvrJx/0vniZ24O5RseNwTtFEinMe78MSuXM8WA/K6oZaxuuOyqy9q7C/M8UclsW2nC8lQ==";
+              var check_iv = "y71rG4LafIea33YhokRHTQ==";
+              var check_data = "nxqIek3/lPU2Zuolszkwsu5nrt/n/TqPw8pOZPzuFK/YYnwfHIvNmW/fbyP7e/fZFMSdKeQCAWRB36uIr8q9ygPN1d7crECCaAywrOMAYqiKKUQJsmoxQMV/ONlJFSRJTh/ymzDBBhCCr87yLR2gRHnWlBFSeQyGDZR6tFgey2YOuZrUlw4Iumjr4vCAnqpw9k4PqZBLzZgu7tY7vKseF0WQJklWz0lQDdgglFmB37IQZRRON01rONmDNBtINzfzwtoZqlrPvJs9ddLx6AZvT3vW3hVKqSlbky9WAC9/mmzFM9SQ4E+di89ba8gwltEChT247MOjwd8ikWnUnQu0RObe3T4hMLNh+yY8mk9c2UfNqdUTko54sicu6/ctzTo76l4gX6+GUeX5EUWQvb41h5aC9TptmJbSh+ga/PqMrF2GIsiIoeOYL+jc+07DYNo3Uxca589Rv7u3gQyzlZTzoSgjBDBXlAVoeEMmSZkyrfOQuqM3DpnV7RyN3tQyKHhD4kpiXoS4wwR/F+Ftm+o+p6a8LPKJlDsDgmWtcQ+U19hMlQuUb+8W7PsnnqkoPt/m0s1O4OcwLNA1MwIZFo/gM9oXn7BHwkuaiYkntpaJqSr3qW4rFGbybRYGbDyNQCeMlPozbXu/URB260TSHBIYEg==";
               
               function decryptArticle() {
                  var password = document.getElementById("article-password").value;
@@ -137,20 +151,14 @@
                              });
                          }
                      } else {
-                         document.getElementById("error-msg").style.display = "block";
+                         document.getElementById("error-msg").hidden = false;
                      }
                  } catch (e) {
                      console.error(e);
-                     document.getElementById("error-msg").style.display = "block";
+                     document.getElementById("error-msg").hidden = false;
                  }
               }
               
-              document.getElementById("article-password").addEventListener("keypress", function(event) {
-                if (event.key === "Enter") {
-                  event.preventDefault();
-                  decryptArticle();
-                }
-              });
             </script>
             
     </div>
@@ -159,51 +167,62 @@
       <div id="gitalk-container"></div>
     </main>
 
-    <aside class="sidebar">
+    <aside class="sidebar" aria-label="博客信息与文章导航">
       <div class="sidebar-box">
-<section class="widget">
-<h3 class="widget-title">分类</h3>
-<ul class="widget-list">
-<li><a href="categories/mipi.html">mipi (1)</a></li>
-<li><a href="categories/图像.html">图像 (1)</a></li>
-<li><a href="categories/编程.html">编程 (1)</a></li>
-</ul>
+<section class="widget profile-widget">
+  <div class="profile-avatar"><svg class="icon" aria-hidden="true" focusable="false"><use href="assets/icons.svg#train"></use></svg></div>
+  <h2 class="profile-name">追逐星墨</h2>
+  <p class="profile-description">技术笔记 · 学习记录</p>
+  <div class="profile-stats" aria-label="博客统计">
+    <span><strong>9</strong><span>文章</span></span>
+    <span><strong>3</strong><span>分类</span></span>
+    <span><strong>11</strong><span>标签</span></span>
+  </div>
 </section>
 <section class="widget">
-<h3 class="widget-title">标签</h3>
+<h3 class="widget-title"><svg class="icon" aria-hidden="true" focusable="false"><use href="assets/icons.svg#folder"></use></svg>分类</h3>
+<ul class="widget-list category-list">
+<li><a href="categories/mipi.html"><span class="category-name">mipi</span><span class="widget-count">1</span></a></li>
+<li><a href="categories/%E5%9B%BE%E5%83%8F.html"><span class="category-name">图像</span><span class="widget-count">1</span></a></li>
+<li><a href="categories/%E7%BC%96%E7%A8%8B.html"><span class="category-name">编程</span><span class="widget-count">1</span></a></li>
+</ul>
+</section>
+<section class="widget" id="topics">
+<h3 class="widget-title"><svg class="icon" aria-hidden="true" focusable="false"><use href="assets/icons.svg#tag"></use></svg>标签</h3>
 <div class="tag-cloud">
-<a href="tags/Cphy.html" class="tag-cloud-item">Cphy (1)</a>
-<a href="tags/Dphy.html" class="tag-cloud-item">Dphy (1)</a>
-<a href="tags/MySQL.html" class="tag-cloud-item">MySQL (1)</a>
-<a href="tags/php.html" class="tag-cloud-item">php (1)</a>
-<a href="tags/sv.html" class="tag-cloud-item">sv (2)</a>
-<a href="tags/uvm.html" class="tag-cloud-item">uvm (1)</a>
-<a href="tags/web.html" class="tag-cloud-item">web (1)</a>
-<a href="tags/x.html" class="tag-cloud-item">x (1)</a>
-<a href="tags/图像.html" class="tag-cloud-item">图像 (1)</a>
-<a href="tags/学习笔记.html" class="tag-cloud-item">学习笔记 (1)</a>
-<a href="tags/验证.html" class="tag-cloud-item">验证 (1)</a>
+<a href="tags/Cphy.html" class="tag-cloud-item"><span>Cphy</span><span class="tag-count">1</span></a>
+<a href="tags/Dphy.html" class="tag-cloud-item"><span>Dphy</span><span class="tag-count">1</span></a>
+<a href="tags/MySQL.html" class="tag-cloud-item"><span>MySQL</span><span class="tag-count">1</span></a>
+<a href="tags/php.html" class="tag-cloud-item"><span>php</span><span class="tag-count">1</span></a>
+<a href="tags/sv.html" class="tag-cloud-item"><span>sv</span><span class="tag-count">2</span></a>
+<a href="tags/uvm.html" class="tag-cloud-item"><span>uvm</span><span class="tag-count">1</span></a>
+<a href="tags/web.html" class="tag-cloud-item"><span>web</span><span class="tag-count">1</span></a>
+<a href="tags/x.html" class="tag-cloud-item"><span>x</span><span class="tag-count">1</span></a>
+<a href="tags/%E5%9B%BE%E5%83%8F.html" class="tag-cloud-item"><span>图像</span><span class="tag-count">1</span></a>
+<a href="tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html" class="tag-cloud-item"><span>学习笔记</span><span class="tag-count">1</span></a>
+<a href="tags/%E9%AA%8C%E8%AF%81.html" class="tag-cloud-item"><span>验证</span><span class="tag-count">1</span></a>
 </div>
 </section>
 <section class="widget">
-<h3 class="widget-title">最新文章</h3>
-<ul class="widget-list">
-<li><a href="git.html">git开发流程</a></li>
-<li><a href="Agent_build.html">关于agent的一些想法</a></li>
-<li><a href="mipi.html">MIPI相关内容</a></li>
-<li><a href="imgnote.html">图像笔记</a></li>
-<li><a href="lpddr_software.html">lpddr 软件流程</a></li>
+<h3 class="widget-title"><svg class="icon" aria-hidden="true" focusable="false"><use href="assets/icons.svg#clock"></use></svg>最新文章</h3>
+<ul class="widget-list recent-posts">
+<li><a href="git.html"><span class="recent-post-title">git开发流程</span><time datetime="2026-03-18">2026-03-18</time></a></li>
+<li><a href="Agent_build.html"><span class="recent-post-title">关于agent的一些想法</span><time datetime="2026-03-04">2026-03-04</time></a></li>
+<li><a href="mipi.html"><span class="recent-post-title">MIPI相关内容</span><time datetime="2026-01-15">2026-01-15</time></a></li>
+<li><a href="imgnote.html"><span class="recent-post-title">图像笔记</span><time datetime="2026-01-15">2026-01-15</time></a></li>
+<li><a href="lpddr_software.html"><span class="recent-post-title">lpddr 软件流程</span><time datetime="2025-12-19">2025-12-19</time></a></li>
 </ul>
 </section>
 </div>
     </aside>
   </div>
 
-  <section id="about" class="footnote">
-    <div class="container">
-      <span>Created By MchWang. | <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">陕ICP备17021455号</a></span>
+  <footer id="about" class="footnote">
+    <div class="container footer-inner">
+      <span class="footer-credit"><svg class="icon" aria-hidden="true" focusable="false"><use href="./assets/icons.svg#train"></use></svg>追逐星墨<span class="footer-divider">/</span>Created by MchWang.</span>
+      <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">陕ICP备17021455号<svg class="icon" aria-hidden="true" focusable="false"><use href="./assets/icons.svg#arrow-up-right"></use></svg></a>
     </div>
-  </section>
+  </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
   <script>

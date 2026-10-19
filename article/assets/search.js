@@ -1,297 +1,335 @@
 document.addEventListener('DOMContentLoaded', () => {
   const searchInput = document.getElementById('search-input');
-  const searchForm = document.getElementById('search-form');
-  let searchData = null;
-  let resultsContainer = null;
-
   if (!searchInput) return;
 
-  // Create results container
-  resultsContainer = document.createElement('div');
+  const searchForm = document.getElementById('search-form') || searchInput.closest('form');
+  const searchScope = searchForm || searchInput.parentElement;
+  const fullResultsContainer = document.getElementById('full-search-results');
+  const queryDisplay = document.getElementById('search-query-display');
+  const logo = document.querySelector('a.logo');
+  const rootURL = searchInput.dataset.root
+    ? new URL(searchInput.dataset.root, document.baseURI)
+    : new URL('.', logo ? logo.href : document.baseURI);
+  const searchPageURL = new URL('search.html', rootURL);
+  const suggestionLimit = 8;
+  const fullResultLimit = 50;
+  let searchDataPromise;
+  let suggestionVersion = 0;
+  let fullSearchVersion = 0;
+
+  const resultsContainer = document.createElement('div');
   resultsContainer.id = 'search-results';
   resultsContainer.className = 'search-results';
-  searchInput.parentNode.appendChild(resultsContainer);
+  resultsContainer.hidden = true;
+  resultsContainer.setAttribute('role', 'dialog');
+  resultsContainer.setAttribute('aria-label', '搜索建议');
+  searchScope.appendChild(resultsContainer);
+  searchInput.setAttribute('role', 'combobox');
+  searchInput.setAttribute('aria-haspopup', 'dialog');
+  searchInput.setAttribute('aria-autocomplete', 'list');
+  searchInput.setAttribute('aria-controls', resultsContainer.id);
+  searchInput.setAttribute('aria-expanded', 'false');
+  searchInput.setAttribute('autocomplete', 'off');
 
-  const fetchSearchData = async () => {
-    if (searchData) return searchData;
-    try {
-      // Determine root path based on current location
-      // If we are in /sub/folder/, we need to know where root is.
-      // But typically search.json is at root. 
-      // Let's try relative to current page if handled by server or absolute.
-      // Since this is static host, we might be at /article/ or /
-      // Try fetching from /search.json or ./search.json based on known structure.
-      // The template sets $root$ usually. But here in pure JS...
-      
-      // Let's assume search.json is at the site root.
-      // We can try to guess root from current script src if needed, but '/search.json' or 'search.json' is simplest.
-      // If deployed at mchwang233.github.io/blog/, root is /blog/.
-      // We can check document base URI or just try relative logic.
-      
-      // A safe bet for this project structure (dist output) -> ./search.json for index, ../search.json for articles?
-      // Actually, let's look at where this script is included.
-      // It's in assets/search.js.
-      
-      // Better strategy: The HTML template has a variable $root$. 
-      // Maybe we can pass the search index URL via data attribute on the script or input.
-      // But for now, let's try a robust fetch path.
-      
-      let path = 'search.json';
-        // Check if we are in a subdirectory (naive check)
-      if (window.location.pathname.split('/').length > 2 && !window.location.pathname.endsWith('/')) {
-         // This logic is flimsy. Let's rely on fetch failing and retrying or just absolute path if we knew domain.
-         // Let's assume standard relative paths for typical static generator flat structure or 1-level deep.
-         // If we are in "dist/sub/post.html", search.json is "../../search.json".
-         // But "dist" is root when deployed.
-         // So if we are in "sub/post.html", it is "../search.json".
-      }
-
-      // Actually, let's just try fetching from root relative.
-      // If we are at root, search.json.
-      
-      // Let's try to infer from the search input's knowledge? No.
-      // Simple fallback: Check if a global CONFIG variable exists, or try multiple paths.
-      
-      const paths = ['search.json', './search.json', '../search.json', '../../search.json'];
-      
-      for (const p of paths) {
-        try {
-            const response = await fetch(p);
-            if (response.ok) {
-                searchData = await response.json();
-                return searchData;
-            }
-        } catch (e) {
-            // ignore
-        }
-      }
-    } catch (error) {
-      console.error('Error loading search index:', error);
-    }
-  };
-
-  const performSearch = (query) => {
-    if (!query || !searchData) {
-      resultsContainer.style.display = 'none';
-      return;
-    }
-    
-    query = query.toLowerCase();
-    const results = searchData.filter(post => {
-      const title = post.title.toLowerCase();
-      const content = (post.content || '').toLowerCase();
-      const tags = (post.tags || []).join(' ').toLowerCase();
-      
-      return title.includes(query) || content.includes(query) || tags.includes(query);
-    });
-    
-    renderResults(results);
-  };
-
-  const renderResults = (results) => {
-    if (results.length === 0) {
-      resultsContainer.innerHTML = '<div class="search-no-results">无搜索结果</div>';
-      resultsContainer.style.display = 'block';
-      return;
-    }
-    
-    let html = '<ul>';
-    results.slice(0, 8).forEach(post => { // Limit to 8 results
-      // Fix relative URL if we are in a subfolder
-      // This is tricky without knowing current depth.
-      // But usually static sites use relative URLs in the JSON that are relative to root.
-      // If we are at root, post.url works.
-      // If at subfolder, we might need ../post.url.
-      
-      // Let's assume posts are flat or we navigate to root relative?
-      // Actually getting the correct path is important.
-      // If post.url is "sub/a.html" and we are at root, it works.
-      // If we are at "sub/b.html", clicking "sub/a.html" goes to "sub/sub/a.html" (wrong).
-      
-      // Solution: make links absolute or handle click.
-      // Or simply: The JSON should probably contain root-relative paths like "/sub/a.html"
-      // or we accept that simple static sites often run at root.
-      
-      // Let's try to just use the URL from JSON.
-      html += `<li><a href="${post.url}">
-        <div class="search-result-title">${post.title}</div>
-        <div class="search-result-date">${post.date}</div>
-      </a></li>`;
-    });
-    html += '</ul>';
-    
-    resultsContainer.innerHTML = html;
-    resultsContainer.style.display = 'block';
-  };
-
-  searchInput.addEventListener('input', async (e) => {
-    const query = e.target.value.trim();
-    
-    if (query.length > 0 && !searchData) {
-       await fetchSearchData();
-    }
-    
-    performSearch(query);
-  });
-  
-  // Close search results when clicking outside
-  document.addEventListener('click', (e) => {
-    if (!searchForm.contains(e.target)) {
-      resultsContainer.style.display = 'none';
-      // Optional: clear input? searchInput.value = '';
-    }
-  });
-  
-  // Focus logic
-  searchInput.addEventListener('focus', () => {
-      if (searchInput.value.trim().length > 0) {
-          resultsContainer.style.display = 'block';
-      }
-  });
-
-  // Handle Enter key for full search page
-  searchInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault(); // Prevent form submission
-      const query = searchInput.value.trim();
-      if (query) {
-        // Redirect to search.html
-        // We need to resolve the path relative to root.
-        // Similar to fetch logic, let's try robust redirection.
-        // Assuming search.html is at root (dist/search.html).
-        
-        let target = 'search.html';
-        const depth = window.location.pathname.split('/').length;
-        if (depth > 2 && !window.location.pathname.endsWith('/')) {
-             // If we are in 'dist/sub/post.html', we need '../search.html' ?
-             // Or better, use absolute path if we knew base.
-             // Let's use relative path finding.
-             // Or rely on <base> tag if it existed.
-             
-             // Simplest: Check if we are at root level.
-             // But simpler: just use relative path logic shared with fetch.
-             // If fetch worked with 'search.json', 'search.html' is likely sibling.
-             // If fetch worked with '../search.json', '../search.html'.
-        }
-        
-        // Let's try to just go to /search.html relative to current page base
-        // But since we generate search.html at root, we need to go up.
-        
-        // Hack: Use the same relative path logic as the logo
-        // The logo href is '/', or specific.
-        // In article template: $root$/index.html.
-        
-        // We can check if window.location contains 'search.html'
-        if (window.location.pathname.endsWith('search.html')) {
-             // Update query param without reload
-             const url = new URL(window.location);
-             url.searchParams.set('q', query);
-             window.history.pushState({}, '', url);
-             handleSearchPage(); // Manually trigger search
-             resultsContainer.style.display = 'none';
-        } else {
-             // Navigate
-             // Try to construct path relative to current
-             // or just absolute path if on server.
-             // Let's assume we can navigate to 'search.html' relative to 'index.html'.
-             
-             // If we are in '/a/b.html', we want '/search.html'.
-             
-             // Let's just set window.location.href to a relative path that we HOPE resolves to root search.html
-             // This is hard without explicit root config.
-             // But we can try: 
-             // If document.querySelector('a.logo') href exists?
-             const logo = document.querySelector('a.logo');
-             if (logo) {
-                 const rootUrl = logo.getAttribute('href');
-                 // rootUrl might be '/' or '../index.html' or similar.
-                 // We want search.html at the same level as index.html
-                 let searchUrl = rootUrl.replace('index.html', 'search.html');
-                 if (searchUrl.endsWith('/')) searchUrl += 'search.html';
-                 // Clean up double slashes
-                 
-                 // If rootUrl is just '/', then '/search.html'
-                 if (rootUrl === '/') searchUrl = '/search.html';
-                 else if (rootUrl === '.') searchUrl = 'search.html';
-                 
-                 window.location.href = searchUrl + '?q=' + encodeURIComponent(query);
-                 return;
-             }
-             
-             window.location.href = 'search.html?q=' + encodeURIComponent(query);
-        }
-      }
-    }
-  });
-
-  // --- Full Search Page Logic ---
-  const handleSearchPage = async () => {
-    const fullResultsContainer = document.getElementById('full-search-results');
-    const queryDisplay = document.getElementById('search-query-display');
-    
-    if (!fullResultsContainer) return;
-    
-    // Parse query param
-    const params = new URLSearchParams(window.location.search);
-    const query = params.get('q') || '';
-    
-    if (queryDisplay) queryDisplay.textContent = query;
-    if (searchInput) searchInput.value = query; // Sync input
-    
-    if (!query) {
-       fullResultsContainer.innerHTML = '<p>请输入搜索关键词。</p>';
-       return;
-    }
-    
-    await fetchSearchData();
-    
-    if (!searchData) {
-        fullResultsContainer.innerHTML = '<p>无法加载搜索索引。</p>';
-        return;
-    }
-    
-    const q = query.toLowerCase();
-    const results = searchData.filter(post => {
-      const title = post.title.toLowerCase();
-      const content = (post.content || '').toLowerCase();
-      const tags = (post.tags || []).join(' ').toLowerCase();
-      return title.includes(q) || content.includes(q) || tags.includes(q);
-    });
-    
-    if (results.length === 0) {
-        fullResultsContainer.innerHTML = '<p>没有找到相关文章。</p>';
-        return;
-    }
-    
-    // Render full results
-    let html = '';
-    results.forEach(post => {
-        // Highlight snippet
-        let snippet = post.content.substring(0, 300);
-        // Maybe find where the query is and show context?
-        const idx = post.content.toLowerCase().indexOf(q);
-        if (idx > -1) {
-            const start = Math.max(0, idx - 100);
-            const end = Math.min(post.content.length, idx + 200);
-            snippet = (start > 0 ? '...' : '') + post.content.substring(start, end) + (end < post.content.length ? '...' : '');
-        }
-        
-        // Highlight logic could be added here
-        
-        html += `
-        <div class="post-preview">
-          <h2 class="post-preview-title"><a href="${post.url}">${post.title}</a></h2>
-          <div class="post-preview-meta">${post.date}</div>
-          <div class="post-preview-desc">${snippet}</div>
-        </div>`;
-    });
-    
-    fullResultsContainer.innerHTML = html;
-  };
-
-  // Check if we are on search page
-  if (document.getElementById('full-search-results')) {
-      handleSearchPage();
+  if (searchForm) {
+    searchForm.setAttribute('role', 'search');
+    searchForm.action = searchPageURL.href;
+    searchForm.method = 'get';
   }
 
+  let resultCount = document.getElementById('search-result-count');
+  if (fullResultsContainer && !resultCount) {
+    resultCount = document.createElement('p');
+    resultCount.id = 'search-result-count';
+    resultCount.className = 'search-status';
+    fullResultsContainer.before(resultCount);
+  }
+  if (resultCount) {
+    resultCount.setAttribute('role', 'status');
+    resultCount.setAttribute('aria-live', 'polite');
+  }
+
+  const createElement = (tag, className, text) => {
+    const element = document.createElement(tag);
+    if (className) element.className = className;
+    if (text !== undefined) element.textContent = text;
+    return element;
+  };
+
+  const cleanContent = (content) => String(content || '')
+    .replace(/```[\s\S]*?```|~~~[\s\S]*?~~~/g, ' ')
+    .replace(/!\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/^\s{0,3}(?:#{1,6}\s+|>\s*|[-*+]\s+|\d+[.)]\s+)/gm, '')
+    .replace(/[`*_~]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  // The same promise serves autocomplete and the full search page, including errors.
+  const fetchSearchData = () => {
+    if (!searchDataPromise) {
+      searchDataPromise = fetch(new URL('search.json', rootURL))
+        .then((response) => {
+          if (!response.ok) throw new Error('Search index could not be loaded');
+          return response.json();
+        })
+        .then((posts) => {
+          if (!Array.isArray(posts)) throw new Error('Invalid search index');
+          return posts.flatMap((post) => {
+            if (!post || typeof post.url !== 'string' || !post.url.trim()) return [];
+            let url;
+            try {
+              url = new URL(post.url, rootURL);
+            } catch {
+              return [];
+            }
+            if (!['http:', 'https:', 'file:'].includes(url.protocol)) return [];
+            const title = String(post.title || '未命名文章');
+            const content = String(post.content || '');
+            const tags = Array.isArray(post.tags) ? post.tags.join(' ') : String(post.tags || '');
+            return [{
+              title,
+              url: url.href,
+              date: String(post.date || ''),
+              content: cleanContent(content),
+              searchable: `${title} ${content} ${tags}`.toLocaleLowerCase(),
+            }];
+          });
+        });
+    }
+    return searchDataPromise;
+  };
+
+  const findResults = (posts, query) => {
+    const normalizedQuery = query.toLocaleLowerCase();
+    return posts.filter((post) => post.searchable.includes(normalizedQuery));
+  };
+
+  const closeSuggestions = () => {
+    suggestionVersion += 1;
+    resultsContainer.hidden = true;
+    resultsContainer.setAttribute('aria-busy', 'false');
+    searchInput.setAttribute('aria-expanded', 'false');
+  };
+
+  const showSuggestions = () => {
+    resultsContainer.hidden = false;
+    searchInput.setAttribute('aria-expanded', 'true');
+  };
+
+  const showSuggestionStatus = (message) => {
+    const status = createElement('p', 'search-no-results search-status', message);
+    status.setAttribute('role', 'status');
+    resultsContainer.replaceChildren(status);
+    showSuggestions();
+  };
+
+  const renderSuggestions = (results) => {
+    if (!results.length) {
+      showSuggestionStatus('没有找到相关文章，试试其他关键词。');
+      return;
+    }
+
+    const list = createElement('ul');
+    results.slice(0, suggestionLimit).forEach((post) => {
+      const item = createElement('li');
+      const link = createElement('a');
+      link.href = post.url;
+      link.appendChild(createElement('span', 'search-result-title', post.title));
+      if (post.date) link.appendChild(createElement('span', 'search-result-date', post.date));
+      item.appendChild(link);
+      list.appendChild(item);
+    });
+    resultsContainer.replaceChildren(list);
+    showSuggestions();
+  };
+
+  const updateSuggestions = async () => {
+    const version = ++suggestionVersion;
+    const query = searchInput.value.trim();
+    if (!query) {
+      closeSuggestions();
+      resultsContainer.replaceChildren();
+      return;
+    }
+
+    resultsContainer.setAttribute('aria-busy', 'true');
+    showSuggestionStatus('正在搜索…');
+    try {
+      const posts = await fetchSearchData();
+      if (version !== suggestionVersion || !searchScope.contains(document.activeElement)) return;
+      resultsContainer.setAttribute('aria-busy', 'false');
+      renderSuggestions(findResults(posts, query));
+    } catch {
+      if (version !== suggestionVersion || !searchScope.contains(document.activeElement)) return;
+      resultsContainer.setAttribute('aria-busy', 'false');
+      showSuggestionStatus('搜索暂时无法加载，请刷新页面后重试。');
+    }
+  };
+
+  const makeSnippet = (content, query) => {
+    const index = content.toLocaleLowerCase().indexOf(query.toLocaleLowerCase());
+    const start = index > -1 ? Math.max(0, index - 60) : 0;
+    const end = Math.min(content.length, start + 220);
+    return `${start > 0 ? '…' : ''}${content.slice(start, end)}${end < content.length ? '…' : ''}`;
+  };
+
+  const createCalendarIcon = () => {
+    const namespace = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(namespace, 'svg');
+    svg.setAttribute('class', 'icon');
+    svg.setAttribute('aria-hidden', 'true');
+    svg.setAttribute('focusable', 'false');
+    const use = document.createElementNS(namespace, 'use');
+    use.setAttribute('href', new URL('assets/icons.svg#calendar', rootURL).href);
+    svg.appendChild(use);
+    return svg;
+  };
+
+  const renderFullResults = (results, query) => {
+    const fragment = document.createDocumentFragment();
+    results.slice(0, fullResultLimit).forEach((post) => {
+      const article = createElement('article', 'post-preview');
+      const title = createElement('h2', 'post-preview-title');
+      const titleLink = createElement('a', '', post.title);
+      titleLink.href = post.url;
+      title.appendChild(titleLink);
+      article.appendChild(title);
+
+      if (post.date) {
+        const metadata = createElement('div', 'post-preview-meta');
+        const date = createElement('span');
+        date.append(createCalendarIcon(), document.createTextNode(post.date));
+        metadata.appendChild(date);
+        article.appendChild(metadata);
+      }
+
+      const snippet = makeSnippet(post.content, query);
+      if (snippet) article.appendChild(createElement('p', 'post-preview-desc', snippet));
+      const footer = createElement('div', 'post-preview-footer');
+      const readMore = createElement('a', 'post-preview-more', '阅读全文');
+      readMore.href = post.url;
+      readMore.setAttribute('aria-label', `阅读全文：${post.title}`);
+      footer.appendChild(readMore);
+      article.appendChild(footer);
+      fragment.appendChild(article);
+    });
+    fullResultsContainer.replaceChildren(fragment);
+  };
+
+  const handleSearchPage = async () => {
+    if (!fullResultsContainer) return;
+    const version = ++fullSearchVersion;
+    const query = (new URLSearchParams(window.location.search).get('q') || '').trim();
+    if (queryDisplay) queryDisplay.textContent = query;
+    searchInput.value = query;
+    fullResultsContainer.replaceChildren();
+    fullResultsContainer.setAttribute('aria-busy', 'false');
+
+    if (!query) {
+      if (resultCount) resultCount.textContent = '输入关键词，查找感兴趣的文章。';
+      return;
+    }
+
+    if (resultCount) resultCount.textContent = '正在查找相关文章…';
+    fullResultsContainer.setAttribute('aria-busy', 'true');
+    try {
+      const posts = await fetchSearchData();
+      if (version !== fullSearchVersion) return;
+      const results = findResults(posts, query);
+      fullResultsContainer.setAttribute('aria-busy', 'false');
+      if (resultCount) {
+        resultCount.textContent = results.length > fullResultLimit
+          ? `共找到 ${results.length} 篇文章，显示前 ${fullResultLimit} 篇`
+          : `共找到 ${results.length} 篇文章`;
+      }
+      if (!results.length) {
+        fullResultsContainer.appendChild(createElement('p', 'search-no-results', '没有找到相关文章，试试其他关键词。'));
+        return;
+      }
+      renderFullResults(results, query);
+    } catch {
+      if (version !== fullSearchVersion) return;
+      fullResultsContainer.setAttribute('aria-busy', 'false');
+      if (resultCount) resultCount.textContent = '搜索暂时无法加载';
+      fullResultsContainer.appendChild(createElement('p', 'search-no-results', '无法加载搜索索引，请刷新页面后重试。'));
+    }
+  };
+
+  const submitSearch = (event) => {
+    event.preventDefault();
+    const query = searchInput.value.trim();
+    if (!query) {
+      closeSuggestions();
+      searchInput.focus();
+      return;
+    }
+    const target = new URL(searchPageURL);
+    target.searchParams.set('q', query);
+    closeSuggestions();
+    if (fullResultsContainer && window.location.pathname === target.pathname) {
+      window.history.pushState({}, '', target);
+      handleSearchPage();
+    } else {
+      window.location.assign(target.href);
+    }
+  };
+
+  searchInput.addEventListener('input', updateSuggestions);
+  searchInput.addEventListener('focus', () => {
+    if (searchInput.value.trim()) updateSuggestions();
+  });
+  if (searchForm) searchForm.addEventListener('submit', submitSearch);
+
+  searchScope.addEventListener('keydown', (event) => {
+    if (event.isComposing) return;
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      // Focusing first avoids the input's focus handler reopening the suggestions.
+      searchInput.focus();
+      closeSuggestions();
+      return;
+    }
+    if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
+    if (resultsContainer.hidden) {
+      if (searchInput.value.trim()) {
+        event.preventDefault();
+        updateSuggestions();
+      }
+      return;
+    }
+    const links = [...resultsContainer.querySelectorAll('a')];
+    if (!links.length) return;
+    event.preventDefault();
+    const currentIndex = links.indexOf(document.activeElement);
+    const nextIndex = event.key === 'ArrowDown' ? currentIndex + 1 : currentIndex - 1;
+    if (currentIndex === -1) {
+      links[event.key === 'ArrowDown' ? 0 : links.length - 1].focus();
+    } else if (nextIndex < 0 || nextIndex >= links.length) {
+      searchInput.focus();
+    } else {
+      links[nextIndex].focus();
+    }
+  });
+
+  searchScope.addEventListener('focusout', (event) => {
+    if (!searchScope.contains(event.relatedTarget)) closeSuggestions();
+  });
+  document.addEventListener('click', (event) => {
+    if (!searchScope.contains(event.target)) closeSuggestions();
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== '/' || event.ctrlKey || event.metaKey || event.altKey || event.isComposing) return;
+    const activeElement = document.activeElement;
+    if (activeElement && (activeElement.isContentEditable || activeElement.closest('input, textarea, select, [role="textbox"]'))) return;
+    event.preventDefault();
+    searchInput.focus();
+  });
+  window.addEventListener('popstate', () => {
+    closeSuggestions();
+    handleSearchPage();
+  });
+
+  handleSearchPage();
 });
