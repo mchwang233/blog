@@ -96,14 +96,6 @@ a:focus-visible, button:focus-visible, input:focus-visible, summary:focus-visibl
 /* Sidebar */
 .sidebar-box { display: grid; gap: 20px; }
 .widget { padding: 21px; background: var(--panel); border: 1px solid var(--border); border-radius: 13px; }
-.profile-widget { text-align: center; padding-top: 28px; }
-.profile-avatar { display: grid; place-items: center; width: 60px; height: 60px; margin: 0 auto 13px; border: 1px solid #dae4d5; border-radius: 19px; background: var(--accent-soft); color: var(--accent); }
-.profile-avatar .icon { width: 33px; height: 33px; stroke-width: 1.4; }
-.profile-name { margin: 0; color: var(--text); font-family: "Songti SC", "SimSun", Georgia, serif; font-size: 21px; font-weight: 600; letter-spacing: 2px; }
-.profile-description { margin: 6px 0 20px; color: var(--muted); font-size: 11px; }
-.profile-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); padding-top: 17px; margin-top: 20px; border-top: 1px solid var(--border); color: var(--muted); font-size: 10px; }
-.profile-stats > span + span { border-left: 1px solid var(--border); }
-.profile-stats strong { display: block; margin-bottom: 1px; color: var(--text); font-size: 19px; font-weight: 600; line-height: 1.4; font-variant-numeric: tabular-nums; }
 .widget-title { display: flex; align-items: center; gap: 8px; margin: 0 0 15px; padding: 0; color: var(--text); font-size: 13px; font-weight: 600; line-height: 1.5; letter-spacing: .5px; }
 .widget-title .icon { width: 16px; height: 16px; color: var(--accent); }
 .widget-list { margin: 0; padding: 0; list-style: none; }
@@ -207,7 +199,6 @@ code[class*="language-"], pre[class*="language-"] { color: #47553d; text-shadow:
   .post-preview { padding: 23px 24px 18px; }
   .post { padding: 27px; }
   .widget { padding: 19px; }
-  .profile-widget { padding-top: 24px; }
 }
 @media (max-width: 800px) {
   .layout-grid { grid-template-columns: minmax(0, 1fr); gap: 36px; }
@@ -245,7 +236,6 @@ code[class*="language-"], pre[class*="language-"] { color: #47553d; text-shadow:
   .post-preview-footer { margin-top: 15px; }
   .sidebar-box { gap: 14px; }
   .widget { padding: 18px; border-radius: 11px; }
-  .profile-widget { padding-top: 24px; }
   .post { padding: 23px 20px 28px; border-radius: 11px; }
   .post-title { font-size: 25px; }
   .article-header { margin-bottom: 22px; }
