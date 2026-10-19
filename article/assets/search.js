@@ -59,20 +59,127 @@ document.addEventListener('DOMContentLoaded', () => {
     return element;
   };
 
-  const cleanContent = (content) => String(content || '')
-    .replace(/```[\s\S]*?```|~~~[\s\S]*?~~~/g, ' ')
-    .replace(/!\[([^\]]*)\]\([^)]*\)/g, '$1')
-    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
+  const decodeEntities = (text) => {
+    const named = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ' };
+    return text.replace(/&(#x[\da-f]+|#\d+|amp|lt|gt|quot|apos|nbsp);/gi, (entity, name) => {
+      if (name[0] !== '#') return named[name.toLowerCase()];
+      const hex = name[1].toLowerCase() === 'x';
+      const value = Number.parseInt(name.slice(hex ? 2 : 1), hex ? 16 : 10);
+      return value > 0 && value <= 0x10ffff && !(value >= 0xd800 && value <= 0xdfff)
+        ? String.fromCodePoint(value)
+        : entity;
+    });
+  };
+
+  const cleanProse = (text) => decodeEntities(text
+    .replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/<(https?:\/\/[^>\s]+)>/g, '$1')
     .replace(/<[^>]+>/g, ' ')
-    .replace(/^\s{0,3}(?:#{1,6}\s+|>\s*|[-*+]\s+|\d+[.)]\s+)/gm, '')
-    .replace(/[`*_~]/g, '')
-    .replace(/\s+/g, ' ')
-    .trim();
+    .replace(/(\*\*|__|~~)(?=\S)(.*?\S)\1/g, '$2')
+    .replace(/(^|[\s(])([*_])(?=\S)([^*_]*?\S)\2(?=$|[\s.,!?;:)])/g, '$1$3'));
+
+  const cleanInlineContent = (line) => {
+    line = line.replace(/^\s{0,3}(?:#{1,6}\s+|>\s*|[-*+]\s+|\d+[.)]\s+)/, '');
+    let output = '';
+    let position = 0;
+    while (position < line.length) {
+      const opening = line.indexOf('`', position);
+      if (opening < 0) return output + cleanProse(line.slice(position));
+      const delimiter = line.slice(opening).match(/^`+/)[0];
+      let closing = opening + delimiter.length;
+      while (closing < line.length) {
+        closing = line.indexOf(delimiter, closing);
+        if (closing < 0) break;
+        if (line[closing - 1] !== '`' && line[closing + delimiter.length] !== '`') break;
+        closing += delimiter.length;
+      }
+      if (closing < 0 || closing >= line.length) return output + cleanProse(line.slice(position));
+      output += cleanProse(line.slice(position, opening));
+      output += line.slice(opening + delimiter.length, closing);
+      position = closing + delimiter.length;
+    }
+    return output;
+  };
+
+  const cleanContent = (content) => {
+    let fence = null;
+    const lines = String(content || '').split(/\r?\n/).map((line) => {
+      const delimiter = line.match(/^ {0,3}(`{3,}|~{3,})(.*)$/);
+      if (fence) {
+        if (delimiter && delimiter[1][0] === fence.character
+          && delimiter[1].length >= fence.length && !delimiter[2].trim()) {
+          fence = null;
+          return '';
+        }
+        return line;
+      }
+      if (delimiter) {
+        fence = { character: delimiter[1][0], length: delimiter[1].length };
+        return '';
+      }
+      if (/^(?: {4}|\t)/.test(line)) return line;
+      return cleanInlineContent(line);
+    });
+    return lines.join(' ').replace(/\s+/g, ' ').trim();
+  };
+
+  // Query text is matched literally; only text nodes and explicit marks enter the DOM.
+  const appendHighlighted = (target, text, query) => {
+    const needle = query.toLocaleLowerCase();
+    if (!needle) {
+      target.appendChild(document.createTextNode(text));
+      return;
+    }
+    const haystack = text.toLocaleLowerCase();
+    let position = 0;
+    let index = haystack.indexOf(needle);
+    while (index > -1) {
+      target.appendChild(document.createTextNode(text.slice(position, index)));
+      target.appendChild(createElement('mark', '', text.slice(index, index + query.length)));
+      position = index + query.length;
+      index = haystack.indexOf(needle, position);
+    }
+    target.appendChild(document.createTextNode(text.slice(position)));
+  };
+
+  const makeSnippet = (content, query, limit = 220, contextLength = 24) => {
+    const index = content.toLocaleLowerCase().indexOf(query.toLocaleLowerCase());
+    const start = index > -1 ? Math.max(0, index - contextLength) : 0;
+    const prefix = start > 0 ? '…' : '';
+    const end = Math.min(content.length, start + limit - prefix.length - 1);
+    return {
+      text: `${prefix}${content.slice(start, end)}${end < content.length ? '…' : ''}`,
+      matchStart: index < 0 ? -1 : prefix.length + index - start,
+      matchLength: index < 0 ? 0 : Math.min(query.length, end - index),
+    };
+  };
+
+  const appendSnippet = (target, content, query, limit = 220, contextLength = 24) => {
+    const snippet = makeSnippet(content, query, limit, contextLength);
+    if (snippet.matchStart < 0 || snippet.matchLength === query.length) {
+      appendHighlighted(target, snippet.text, query);
+      return;
+    }
+    // Even a query longer than the excerpt has its visible matching text marked.
+    const end = snippet.matchStart + snippet.matchLength;
+    target.appendChild(document.createTextNode(snippet.text.slice(0, snippet.matchStart)));
+    target.appendChild(createElement('mark', '', snippet.text.slice(snippet.matchStart, end)));
+    target.appendChild(document.createTextNode(snippet.text.slice(end)));
+  };
+
+  const matchContext = (post, query) => {
+    const needle = query.toLocaleLowerCase();
+    if (post.content.toLocaleLowerCase().includes(needle)) return '';
+    const titleMatches = post.title.toLocaleLowerCase().includes(needle);
+    const tagsMatch = post.tags.toLocaleLowerCase().includes(needle);
+    if (tagsMatch) return `${titleMatches ? '标题、标签' : '标签'}匹配：${post.tags}`;
+    return titleMatches ? '标题匹配' : '';
+  };
 
   // The same promise serves autocomplete and the full search page, including errors.
   const fetchSearchData = () => {
     if (!searchDataPromise) {
-      searchDataPromise = fetch(new URL('search.json', rootURL))
+      searchDataPromise = fetch(new URL('search.json', rootURL), { cache: 'no-cache' })
         .then((response) => {
           if (!response.ok) throw new Error('Search index could not be loaded');
           return response.json();
@@ -89,14 +196,15 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             if (!['http:', 'https:', 'file:'].includes(url.protocol)) return [];
             const title = String(post.title || '未命名文章');
-            const content = String(post.content || '');
+            const content = cleanContent(post.content);
             const tags = Array.isArray(post.tags) ? post.tags.join(' ') : String(post.tags || '');
             return [{
               title,
               url: url.href,
               date: String(post.date || ''),
-              content: cleanContent(content),
-              searchable: `${title} ${content} ${tags}`.toLocaleLowerCase(),
+              content,
+              tags,
+              searchable: [title, content, tags].map((text) => text.toLocaleLowerCase()),
             }];
           });
         });
@@ -106,7 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const findResults = (posts, query) => {
     const normalizedQuery = query.toLocaleLowerCase();
-    return posts.filter((post) => post.searchable.includes(normalizedQuery));
+    return posts.filter((post) => post.searchable.some((text) => text.includes(normalizedQuery)));
   };
 
   const closeSuggestions = () => {
@@ -128,7 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
     showSuggestions();
   };
 
-  const renderSuggestions = (results) => {
+  const renderSuggestions = (results, query) => {
     if (!results.length) {
       showSuggestionStatus('没有找到相关文章，试试其他关键词。');
       return;
@@ -139,7 +247,19 @@ document.addEventListener('DOMContentLoaded', () => {
       const item = createElement('li');
       const link = createElement('a');
       link.href = post.url;
-      link.appendChild(createElement('span', 'search-result-title', post.title));
+      const title = createElement('span', 'search-result-title');
+      appendHighlighted(title, post.title, query);
+      link.appendChild(title);
+      const context = matchContext(post, query);
+      if (context) {
+        const label = createElement('span', 'search-match-context');
+        appendHighlighted(label, context, query);
+        link.appendChild(label);
+      } else if (post.content) {
+        const snippet = createElement('span', 'search-result-snippet');
+        appendSnippet(snippet, post.content, query, 100, 10);
+        link.appendChild(snippet);
+      }
       if (post.date) link.appendChild(createElement('span', 'search-result-date', post.date));
       item.appendChild(link);
       list.appendChild(item);
@@ -163,19 +283,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const posts = await fetchSearchData();
       if (version !== suggestionVersion || !searchScope.contains(document.activeElement)) return;
       resultsContainer.setAttribute('aria-busy', 'false');
-      renderSuggestions(findResults(posts, query));
+      renderSuggestions(findResults(posts, query), query);
     } catch {
       if (version !== suggestionVersion || !searchScope.contains(document.activeElement)) return;
       resultsContainer.setAttribute('aria-busy', 'false');
       showSuggestionStatus('搜索暂时无法加载，请刷新页面后重试。');
     }
-  };
-
-  const makeSnippet = (content, query) => {
-    const index = content.toLocaleLowerCase().indexOf(query.toLocaleLowerCase());
-    const start = index > -1 ? Math.max(0, index - 60) : 0;
-    const end = Math.min(content.length, start + 220);
-    return `${start > 0 ? '…' : ''}${content.slice(start, end)}${end < content.length ? '…' : ''}`;
   };
 
   const createCalendarIcon = () => {
@@ -199,8 +312,9 @@ document.addEventListener('DOMContentLoaded', () => {
     results.slice(0, fullResultLimit).forEach((post) => {
       const article = createElement('article', 'post-preview');
       const title = createElement('h2', 'post-preview-title');
-      const titleLink = createElement('a', '', post.title);
+      const titleLink = createElement('a');
       titleLink.href = post.url;
+      appendHighlighted(titleLink, post.title, query);
       title.appendChild(titleLink);
       article.appendChild(title);
 
@@ -212,8 +326,17 @@ document.addEventListener('DOMContentLoaded', () => {
         article.appendChild(metadata);
       }
 
-      const snippet = makeSnippet(post.content, query);
-      if (snippet) article.appendChild(createElement('p', 'post-preview-desc', snippet));
+      const context = matchContext(post, query);
+      if (context) {
+        const label = createElement('p', 'search-match-context');
+        appendHighlighted(label, context, query);
+        article.appendChild(label);
+      }
+      if (post.content) {
+        const snippet = createElement('p', 'post-preview-desc');
+        appendSnippet(snippet, post.content, query);
+        article.appendChild(snippet);
+      }
       const footer = createElement('div', 'post-preview-footer');
       const readMore = createElement('a', 'post-preview-more', '阅读全文');
       readMore.href = post.url;

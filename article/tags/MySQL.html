@@ -10,62 +10,8 @@
   <meta name="theme-color" content="#f5f3ee" />
   <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg?v=dd3ca54e38f7" />
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" />
-  <link rel="stylesheet" href="../assets/style.css?v=3d6c134fd39b" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" data-manual></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
-  <script src="../assets/search.js?v=b21beeeac485"></script>
-  <script>
-    // 等待所有资源加载完成
-    window.addEventListener('load', function() {
-
-      // 转换 Pandoc 的类名格式：<pre class="xxx"><code> -> <pre><code class="language-xxx">
-      document.querySelectorAll('pre[class]').forEach((pre) => {
-        const code = pre.querySelector('code');
-        if (code && pre.className && !pre.className.includes('mermaid')) {
-          // 将 pre 的 class 移动到 code 并添加 language- 前缀
-          const lang = pre.className.trim();
-          if (lang !== 'mermaid' && lang !== 'language-mermaid') {
-            code.className = 'language-' + lang;
-            pre.removeAttribute('class');
-          }
-        }
-      });
-      
-      // 处理 Mermaid 代码块
-      document.querySelectorAll('pre code.language-mermaid, pre.mermaid code').forEach((block) => {
-        const pre = block.parentElement;
-        const mermaidDiv = document.createElement('div');
-        mermaidDiv.className = 'mermaid';
-
-        const parser = new DOMParser();
-        const doc = parser.parseFromString('<!doctype html><body>' + block.innerHTML, 'text/html');
-        let mermaidCode = doc.body.textContent || '';
-        mermaidCode = mermaidCode.replace(/<br>\s*\n\s*/g, '<br>');
-        mermaidCode = mermaidCode.replace(/S16\[[\s\S]*?\]/, 'S16["Step 16: Update training-dependent registers"]');
-
-        mermaidDiv.textContent = mermaidCode;
-        pre.replaceWith(mermaidDiv);
-      });
-      
-      // 初始化 Mermaid
-      mermaid.initialize({ 
-        startOnLoad: false,
-        theme: 'default', 
-        securityLevel: 'loose',
-        logLevel: 'debug'
-      });
-      
-      mermaid.run({
-        querySelector: '.mermaid'
-      }).catch(function(error) {
-        console.error('Mermaid rendering error:', error);
-      });
-      
-      Prism.highlightAll();
-    });
-  </script>
+  <link rel="stylesheet" href="../assets/style.css?v=9827874e24e9" />
+  <script src="../assets/search.js?v=d25847d8c32f" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main-content">跳转到正文</a>
