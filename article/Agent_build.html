@@ -13,8 +13,9 @@
   <!-- Use light theme for Prism -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
-  <link rel="stylesheet" href="./assets/style.css?v=2e3578b24889" />
+  <link rel="stylesheet" href="./assets/style.css?v=3d6c134fd39b" />
   <script src="./assets/search.js?v=b21beeeac485"></script>
+  <script src="./assets/article.js?v=e88004e0444e" defer></script>
   
   <script>
     // Force set manual mode before Prism loads to ensure no auto-highlighting occurs
@@ -125,8 +126,8 @@
             <div id="decrypted-content"></div>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
             <script>
-              var check_iv = "WUcGBTI6X6nC86fC48m6kA==";
-              var check_data = "P3IQyTGb8IQ29aI1lCPdtkeftFA2ucrSxcuMAJRG8vIdR/u5687YhZ8JBbfAL23Y7vKMPD3gpr9BEDk933VJBTAUbEVyNxAUsjZR1D/bj4IwNhcgUnPPPsekoHcuFyZg3LffBFoYyHWAGYdgpAuudYd+PFjSkYAWifqOfZ0GmYqezoxh+JM4Owby3Vuy7SuXs56Wu1U4h32iMCrL173T3O1563Q6BLo36BZ/pWZJywUg00N8AjdwTUT+ZBsLNTshXfZx8lrCLrzvf32QXFyikn9f6WiVcwJm2pdKZ4JO7wQL0hFSVo0lvTY7zI5nsuHb7iuJXsk0FJ9gI9V22jHjecmU799mR7M7VKBUhcOX7tiUCH8B2Drg++CsfxCHQssTHMc8pgWcS+yaBwmF8QdDhMkVB3WCKe3bxwMfBR4RCVIq4vAaMkFguWRLXw/SCovac8RKaUfClzHLmc+4HH5jA0mrdCB3883LmEaNup/L5gAjduPGt3yZTWnYQK1KQ5zn8J2pb5AfP965Gb9641V0mnu/Pqln/r85VYepfbbR2i4vbueEy7+hXws7HtlIKsfN081JgyCL6I6Eh9EgIok2FQKkmGH3NeaOPDzo3IQ02o0NZ3lLLTO9BOJ72/u40FbohSRFee0ACKYatZXj7ptd7w==";
+              var check_iv = "b9/YS1uRsKLCbSZckzRSUg==";
+              var check_data = "W0MfFXK3RevkuoJgB9JV19S6PTwBGWD+WSWrO8u5jG8P1GbiRH3UOB6WlodH6DTGTT9GN1Id2ZquaXwV4jBcIbk2C5LFvh0fgtwN7X4gmsrKBFuqcGTQ1GBmsLInBLodD1UubOFmpnSEI0DjvcwFyMA2T5BiGVEUv7fPwTK7AXx/LW9GpgMwQVe0RQAfe0BVer+z8ioFmLCdn0WdZTY8WSdggni1htuFCv55ZpUgnAE+7yfZ5AHC/dWFFT4ahVomwwb1iel3La3YM+cXs/tkibQmSz1FZk3UQmHQJeuPgS8jUDABjP8QQyymfv16O/H762eoW+a2ihsLgx0sVSWM/+t8u8l8Ergq9uIt0Yn91WVj33AdpCRJKKKrHm2+WV9tVyB7EA2Au7QdaP7jtkG8OSFrWBZG5pryTrbfvCyyqWHzOH6m/dRuNcxqQMv/JsXM7hW8gBMclKe8Kx89S6RenmcdMd8/OXd5x+OC5TO79tasG/BpH8dd10rzY2jfUPSj+XbzwY4Dnp7ATeWngMhsZSt1fpz6EaKM2Npwr0rTTONb8x3im2PaQ6Xyz0Hcx2yTb5nf+dwQZL/8u6KNd9UM4my+Olly7c2TSSeNjxVUJm8fRKUtOL6zHY3po/0e90/E2oErVkmva1SuFvHl95RrSA==";
               
               function decryptArticle() {
                  var password = document.getElementById("article-password").value;
@@ -143,6 +144,7 @@
                      if (str.length > 0) {
                          document.getElementById("decrypted-content").innerHTML = str;
                          document.getElementById("password-form").style.display = "none";
+                         document.dispatchEvent(new CustomEvent('article:unlocked'));
                          
                          // Re-highlight code blocks if highlight.js is present (optional)
                          if (window.hljs) {
@@ -167,8 +169,22 @@
       <div id="gitalk-container"></div>
     </main>
 
-    <aside class="sidebar" aria-label="博客信息与文章导航">
+    <aside class="sidebar article-sidebar" aria-label="博客信息与文章导航">
       <div class="sidebar-box">
+<section class="widget toc-widget" id="article-toc-widget" hidden>
+<h3 class="widget-title" id="article-toc-title"><svg class="icon" width="18" height="18" aria-hidden="true" focusable="false"><use href="assets/icons.svg?v=9154336211ac#book-open"></use></svg>目录</h3>
+<nav class="article-toc" aria-labelledby="article-toc-title"></nav>
+</section>
+<section class="widget" id="article-recent-widget">
+<h3 class="widget-title"><svg class="icon" width="18" height="18" aria-hidden="true" focusable="false"><use href="assets/icons.svg?v=9154336211ac#clock"></use></svg>最新文章</h3>
+<ul class="widget-list recent-posts">
+<li><a href="Agent_build.html"><span class="recent-post-title">关于agent的一些想法</span><time datetime="2026-03-04">2026-03-04</time></a></li>
+<li><a href="mipi.html"><span class="recent-post-title">MIPI相关内容</span><time datetime="2026-01-15">2026-01-15</time></a></li>
+<li><a href="imgnote.html"><span class="recent-post-title">图像笔记</span><time datetime="2026-01-15">2026-01-15</time></a></li>
+<li><a href="lpddr_software.html"><span class="recent-post-title">lpddr 软件流程</span><time datetime="2025-12-19">2025-12-19</time></a></li>
+<li><a href="uvm-model-1-0.html"><span class="recent-post-title">uvm编译的一些分享</span><time datetime="2022-06-11T17:46:37">2022-06-11 17:46:37</time></a></li>
+</ul>
+</section>
 <section class="widget">
 <h3 class="widget-title"><svg class="icon" width="18" height="18" aria-hidden="true" focusable="false"><use href="assets/icons.svg?v=9154336211ac#folder"></use></svg>分类</h3>
 <ul class="widget-list category-list">
@@ -192,16 +208,6 @@
 <a href="tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html" class="tag-cloud-item"><span>学习笔记</span><span class="tag-count">1</span></a>
 <a href="tags/%E9%AA%8C%E8%AF%81.html" class="tag-cloud-item"><span>验证</span><span class="tag-count">1</span></a>
 </div>
-</section>
-<section class="widget">
-<h3 class="widget-title"><svg class="icon" width="18" height="18" aria-hidden="true" focusable="false"><use href="assets/icons.svg?v=9154336211ac#clock"></use></svg>最新文章</h3>
-<ul class="widget-list recent-posts">
-<li><a href="Agent_build.html"><span class="recent-post-title">关于agent的一些想法</span><time datetime="2026-03-04">2026-03-04</time></a></li>
-<li><a href="mipi.html"><span class="recent-post-title">MIPI相关内容</span><time datetime="2026-01-15">2026-01-15</time></a></li>
-<li><a href="imgnote.html"><span class="recent-post-title">图像笔记</span><time datetime="2026-01-15">2026-01-15</time></a></li>
-<li><a href="lpddr_software.html"><span class="recent-post-title">lpddr 软件流程</span><time datetime="2025-12-19">2025-12-19</time></a></li>
-<li><a href="uvm-model-1-0.html"><span class="recent-post-title">uvm编译的一些分享</span><time datetime="2022-06-11T17:46:37">2022-06-11 17:46:37</time></a></li>
-</ul>
 </section>
 </div>
     </aside>

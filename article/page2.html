@@ -11,7 +11,7 @@
   <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg?v=dd3ca54e38f7" />
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" />
-  <link rel="stylesheet" href="./assets/style.css?v=2e3578b24889" />
+  <link rel="stylesheet" href="./assets/style.css?v=3d6c134fd39b" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" data-manual></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
@@ -95,21 +95,21 @@
 <article class="post-preview">
   <h2 class="post-preview-title"><a href="uvm_temp.html">uvm template</a></h2>
   <div class="post-preview-meta"><svg class="icon" width="18" height="18" aria-hidden="true" focusable="false"><use href="assets/icons.svg?v=9154336211ac#calendar"></use></svg><time datetime="2022-01-18">2022-01-18</time></div>
-  <div class="post-preview-desc">很早之前就说写一个简单的uvm环境 首先是一个简单的dut，主要执行一些加减任务</div>
+  <div class="post-preview-desc">以简单加法模块为例，记录 UVM 环境中驱动、监视器、代理、参考模型和计分板的组织与连接方式。</div>
   <div class="post-preview-footer"><a class="post-preview-more" href="uvm_temp.html" aria-label="阅读全文：uvm template">阅读全文<svg class="icon" width="18" height="18" aria-hidden="true" focusable="false"><use href="assets/icons.svg?v=9154336211ac#arrow-right"></use></svg></a></div>
 </article>
 <article class="post-preview">
   <h2 class="post-preview-title"><a href="sv-test.html">一个简单的sv验证框架</a></h2>
   <div class="post-preview-meta"><svg class="icon" width="18" height="18" aria-hidden="true" focusable="false"><use href="assets/icons.svg?v=9154336211ac#calendar"></use></svg><time datetime="2020-10-21T21:49:22">2020-10-21 21:49:22</time></div>
   <div class="post-preview-taxonomies"><a class="tag" href="tags/sv.html"><svg class="icon" width="18" height="18" aria-hidden="true" focusable="false"><use href="assets/icons.svg?v=9154336211ac#tag"></use></svg>sv</a><a class="tag" href="tags/%E9%AA%8C%E8%AF%81.html"><svg class="icon" width="18" height="18" aria-hidden="true" focusable="false"><use href="assets/icons.svg?v=9154336211ac#tag"></use></svg>验证</a></div>
-  <div class="post-preview-desc">最近一直在做一些小模块的验证，之前都是在用现成的环境修修改改。 写一个纯sv的环境； 首先是harness； ```verilog module harness bit clk; bit rst_n; w_inf inf(bit clk,bit rst_n); tc test(); dut dut( clk (inf.clk), rst_n(inf.rst_n), a (inf.a), b (inf.b) ); initial begi…</div>
+  <div class="post-preview-desc">从 harness、interface、transaction、sequence 到测试用例，记录一个面向小模块验证的纯 SystemVerilog 环境骨架。</div>
   <div class="post-preview-footer"><a class="post-preview-more" href="sv-test.html" aria-label="阅读全文：一个简单的sv验证框架">阅读全文<svg class="icon" width="18" height="18" aria-hidden="true" focusable="false"><use href="assets/icons.svg?v=9154336211ac#arrow-right"></use></svg></a></div>
 </article>
 <article class="post-preview">
   <h2 class="post-preview-title"><a href="jdsjkht.html">基于php7的简单web端MySQL后台</a></h2>
   <div class="post-preview-meta"><svg class="icon" width="18" height="18" aria-hidden="true" focusable="false"><use href="assets/icons.svg?v=9154336211ac#calendar"></use></svg><time datetime="2019-05-16T15:51:03">2019-05-16 15:51:03</time></div>
   <div class="post-preview-taxonomies"><a class="tag" href="tags/x.html"><svg class="icon" width="18" height="18" aria-hidden="true" focusable="false"><use href="assets/icons.svg?v=9154336211ac#tag"></use></svg>x</a><a class="tag" href="tags/php.html"><svg class="icon" width="18" height="18" aria-hidden="true" focusable="false"><use href="assets/icons.svg?v=9154336211ac#tag"></use></svg>php</a><a class="tag" href="tags/MySQL.html"><svg class="icon" width="18" height="18" aria-hidden="true" focusable="false"><use href="assets/icons.svg?v=9154336211ac#tag"></use></svg>MySQL</a><a class="tag" href="tags/web.html"><svg class="icon" width="18" height="18" aria-hidden="true" focusable="false"><use href="assets/icons.svg?v=9154336211ac#tag"></use></svg>web</a></div>
-  <div class="post-preview-desc">在web端处理数据库信息要的快捷性更好一些，所有本文针对php7对之前php5的代码做了相关改进，以实现对数据库的增加，删除及更改等功能，在后面的版本中还会增加其适应能力，以及数据库自行识别能力。 以下时相关代码，原php5代码可以参考前辈大佬的 点击进入 1.0版代码如下： 主界面： ```php+HTML h_head(); $f -&gt; ... ?&gt;</div>
+  <div class="post-preview-desc">基于 PHP 7 和 MySQL 搭建简单的网页管理后台，记录数据展示、添加、删除和修改功能的页面与代码。</div>
   <div class="post-preview-footer"><a class="post-preview-more" href="jdsjkht.html" aria-label="阅读全文：基于php7的简单web端MySQL后台">阅读全文<svg class="icon" width="18" height="18" aria-hidden="true" focusable="false"><use href="assets/icons.svg?v=9154336211ac#arrow-right"></use></svg></a></div>
 </article>
 <nav class="pagination" aria-label="文章分页"><a class="pagination-prev" href="index.html" rel="prev"><svg class="icon" width="18" height="18" aria-hidden="true" focusable="false"><use href="assets/icons.svg?v=9154336211ac#arrow-left"></use></svg><span>上一页</span></a><a href="index.html" aria-label="第 1 页">1</a><span class="current" aria-current="page" aria-label="第 2 页">2</span><span class="disabled pagination-next" aria-disabled="true"><span>下一页</span><svg class="icon" width="18" height="18" aria-hidden="true" focusable="false"><use href="assets/icons.svg?v=9154336211ac#arrow-right"></use></svg></span></nav>
@@ -141,16 +141,6 @@
 <a href="tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html" class="tag-cloud-item"><span>学习笔记</span><span class="tag-count">1</span></a>
 <a href="tags/%E9%AA%8C%E8%AF%81.html" class="tag-cloud-item"><span>验证</span><span class="tag-count">1</span></a>
 </div>
-</section>
-<section class="widget">
-<h3 class="widget-title"><svg class="icon" width="18" height="18" aria-hidden="true" focusable="false"><use href="assets/icons.svg?v=9154336211ac#clock"></use></svg>最新文章</h3>
-<ul class="widget-list recent-posts">
-<li><a href="Agent_build.html"><span class="recent-post-title">关于agent的一些想法</span><time datetime="2026-03-04">2026-03-04</time></a></li>
-<li><a href="mipi.html"><span class="recent-post-title">MIPI相关内容</span><time datetime="2026-01-15">2026-01-15</time></a></li>
-<li><a href="imgnote.html"><span class="recent-post-title">图像笔记</span><time datetime="2026-01-15">2026-01-15</time></a></li>
-<li><a href="lpddr_software.html"><span class="recent-post-title">lpddr 软件流程</span><time datetime="2025-12-19">2025-12-19</time></a></li>
-<li><a href="uvm-model-1-0.html"><span class="recent-post-title">uvm编译的一些分享</span><time datetime="2022-06-11T17:46:37">2022-06-11 17:46:37</time></a></li>
-</ul>
 </section>
 </div>
     </aside>
